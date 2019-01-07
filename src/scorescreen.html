@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Privilege Walk</title>
+		<meta charset="utf-8"/>
+
+		<!-- STYLESHEETS -->
+		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" type="text/css" href="scorescreen.css">
+
+		<!-- REQUIRED MATERIA JAVASCRIPT -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="materia.scorecore.js"></script>
+
+		<!-- ANGULAR DEPENDENCIES -->
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/labjs/2.0.3/LAB.min.js"></script>
+
+		<!-- MAIN WIDGET SCRIPT -->
+		<script src="scorescreen.js"></script>
+	</head>
+
+	<body ng-app="PrivilegeWalkScorescreen" ng-controller="PrivilegeWalkScoreCtrl" ng-cloak>
+		<md-content id="container">
+
+			<div layout-gt-sm="row" layout="column" id="content">
+				<div flex="55" id="card-container">
+
+					<md-card id="score-card" class="md-whiteframe-3dp card" ng-show="qset">
+						<div class="card-center" layout="column">
+
+							<md-card-title class="score-title">
+								<span class="md-headline">Your Privilege Score</span>
+							</md-card-title>
+
+							<md-card-content class="score-content">
+								<span id="score-value">
+									{{score}}
+								</span>
+								<span>out of {{maxScore}}</span>
+								<md-button id="compare-button" class="md-accent md-raised" ng-click="showCompare()" ng-show="!isPreview">
+									Compare with Others
+								</md-button>
+							</md-card-content>
+						</div>
+					</md-card>
+
+					<md-card
+						id="group_{{groupNumber}}"
+						class="md-whiteframe-3dp card group-card"
+						ng-repeat="(groupNumber, group) in groups"
+						style="background-color: {{qset.options.groups[groupNumber].color}}">
+						<md-card-content layout="row" class="group-header">
+							<h2>{{qset.options.groups[groupNumber].text}}</h2>
+							<span>
+								<h2 class="group-subscore">{{groupSubscores[groupNumber]}}</h2>
+								<p class="group-subscore">out of {{groupMaxscores[groupNumber]}}</p>
+							</span>
+						</md-card-content>
+						<div class="question-container">
+							<md-card class="md-whiteframe-3dp card" ng-repeat="questionIndex in group">
+								<md-card-title>
+									<span class="md-headline">
+										{{qset.items[questionIndex].questions[0].text}}
+									</span>
+								</md-card-title>
+
+								<md-card-content>
+									<p>
+										You Answered: {{responses[questionIndex]}}
+									</p>
+									<p>
+										Privilege Gained: {{scoreTable[questionIndex].score}}
+									</p>
+								</md-card-content>
+							</md-card>
+						</div>
+						<md-button ng-click="toggleQuestions(groupNumber)">
+							Show Questions
+						</md-button>
+					</md-card>
+
+				</div>
+			</div>
+		</md-content>
+
+		<!-- Distribution Dialog -->
+		<div style="visibility: hidden">
+			<div class="md-dialog-container" id="distribution-dialog-container">
+				<md-dialog id="distribution-dialog" aria-label="Distribution Dialog">
+					<md-toolbar>
+						<div class="md-toolbar-tools">
+							<h2>How You Compare</h2>
+							<span flex></span>
+							<md-button class="md-icon-button" ng-click="cancel()">
+								<i class="material-icons">&#xE5CD;</i>
+							</md-button>
+						</div>
+					</md-toolbar>
+					<md-dialog-content>
+						<div class="md-dialog-content">
+							<div class="chart-container" >
+								<div ng-show="invalidGraph">
+									Not enough data.<br/>
+									Come back to this page later to see how you compare.
+								</div>
+								<canvas ng-hide="invalidGraph" id="graph"></canvas>
+								<md-progress-circular id="compare-loading" md-mode="indeterminate" ng-hide="distributionReady"></md-progress-circular>
+							</div>
+						</div>
+					</md-dialog-content>
+				</md-dialog>
+			</div>
+		</div>
+	</body>
+</html>

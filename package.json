@@ -1,0 +1,22 @@
+{
+  "name": "@ucfopen/larry",
+  "materia": {
+    "cleanName": "larry"
+  },
+  "version": "1.0.1",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build-dev": "webpack",
+    "build": "webpack -p",
+    "test": "echo 'no tests implemented'",
+    "test-ci": "echo 'no tests implemented'"
+  },
+  "dependencies": {
+    "angular-sortable-view": "^0.0.13",
+    "materia-widget-development-kit": "^2.0.0"
+  },
+  "author": "University of Central Florida, Center for Distributed Learning",
+  "description": "TBD",
+  "license": "AGPL-3.0"
+}
+

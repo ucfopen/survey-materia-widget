@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Privilege Walk</title>
+		<meta charset="utf-8"/>
+
+		<!-- STYLESHEETS -->
+		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+		<link rel="stylesheet" type="text/css" href="player.css">
+
+		<!-- REQUIRED MATERIA JAVASCRIPT -->
+		<script src="materia.enginecore.js"></script>
+
+		<!-- ANGULAR DEPENDENCIES -->
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
+
+		<!-- MAIN WIDGET SCRIPT -->
+		<script src="player.js"></script>
+	</head>
+
+	<body ng-app="PrivilegeWalkEngine" ng-controller="PrivilegeWalkEngineCtrl" ng-cloak>
+		<md-content id="container">
+			<md-toolbar>
+				<div class="md-toolbar-tools" layout="row">
+					<h2>{{instance.name}}</h2>
+					<span flex></span>
+					<md-button class="md-raised" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
+						Submit
+					</md-button>
+				</div>
+				<md-progress-linear class="md-accent" md-mode="determinate" value="{{progress}}"></md-progress-linear>
+			</md-toolbar>
+
+			<div layout-gt-sm="row" layout="column" id="content">
+				<div flex="55" id="card-container">
+
+					<md-card class="md-whiteframe-3dp card"
+						ng-repeat="question in qset.items"
+						ng-class="{'incomplete': showIncomplete && isIncomplete($index)}">
+						<div class="card-right" layout="column">
+
+							<md-card-title class="card-title">
+								<span class="md-headline">{{question.questions[0].text}}</span>
+							</md-card-title>
+
+							<!-- Scale Style -->
+							<md-card-actions layout layout-align="start start" ng-show="question.options.style=='0'">
+								<md-radio-group layout="row" ng-model="responses[$index]" class="radio-spacing" ng-change="updateCompleted()">
+									<md-radio-button
+										ng-repeat="answer in question.answers"
+										value={{$index}}>
+										{{answer.text}}
+									</md-radio-button>
+								</md-radio-group>
+							</md-card-actions>
+
+							<!-- Dropdown Style -->
+							<md-card-actions layout layout-align="start start" ng-show="question.options.style=='1'">
+								<md-input-container layout="row">
+									<md-select class="dropdown-answer" placeholder="Select Answer" ng-model="responses[$index]" aria-label="Answer" ng-change="updateCompleted()">
+										<md-option
+											ng-repeat="answer in question.answers"
+											value={{$index}}>
+											{{answer.text}}
+										</md-option>
+									</md-select>
+								</md-input-container>
+							</md-card-actions>
+						</div>
+					</md-card>
+
+				</div>
+			</div>
+		</md-content>
+		<div class="arrow_box" ng-show="progress == 100">Click to finish</div>
+	</body>
+</html>

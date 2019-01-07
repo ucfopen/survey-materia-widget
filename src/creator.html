@@ -1,0 +1,270 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Privilege Walk Creator</title>
+		<meta charset="utf-8"/>
+
+		<!-- STYLESHEETS -->
+		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" type="text/css" href="creator.css">
+
+		<!-- REQUIRED MATERIA JAVASCRIPT -->
+		<script>
+			(function(proxied){
+				window.alert = function() {
+					throw 'ERROR';
+				};
+			}) (window.alert);
+		</script>
+		<script src="materia.creatorcore.js"></script>
+
+		<!-- ANGULAR DEPENDENCIES -->
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+		<script src="vendor/angular-sortable-view.min.js"></script>
+
+		<!-- MAIN CREATOR SCRIPT -->
+		<script src="creator.js"></script>
+	</head>
+
+	<body ng-app="PrivilegeWalkCreator">
+		<md-content id="container" ng-controller="PrivilegeWalkController">
+
+			<md-toolbar md-theme="toolbar-dark">
+				<div class="md-toolbar-tools">
+					<md-input-container class="md-block widget-title" flex>
+						<label id="widget-title-label">Widget Name</label>
+						<input ng-model="title">
+					</md-input-container>
+				</div>
+			</md-toolbar>
+
+			<div layout-gt-sm="row" layout="column" id="content">
+				<div flex="55" id="card-container">
+
+					<md-card class="md-whiteframe-3dp card"
+						style="border-top: 5px solid {{groups[card.group].color}}"
+						ng-repeat="(cardIndex, card) in cards"
+						layout="row">
+
+						<!-- Card Header -->
+						<div class="card-right" layout="column" flex>
+							<form name="questionForm">
+								<md-input-container class="md-block">
+									<label>Question {{$index + 1}}</label>
+									<input ng-model="card.question" name="question" required spellcheck="true">
+									<div ng-messages="questionForm.question.$error">
+										<div ng-message="required">Question title is required.</div>
+									</div>
+								</md-input-container>
+							</form>
+							<div class="card-buttons">
+								<button class="move-arrow" ng-hide="$first" ng-click="swapCards(cardIndex, cardIndex - 1)">
+									<md-tooltip md-direction="below">Move Question Up</md-tooltip>
+									<i class="material-icons">&#xE316;</i>
+								</button>
+
+								<button class="move-arrow" ng-hide="$last" ng-click="swapCards(cardIndex, cardIndex + 1)">
+									<md-tooltip md-direction="below">Move Question Down</md-tooltip>
+									<i class="material-icons">&#xE313;</i>
+								</button>
+
+								<md-menu md-offset="-150 10">
+									<button aria-label="Open color/group menu" class="md-icon-button" ng-click="openColorMenu($mdMenu, $event, cardIndex)">
+										<md-tooltip md-direction="below">Question Group</md-tooltip>
+										<i class="material-icons">&#xE3B7;</i>
+									</button>
+									<md-menu-content class="color-menu-content" width="4">
+										<md-menu-item ng-repeat="group in groups" class="color-menu-option" ng-click="selectGroup(cardIndex, $index)">
+											<md-button ng-click="ctrl.redial($event)" ng-class="{'selected': $index == card.group}">
+												<div class="color-circle" style="background-color: {{group.color}}"></div>
+												{{group.text}}
+											</md-button>
+										</md-menu-item>
+										<md-menu-divider></md-menu-divider>
+										<md-menu-item>
+											<md-button ng-click="showEditGroups($event)">
+												Edit Groups
+											</md-button>
+										</md-menu-item>
+									</md-menu-content>
+								</md-menu>
+
+								<button class="delete" ng-click="deleteQuestion(cardIndex)">
+									<md-tooltip md-direction="below">Delete this Question</md-tooltip>
+									<i class="material-icons">&#xE872;</i>
+								</button>
+							</div>
+
+							<div layout="row">
+								<md-input-container>
+									<label>Answer Type</label>
+									<md-select ng-change="updateAnswerType(cardIndex)" ng-model="card.questionType">
+										<md-option
+											ng-repeat="questionType in questionTypes"
+											value="{{$index}}">
+											{{questionType}}
+										</md-option>
+									</md-select>
+								</md-input-container>
+								<md-input-container ng-show="card.questionType==2">
+									<label>Display Type</label>
+									<md-select ng-model="card.style">
+										<md-option
+											ng-repeat="displayStyle in displayStyles"
+											value="{{displayStyle.value}}">
+											{{displayStyle.text}}
+										</md-option>
+									</md-select>
+								</md-input-container>
+								<div layout="row">
+									<md-checkbox
+										aria-label="Reversed Values"
+										class="reverse-checkbox"
+										ng-change="reverseValues(cardIndex)"
+										ng-model="card.reversed"
+										ng-show="card.questionType!=2">
+										Reversed Values
+									</md-checkbox>
+									<button class="reversed-info" ng-click="showTypeDialog($event, card.questionType)">
+										<i class="material-icons">&#xE88F;</i>
+									</button>
+								</div>
+							</div>
+
+							<!-- Preset Preview -->
+							<md-card-actions layout layout-align="start start" class="radio-choice" ng-show="card.questionType < 2">
+								<md-radio-group layout="row">
+									<md-radio-button
+										ng-disabled="true"
+										ng-repeat="answer in card.answers"
+										value={{$index}}>
+										<md-tooltip md-direction="below">Value: {{answer.value}}</md-tooltip>
+										{{answer.text}}
+									</md-radio-button>
+								</md-radio-group>
+							</md-card-actions>
+
+							<!-- Custom -->
+							<md-card-actions layout layout-align="start start" class="custom-choice" ng-show="card.questionType==2">
+								<div layout="column" sv-root sv-part="card.answers">
+									<div layout="row" ng-repeat="option in card.answers" sv-element="dragOpts">
+										<form name="optionsForm">
+											<md-button class="option-controls" sv-handle tabindex="-1">
+												<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
+												<i class="material-icons">&#xE25D;</i>
+											</md-button>
+
+											<md-input-container>
+												<label>Option {{$index + 1}}</label>
+												<input type="text" ng-model="option.text" name="text" required>
+												<div ng-messages="optionsForm.text.$error">
+													<div ng-message="required">Option is required.</div>
+												</div>
+											</md-input-container>
+
+											<md-input-container >
+												<label>Option {{$index + 1}} Value</label>
+												<input type="number" ng-model="option.value" name="value" min="1" ng-pattern="/^[0-9]+$/" required>
+												<div ng-messages="optionsForm.value.$error" multiple="">
+													<div ng-message="required">Value is required</div>
+													<div ng-message="min">Value must be greater than 1</div>
+													<div ng-message="pattern">Value must be a whole number</div>
+													<div ng-message="number">Value must be a whole number</div>
+												</div>
+											</md-input-container>
+
+											<md-button class="option-controls" ng-click="removeOption(cardIndex, $index)" tabindex="-1">
+												<md-tooltip md-direction="below">Remove Option</md-tooltip>
+												<i class="material-icons">&#xE15D;</i>
+											</md-button>
+										</form>
+									</div>
+									<md-button class="md-accent md-raised toggle-option" ng-click="addOption(cardIndex)">
+										Add Option
+									</md-button>
+								</div>
+							</md-card-actions>
+
+						</div>
+					</md-card>
+
+					<div layout layout-align="center center" ng-show="ready">
+						<md-button class="md-accent md-raised add-question" ng-click="addQuestion()">
+							Add Question
+						</md-button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Type Info Dialog -->
+			<div style="visibility: hidden">
+				<div class="md-dialog-container" id="info-dialog-container">
+					<md-dialog id="info-dialog" aria-label="Info Dialog">
+						<md-dialog-content>
+							<div class="md-dialog-content">
+								{{dialogText}}
+							</div>
+						</md-dialog-content>
+					</md-dialog>
+				</div>
+			</div>
+
+			<!-- Edit Groups Dialog -->
+			<div style="visibility: hidden">
+				<div class="md-dialog-container" id="edit-groups-dialog-container">
+					<md-dialog id="edit-groups-dialog" aria-label="Edit Groups Dialog">
+						<md-toolbar>
+							<div class="md-toolbar-tools">
+								<h2>Edit Groups</h2>
+								<span flex></span>
+								<md-button ng-click="cancel()">
+									Done
+								</md-button>
+							</div>
+						</md-toolbar>
+						<md-dialog-content class="md-dialog-content">
+							<div layout="row" ng-repeat="(groupIndex, group) in groups">
+								<form name="groupsForm" id="groupsForm" style="border-left: 7px solid {{group.color}}">
+									<md-input-container>
+										<label>Group Name</label>
+										<input type="text" ng-model="group.text" name="text" required md-maxlength="20" maxlength="20">
+										<div ng-messages="groupsForm.text.$error">
+											<div ng-message="required">This is required.</div>
+										</div>
+									</md-input-container>
+
+									<md-menu>
+										<md-button aria-label="Change Color Menu" class="color-menu-option" ng-click="$mdMenu.open($event)">
+											Change Color
+										</md-button>
+										<md-menu-content width="3">
+											<md-menu-item ng-repeat="color in colors">
+												<md-button aria-label="Set color to {{color}}" ng-click="setGroupColor(groupIndex, color)">
+													<div class="color-bar" style="background-color: {{color}}"></div>
+												</md-button>
+											</md-menu-item>
+										</md-menu-content>
+									</md-menu>
+									<md-button ng-click="removeGroup($index)" class="remove-group" ng-hide="$first" tabindex="-1">
+										<md-tooltip md-direction="below">Remove Group</md-tooltip>
+										<i class="material-icons">&#xE15D;</i>
+									</md-button>
+								</form>
+							</div>
+							<md-button class="md-accent md-raised toggle-option" ng-click="addGroup()">
+								Add Group
+							</md-button>
+						</md-dialog-content>
+					</md-dialog>
+				</div>
+			</div>
+		</md-content>
+
+	</body>
+</html>

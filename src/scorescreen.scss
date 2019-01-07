@@ -1,0 +1,94 @@
+#container {
+	position: relative;
+	height: 100%;
+	background-color: #F3F3F3;
+}
+
+.card {
+	margin: 20px;
+
+	.md-headline {
+		font-weight: bold;
+		font-size: 20px;
+	}
+}
+
+#score-card.card {
+	width: 50%;
+	margin: 20px auto;
+	background-color: #6158ff;
+	color: white;
+	// text-shadow: 1px 1px 1px black;
+	text-align: center;
+
+	.card-center {
+		align-self: center;
+	}
+
+	.score-title {
+		padding-bottom: 5px;
+
+		.md-headline {
+			font-weight: bold;
+			font-size: 26px;
+		}
+	}
+
+	.score-content {
+		display: flex;
+		flex-direction: column;
+
+		#score-value {
+			font-size: 60px;
+		}
+	}
+
+}
+
+.group-card {
+	.group-header,
+	button {
+		color: #000000;
+		text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+		justify-content: space-between;
+	}
+
+	.group-header {
+		h2 {
+			margin: 0;
+		}
+
+		.group-subscore {
+			display: inline;
+		}
+	}
+
+	button {
+		margin: -10px auto 6px;
+		position: relative;
+	}
+
+	.question-container {
+		color: black;
+		text-shadow: none;
+		display: none;
+	}
+}
+
+#distribution-dialog {
+	position: relative;
+	top: calc(-50% + 300px);
+
+	#compare-loading {
+		margin: 0 auto;
+	}
+
+	.md-dialog-content {
+		padding: 16px;
+	}
+
+	.chart-container {
+		height: 400px;
+		width: 400px;
+	}
+}

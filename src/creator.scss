@@ -1,0 +1,168 @@
+/* Creator CSS */
+
+#container {
+	background-color: #F3F3F3;
+	height: 100%;
+	overflow: hidden;
+
+	md-toolbar {
+		position: fixed;
+		.md-toolbar-tools {
+			max-height: 64px;
+			height: 64px;
+
+			.widget-title {
+				margin-top: 45px;
+
+				#widget-title-label {
+					color: rgba(255, 255, 255, 0.85);
+				}
+			}
+		}
+	}
+
+	md-input-container {
+		margin: 5px;
+	}
+
+	#content {
+		height: 100%;
+		padding-top: 64px;
+		min-width: 700px;
+
+		#card-container {
+			max-height: 100%;
+			min-width: 700px;
+			overflow-y: scroll;
+
+			.card {
+				margin: 20px auto;
+				padding: 5px 10px;
+				max-width: 800px;
+
+				.card-right {
+					padding-left: 10px;
+					position: relative;
+
+					.card-buttons {
+						position: absolute;
+						right: 0;
+						top: 3px;
+						border: none;
+
+						button {
+							opacity: 0.5;
+							border: none;
+							outline: none;
+							background: none;
+
+							&.delete:hover { color: red; }
+							&.move-arrow:hover { color: blue; }
+						}
+					}
+
+				}
+
+				md-input-container {
+					margin: 25px 5px 15px;
+
+					.error {
+						border-color: #FF0000;
+					}
+
+					.md-errors-spacer {
+						min-height: 0;
+					}
+				}
+			}
+
+			button.reversed-info {
+				opacity: 0.5;
+				border: none;
+				outline: none;
+				background: white;
+				padding-left: 3px;
+				i {
+					font-size: 18px;
+				}
+			}
+
+			button.md-button.option-controls {
+				min-width: 30px;
+				margin-top: 10px;
+				opacity: 0.5;
+				i {
+					line-height: 36px;
+				}
+			}
+
+			button.md-button.add-question {
+				padding: 0 10px;
+				margin-bottom: 20px;
+			}
+			button.md-button.toggle-response {
+				padding: 0 10px;
+				margin-bottom: 20px;
+				max-width: 200px;
+			}
+			button.disabled {
+				background-color: rgba(0,0,0,0.12);
+				color: rgba(0,0,0,0.26) !important;
+				cursor: default;
+				box-shadow: none;
+			}
+
+			.reverse-checkbox {
+				display: flex;
+				align-self: center;
+				margin-top: 25px;
+				margin-left: 10px;
+			}
+		}
+	}
+}
+
+.color-circle {
+	width: 15px;
+	height: 15px;
+	border-radius: 100%;
+	margin-right: 10px;
+}
+
+.color-bar {
+	width: 140px;
+	height: 30px;
+	border-radius: 2px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.color-menu-content {
+	.color-menu-option {
+		button {
+			display: flex;
+
+			&.selected {
+				border-left: 5px solid black;
+			}
+		}
+	}
+}
+.md-dialog-content {
+	width: 475px;
+
+	#groupsForm {
+		padding-left: 5px;
+		margin-bottom: 3px;
+
+		// remove extra spacing from input error handler
+		.md-errors-spacer:empty { display: none; }
+		.remove-group i {
+			margin-top: 10px;
+		}
+	}
+
+	.remove-group {
+		min-width: 30px;
+	}
+}
