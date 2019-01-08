@@ -1,5 +1,11 @@
 PrivilegeWalk = angular.module 'PrivilegeWalkEngine', ['ngMaterial']
 
+PrivilegeWalk.config ['$mdThemingProvider', ($mdThemingProvider) ->
+		$mdThemingProvider.theme('default')
+			.primaryPalette('teal')
+			.accentPalette('indigo')
+]
+
 PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($scope, $mdToast) ->
 	$scope.qset = null
 	$scope.instance = null
