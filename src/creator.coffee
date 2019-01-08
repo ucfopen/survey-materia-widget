@@ -2,9 +2,9 @@
 PrivilegeWalk = angular.module 'PrivilegeWalkCreator', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angular-sortable-view']
 
 PrivilegeWalk.config ['$mdThemingProvider', ($mdThemingProvider) ->
-		$mdThemingProvider.theme('toolbar-dark', 'default')
-			.primaryPalette('indigo')
-			.dark()
+		$mdThemingProvider.theme('default')
+			.primaryPalette('teal')
+			.accentPalette('blue-grey')
 ]
 PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource) ->
 
@@ -16,34 +16,50 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 	# TODO track which colors are being used
 	$scope.colors = ['#C2185B', '#D32F2F', '#E64A19', '#689F38', '#00796B', '#0097A7', '#0288D1', '#303F9F', '#7B1FA2', '#455A64', '#616161', '#5D4037']
 
-	$scope.rangeOptions = [
-		{text:'Very Often', value: 5}
-		{text:'Often', value: 4}
-		{text:'Sometimes', value: 3}
-		{text:'Rarely', value: 2}
-		{text:'Never', value: 1}
+
+	$scope.presets = [
+		{
+			name:'Preset: Yes / No',
+			values: [{text:'Yes'}, {text:'No'}]
+		},
+		{
+			name: 'Preset: Likelihood',
+			values: [{text:'Very Often'}, {text:'Often'}, {text:'Sometimes'}, {text:'Rarely', 'Never'}]
+		},
+		{
+			name: 'Preset: Agreement',
+			values: [{text:'Strongly Agree'}, {text:'Somewhat Agree'}, {text:'No Opinion'}, {text:'Somewhat Disagree'}, {text:'Strongly Disagree'}]
+		}
 	]
 
-	$scope.yesNo = [
-		{text:'Yes', value: 5}
-		{text:'No', value: 1}
-	]
+	# Preset indicies
+	$scope.presetYesNo = 0
+	$scope.presetLikelihood = 1
+	$scope.presetAgreement = 2
+	$scope.custom = -1
 
-	$scope.questionTypes = [
-		"Preset: Yes / No"
-		"Preset: Scale"
-		"Custom"
-	]
+	# $scope.rangeOptions = [
+	# 	{text:'Very Often', value: 5}
+	# 	{text:'Often', value: 4}
+	# 	{text:'Sometimes', value: 3}
+	# 	{text:'Rarely', value: 2}
+	# 	{text:'Never', value: 1}
+	# ]
+
+	# $scope.yesNo = [
+	# 	{text:'Yes', value: 5}
+	# 	{text:'No', value: 1}
+	# ]
+
+	# $scope.questionTypes = [
+	# 	"Preset: Yes / No"
+	# 	"Preset: Scale"
+	# 	"Custom"
+	# ]
 
 	$scope.displayStyles = [
 		{text:'Horizontal Scale', value: '0'}
 		{text:'Dropdown Menu', value: '1'}
-	]
-
-	reversedTooltips = [
-		"When reversed, 'Yes' will have a value of 1 and 'No' will have a value of 5"
-		"When reversed, 'Very Often' will have a value of 1 and 'Never' will have a value of 5"
-		"Use type 'Dropdown Menu' if you have more than 5 options, or if your options don't resemble a scale."
 	]
 
 	$scope.ready = false
@@ -56,7 +72,7 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 
 	$scope.initNewWidget = (widget) ->
 		$scope.$apply ->
-			$scope.title = "My Privilege Walk Widget"
+			$scope.title = "My Survey Widget"
 			$scope.addQuestion()
 			$scope.ready = true
 
@@ -80,14 +96,15 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 		$mdMenu.open(ev);
 
 	$scope.showEditGroups = (ev) ->
-		$mdDialog.show(
-			contentElement: '#edit-groups-dialog-container'
-			parent: angular.element(document.body)
-			targetEvent: ev
-			clickOutsideToClose: true
-			openFrom: ev.currentTarget
-			closeTo: originatorEv.currentTarget
-		)
+		return false
+		# $mdDialog.show(
+		# 	contentElement: '#edit-groups-dialog-container'
+		# 	parent: angular.element(document.body)
+		# 	targetEvent: ev
+		# 	clickOutsideToClose: true
+		# 	openFrom: ev.currentTarget
+		# 	closeTo: originatorEv.currentTarget
+		# )
 
 	$scope.setGroupColor = (groupIndex, color) ->
 		$scope.groups[groupIndex].color = color
@@ -116,11 +133,12 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 			$scope.addQuestion()
 
 	$scope.addQuestion = ->
+		# console.log $scope.presets[0]
 		questionCount++
 		$scope.cards.push
 			question: 'Question '+questionCount
-			answers: $scope.rangeOptions
-			questionType: '1'
+			answers: $scope.presets[$scope.presetYesNo].values
+			questionType: $scope.presetYesNo
 			style: '0'
 			reversed: false
 			group: 0
@@ -129,7 +147,7 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 		style = $scope.cards[cardIndex].style
 		len = $scope.cards[cardIndex].answers.length
 		if (style == '0' && len >= 5)
-			$scope.showToast "Can only have 5 options per scale. Set Display Style to Dropdown to add more.", 10000
+			$scope.showToast "Can only have 5 options per scale. Set Display Type to Dropdown to add more.", 10000
 			return
 		$scope.cards[cardIndex].answers.push {
 			text:'', value: 1, id: ''
@@ -142,26 +160,37 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 			$scope.addOption(cardIndex)
 
 	$scope.updateAnswerType = (cardIndex) ->
+		
 		$scope.cards[cardIndex].style = '0'
-		switch ($scope.cards[cardIndex].questionType)
-			when '0'
-				$scope.cards[cardIndex].answers = $scope.yesNo
-			when '1'
-				$scope.cards[cardIndex].answers = $scope.rangeOptions
-			when '2'
-				custom = JSON.parse(JSON.stringify($scope.rangeOptions))
-				$scope.cards[cardIndex].answers = custom
+
+		# If it's a preset type, use the range from that preset
+		if $scope.cards[cardIndex].questionType >= 0
+			index = $scope.cards[cardIndex].questionType
+			$scope.cards[cardIndex].answers = $scope.presets[index].values
+		# Otherwise give it some default range values 
+		else
+			$scope.cards[cardIndex].answers = $scope.presets[1].values
+
+
+		# switch ($scope.cards[cardIndex].questionType)
+		# 	when 0
+		# 		$scope.cards[cardIndex].answers = $scope.presets[0]
+		# 	when 1
+		# 		$scope.cards[]
+		
+		# switch ($scope.cards[cardIndex].questionType)
+		# 	when '0'
+		# 		$scope.cards[cardIndex].answers = $scope.yesNo
+		# 	when '1'
+		# 		$scope.cards[cardIndex].answers = $scope.rangeOptions
+		# 	when '2'
+		# 		custom = JSON.parse(JSON.stringify($scope.rangeOptions))
+		# 		$scope.cards[cardIndex].answers = custom
+		
 		$scope.cards[cardIndex].reversed = false
 
 	$scope.reverseValues = (cardIndex) ->
-		answers = $scope.cards[cardIndex].answers
-		reversedArray = []
-		for i in [0...answers.length]
-			reversedArray.push
-				text: answers[i].text,
-				value: answers[answers.length-i-1].value
-				id: ''
-		$scope.cards[cardIndex].answers = reversedArray
+		$scope.cards[cardIndex].answers = $scope.cards[cardIndex].answers.reverse()
 
 	$scope.showTypeDialog = (ev, questionType) ->
 		$scope.dialogText = reversedTooltips[questionType]
@@ -196,11 +225,9 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 
 	validation = ->
 		for card in $scope.cards
-			if !card.question || !card.answers
-				return false
+			if !card.question || !card.answers then return false
 			for answer in card.answers
-				if !answer.text || ~~answer.value != answer.value
-					return false
+				if !answer.text then return false
 		return true
 
 	$scope.onQuestionImportComplete = (items) ->

@@ -1,7 +1,7 @@
 {
   "name": "@ucfopen/survey-materia-widget",
   "materia": {
-    "cleanName": "larry"
+    "cleanName": "survey-widget"
   },
   "version": "0.0.1",
   "scripts": {

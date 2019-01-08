@@ -35,7 +35,7 @@
 	<body ng-app="PrivilegeWalkCreator">
 		<md-content id="container" ng-controller="PrivilegeWalkController">
 
-			<md-toolbar md-theme="toolbar-dark">
+			<md-toolbar>
 				<div class="md-toolbar-tools">
 					<md-input-container class="md-block widget-title" flex>
 						<label id="widget-title-label">Widget Name</label>
@@ -73,8 +73,8 @@
 									<md-tooltip md-direction="below">Move Question Down</md-tooltip>
 									<i class="material-icons">&#xE313;</i>
 								</button>
-
-								<md-menu md-offset="-150 10">
+								<!-- Group editing will return! -->
+								<!-- <md-menu md-offset="-150 10">
 									<button aria-label="Open color/group menu" class="md-icon-button" ng-click="openColorMenu($mdMenu, $event, cardIndex)">
 										<md-tooltip md-direction="below">Question Group</md-tooltip>
 										<i class="material-icons">&#xE3B7;</i>
@@ -93,7 +93,7 @@
 											</md-button>
 										</md-menu-item>
 									</md-menu-content>
-								</md-menu>
+								</md-menu> -->
 
 								<button class="delete" ng-click="deleteQuestion(cardIndex)">
 									<md-tooltip md-direction="below">Delete this Question</md-tooltip>
@@ -102,17 +102,21 @@
 							</div>
 
 							<div layout="row">
+								<!-- Answer selection drop-down -->
 								<md-input-container>
 									<label>Answer Type</label>
 									<md-select ng-change="updateAnswerType(cardIndex)" ng-model="card.questionType">
 										<md-option
-											ng-repeat="questionType in questionTypes"
+											ng-repeat="preset in presets"
 											value="{{$index}}">
-											{{questionType}}
+											{{preset.name}}
 										</md-option>
+										<md-option value="-1">Custom</md-option>
 									</md-select>
 								</md-input-container>
-								<md-input-container ng-show="card.questionType==2">
+
+								<!-- Style input selection ( horizontal || drop-down ) -->
+								<md-input-container ng-show="card.questionType == custom">
 									<label>Display Type</label>
 									<md-select ng-model="card.style">
 										<md-option
@@ -124,34 +128,30 @@
 								</md-input-container>
 								<div layout="row">
 									<md-checkbox
-										aria-label="Reversed Values"
+										aria-label="Reverse Order"
 										class="reverse-checkbox"
 										ng-change="reverseValues(cardIndex)"
 										ng-model="card.reversed"
-										ng-show="card.questionType!=2">
-										Reversed Values
+										ng-show="card.questionType != custom">
+										Reverse Order
 									</md-checkbox>
-									<button class="reversed-info" ng-click="showTypeDialog($event, card.questionType)">
-										<i class="material-icons">&#xE88F;</i>
-									</button>
 								</div>
 							</div>
 
-							<!-- Preset Preview -->
-							<md-card-actions layout layout-align="start start" class="radio-choice" ng-show="card.questionType < 2">
+							<!-- Preset Option -->
+							<md-card-actions layout layout-align="start start" class="radio-choice" ng-show="card.questionType != custom">
 								<md-radio-group layout="row">
 									<md-radio-button
 										ng-disabled="true"
 										ng-repeat="answer in card.answers"
 										value={{$index}}>
-										<md-tooltip md-direction="below">Value: {{answer.value}}</md-tooltip>
 										{{answer.text}}
 									</md-radio-button>
 								</md-radio-group>
 							</md-card-actions>
 
 							<!-- Custom -->
-							<md-card-actions layout layout-align="start start" class="custom-choice" ng-show="card.questionType==2">
+							<md-card-actions layout layout-align="start start" class="custom-choice" ng-show="card.questionType == custom">
 								<div layout="column" sv-root sv-part="card.answers">
 									<div layout="row" ng-repeat="option in card.answers" sv-element="dragOpts">
 										<form name="optionsForm">
@@ -165,17 +165,6 @@
 												<input type="text" ng-model="option.text" name="text" required>
 												<div ng-messages="optionsForm.text.$error">
 													<div ng-message="required">Option is required.</div>
-												</div>
-											</md-input-container>
-
-											<md-input-container >
-												<label>Option {{$index + 1}} Value</label>
-												<input type="number" ng-model="option.value" name="value" min="1" ng-pattern="/^[0-9]+$/" required>
-												<div ng-messages="optionsForm.value.$error" multiple="">
-													<div ng-message="required">Value is required</div>
-													<div ng-message="min">Value must be greater than 1</div>
-													<div ng-message="pattern">Value must be a whole number</div>
-													<div ng-message="number">Value must be a whole number</div>
 												</div>
 											</md-input-container>
 
