@@ -16,18 +16,21 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 	# TODO track which colors are being used
 	$scope.colors = ['#C2185B', '#D32F2F', '#E64A19', '#689F38', '#00796B', '#0097A7', '#0288D1', '#303F9F', '#7B1FA2', '#455A64', '#616161', '#5D4037']
 
-
+	# Multiple Choice answer presets
 	$scope.presets = [
 		{
 			name:'Preset: Yes / No',
+			type: 'multiple-choice',
 			values: [{text:'Yes'}, {text:'No'}]
 		},
 		{
 			name: 'Preset: Likelihood',
-			values: [{text:'Very Often'}, {text:'Often'}, {text:'Sometimes'}, {text:'Rarely', 'Never'}]
+			type: 'multiple-choice',
+			values: [{text:'Very Often'}, {text:'Often'}, {text:'Sometimes'}, {text:'Rarely'}, {text:'Never'}]
 		},
 		{
 			name: 'Preset: Agreement',
+			type: 'multiple-choice',
 			values: [{text:'Strongly Agree'}, {text:'Somewhat Agree'}, {text:'No Opinion'}, {text:'Somewhat Disagree'}, {text:'Strongly Disagree'}]
 		}
 	]
@@ -38,28 +41,26 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 	$scope.presetAgreement = 2
 	$scope.custom = -1
 
-	# $scope.rangeOptions = [
-	# 	{text:'Very Often', value: 5}
-	# 	{text:'Often', value: 4}
-	# 	{text:'Sometimes', value: 3}
-	# 	{text:'Rarely', value: 2}
-	# 	{text:'Never', value: 1}
-	# ]
+	# Question Type Aliases
+	$scope.multipleChoice = 'multiple-choice'
+	$scope.checkAllThatApply = 'check-all-that-apply'
+	$scope.freeResponse = 'free-response'
 
-	# $scope.yesNo = [
-	# 	{text:'Yes', value: 5}
-	# 	{text:'No', value: 1}
-	# ]
+	# Question Type Array
+	$scope.questionTypes = [
+		{text: 'Multiple Choice',value:'multiple-choice'},
+		{text: 'Check All That Apply', value:'check-all-that-apply'},
+		{text: 'Free Response', value:'free-response'}
+	]
 
-	# $scope.questionTypes = [
-	# 	"Preset: Yes / No"
-	# 	"Preset: Scale"
-	# 	"Custom"
-	# ]
+	# Answer Display Types
+	$scope.horizontalScale = 'horizontal-scale'
+	$scope.dropDown = 'drop-down'
+	$scope.verticalList = 'vertical-list'
 
 	$scope.displayStyles = [
-		{text:'Horizontal Scale', value: '0'}
-		{text:'Dropdown Menu', value: '1'}
+		{text: 'Horizontal Scale', value: 'horizontal-scale'},
+		{text: 'Drop Down', value: 'drop-down'}
 	]
 
 	$scope.ready = false
@@ -84,9 +85,9 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 				$scope.cards.push
 					question: item.questions[0].text
 					questionType: item.options.questionType
+					answerType: item.options.answerType
 					answers: item.answers
-					style: item.options.style
-					reversed: item.options.reversed == 'true'
+					displayStyle: item.options.displayStyle
 					group: item.options.group
 				questionCount++
 			$scope.ready = true
@@ -95,6 +96,73 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 		originatorEv = ev; # saved for animations
 		$mdMenu.open(ev);
 
+	$scope.swapCards = (index1, index2) ->
+		[$scope.cards[index1], $scope.cards[index2]] = [$scope.cards[index2], $scope.cards[index1]]
+
+	$scope.deleteQuestion = (index) ->
+		$scope.cards.splice index, 1
+		questionCount--
+		if $scope.cards.length == 0
+			$scope.showToast("Must have at least one question.")
+			$scope.addQuestion()
+
+	$scope.addQuestion = ->
+		questionCount++
+		$scope.cards.push
+			question: 'Question '+questionCount 											# question text
+			answers: angular.copy $scope.presets[$scope.presetLikelihood].values			# array of answer responses of form [{text: 'answer text'}]
+			questionType: $scope.multipleChoice												# type of question - MC, check-all-that-apply, free response, etc
+			answerType: $scope.presetLikelihood												# type of answer: is it a preset range, or custom
+			displayStyle: $scope.horizontalScale											# should answers be displayed horizontally or via drop-down
+			group: 0																		# group - NYI
+
+	$scope.addOption = (cardIndex) ->
+		style = $scope.cards[cardIndex].displayStyle
+		len = $scope.cards[cardIndex].answers.length
+		if (style == '0' && len >= 5)
+			$scope.showToast "Can only have 5 options per scale. Set Display Type to Dropdown to add more.", 10000
+			return
+		$scope.cards[cardIndex].answers.push {
+			text:'', value: 1, id: ''
+		}
+
+	$scope.removeOption = (cardIndex, optionIndex) ->
+		$scope.cards[cardIndex].answers.splice optionIndex, 1
+		if $scope.cards[cardIndex].answers.length == 0
+			$scope.showToast("Must have at least one option.")
+			$scope.addOption(cardIndex)
+
+	$scope.updateResponseType = (cardIndex) ->
+		
+		switch ($scope.cards[cardIndex].questionType)
+
+			when $scope.multipleChoice
+				$scope.cards[cardIndex].displayStyle = $scope.horizontalScale
+
+				# If it's a preset type, use the range from that preset
+				if $scope.cards[cardIndex].answerType >= 0
+					index = $scope.cards[cardIndex].answerType
+					$scope.cards[cardIndex].answers = angular.copy $scope.presets[index].values
+				# Otherwise give it some default range values 
+				else
+					$scope.cards[cardIndex].answers = angular.copy $scope.presets[1].values
+
+			when $scope.checkAllThatApply
+				$scope.cards[cardIndex].displayStyle = $scope.verticalList
+
+				$scope.cards[cardIndex].answerType = $scope.custom
+				$scope.cards[cardIndex].answers = [{text: 'Option 1'}, {text: 'Option 2'},{text: 'Option 3'}]
+
+			when $scope.freeResponse
+				$scope.cards[cardIndex].displayStyle = 'text-area'
+				$scope.cards[cardIndex].answerType = $scope.custom		
+				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]
+		
+	$scope.reverseValues = (cardIndex) ->
+		$scope.cards[cardIndex].answers = $scope.cards[cardIndex].answers.reverse()
+
+	# ------------------------------// groups //-------------------------------------
+	# Groups -- to be re-instated
 	$scope.showEditGroups = (ev) ->
 		return false
 		# $mdDialog.show(
@@ -122,75 +190,7 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 	$scope.selectGroup = (cardIndex, groupIndex) ->
 		$scope.cards[cardIndex].group = groupIndex
 
-	$scope.swapCards = (index1, index2) ->
-		[$scope.cards[index1], $scope.cards[index2]] = [$scope.cards[index2], $scope.cards[index1]]
-
-	$scope.deleteQuestion = (index) ->
-		$scope.cards.splice index, 1
-		questionCount--
-		if $scope.cards.length == 0
-			$scope.showToast("Must have at least one question.")
-			$scope.addQuestion()
-
-	$scope.addQuestion = ->
-		# console.log $scope.presets[0]
-		questionCount++
-		$scope.cards.push
-			question: 'Question '+questionCount
-			answers: $scope.presets[$scope.presetYesNo].values
-			questionType: $scope.presetYesNo
-			style: '0'
-			reversed: false
-			group: 0
-
-	$scope.addOption = (cardIndex) ->
-		style = $scope.cards[cardIndex].style
-		len = $scope.cards[cardIndex].answers.length
-		if (style == '0' && len >= 5)
-			$scope.showToast "Can only have 5 options per scale. Set Display Type to Dropdown to add more.", 10000
-			return
-		$scope.cards[cardIndex].answers.push {
-			text:'', value: 1, id: ''
-		}
-
-	$scope.removeOption = (cardIndex, optionIndex) ->
-		$scope.cards[cardIndex].answers.splice optionIndex, 1
-		if $scope.cards[cardIndex].answers.length == 0
-			$scope.showToast("Must have at least one option.")
-			$scope.addOption(cardIndex)
-
-	$scope.updateAnswerType = (cardIndex) ->
-		
-		$scope.cards[cardIndex].style = '0'
-
-		# If it's a preset type, use the range from that preset
-		if $scope.cards[cardIndex].questionType >= 0
-			index = $scope.cards[cardIndex].questionType
-			$scope.cards[cardIndex].answers = $scope.presets[index].values
-		# Otherwise give it some default range values 
-		else
-			$scope.cards[cardIndex].answers = $scope.presets[1].values
-
-
-		# switch ($scope.cards[cardIndex].questionType)
-		# 	when 0
-		# 		$scope.cards[cardIndex].answers = $scope.presets[0]
-		# 	when 1
-		# 		$scope.cards[]
-		
-		# switch ($scope.cards[cardIndex].questionType)
-		# 	when '0'
-		# 		$scope.cards[cardIndex].answers = $scope.yesNo
-		# 	when '1'
-		# 		$scope.cards[cardIndex].answers = $scope.rangeOptions
-		# 	when '2'
-		# 		custom = JSON.parse(JSON.stringify($scope.rangeOptions))
-		# 		$scope.cards[cardIndex].answers = custom
-		
-		$scope.cards[cardIndex].reversed = false
-
-	$scope.reverseValues = (cardIndex) ->
-		$scope.cards[cardIndex].answers = $scope.cards[cardIndex].answers.reverse()
+	# ------------------------------// groups //-------------------------------------
 
 	$scope.showTypeDialog = (ev, questionType) ->
 		$scope.dialogText = reversedTooltips[questionType]
@@ -235,9 +235,9 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 			$scope.cards.push
 				question: item.questions[0].text
 				questionType: item.options.questionType
+				answerType: item.options.answerType
 				answers: item.answers
-				style: item.options.style
-				reversed: item.options.reversed == '1'
+				displayStyle: item.options.style
 				group: item.options.group
 			questionCount++
 
@@ -264,10 +264,12 @@ PrivilegeWalk.factory 'Resource', ['$sanitize', ($sanitize) ->
 		return qset
 
 	processQsetItem: (item) ->
+		# console.log "PROCESSING!! BEEP BOOP"
+		# console.log item.displayStyle
 		question = $sanitize item.question
 		questionType = $sanitize item.questionType
-		style = $sanitize item.style
-		reversed = $sanitize item.reversed
+		answerType = $sanitize item.answerType
+		displayStyle = $sanitize item.displayStyle
 		group = $sanitize item.group
 
 		# clean out previously generated IDs
@@ -279,8 +281,8 @@ PrivilegeWalk.factory 'Resource', ['$sanitize', ($sanitize) ->
 		type: 'QA'
 		options:
 			questionType: questionType
-			style: style
-			reversed: reversed
+			answerType: answerType
+			displayStyle: displayStyle
 			group: group
 		questions: [{ text: question }]
 		answers: item.answers

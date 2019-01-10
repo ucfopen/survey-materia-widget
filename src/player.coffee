@@ -7,9 +7,16 @@ PrivilegeWalk.config ['$mdThemingProvider', ($mdThemingProvider) ->
 ]
 
 PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($scope, $mdToast) ->
+	
 	$scope.qset = null
 	$scope.instance = null
 	$scope.responses = []
+
+	$scope.horizontalScale = 'horizontal-scale'
+	$scope.dropDown = 'drop-down'
+	$scope.verticalList = 'vertical-list'
+	$scope.textArea = 'text-area'
+
 
 	$scope.showToast = (message) ->
 		$mdToast.show(
@@ -37,6 +44,8 @@ PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($sco
 			numAnswered++ if response?
 
 		$scope.progress = numAnswered / numQuestions * 100
+
+		console.log $scope.responses
 
 	# TODO can remove this?
 	createStorageTable = (tableName, columns) ->
