@@ -5,7 +5,7 @@
  * @group Score
  * @group Enigma
  */
-class Test_Score_Modules_PrivilegeWalk extends Score_Module
+class Test_Score_Modules_SurveyWidget extends Score_Module
 {
 
 	protected function _get_qset()

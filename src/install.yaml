@@ -17,7 +17,7 @@ files:
   flash_version: 0
 score:
   is_scorable: Yes
-  score_module: PrivilegeWalk
+  score_module: SurveyWidget
   score_screen: scorescreen.html
 meta_data:
   features:

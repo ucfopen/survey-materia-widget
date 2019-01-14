@@ -1,6 +1,6 @@
-PrivilegeWalk = angular.module 'PrivilegeWalkScorescreen', ['ngMaterial', 'ngMessages']
+SurveyWidget = angular.module 'SurveyWidgetScorescreen', ['ngMaterial', 'ngMessages']
 
-PrivilegeWalk.controller 'PrivilegeWalkScoreCtrl', ['$scope', '$mdToast', '$mdDialog', ($scope, $mdToast, $mdDialog) ->
+SurveyWidget.controller 'SurveyWidgetScoreCtrl', ['$scope', '$mdToast', '$mdDialog', ($scope, $mdToast, $mdDialog) ->
 	$scope.qset = null
 	$scope.instance = null
 	$scope.groups = null
@@ -22,63 +22,63 @@ PrivilegeWalk.controller 'PrivilegeWalkScoreCtrl', ['$scope', '$mdToast', '$mdDi
 
 	$scope.update = (qset, scoreTable) ->
 		prepareScoreInfo(qset, scoreTable)
-		ensureScoreInGraph() if graphData
+		# ensureScoreInGraph() if graphData
 		$scope.$apply()
 
 	prepareScoreInfo = (qset, scoreTable) ->
 		$scope.qset = qset
 		$scope.scoreTable = scoreTable
 		generateResponses()
-		createGroups()
-		calculateScore()
-		calculateMaxScore()
+		# createGroups()
+		# calculateScore()
+		# calculateMaxScore()
 
-	$scope.handleScoreDistribution = (data) ->
-		if data
-			graphData = data
-			prepareData()
-			ensureScoreInGraph()
-			drawGraph()
-		else
-			$scope.invalidGraph = true
-		$scope.distributionReady = true
-		$scope.$apply()
+	# $scope.handleScoreDistribution = (data) ->
+	# 	if data
+	# 		graphData = data
+	# 		prepareData()
+	# 		ensureScoreInGraph()
+	# 		drawGraph()
+	# 	else
+	# 		$scope.invalidGraph = true
+	# 	$scope.distributionReady = true
+	# 	$scope.$apply()
 
-	$scope.showCompare = (ev) ->
-		if !graphData
-			Materia.ScoreCore.requestScoreDistribution()
-		$mdDialog.show(
-			contentElement: '#distribution-dialog-container'
-			parent: angular.element(document.body)
-			targetEvent: ev
-			clickOutsideToClose: true
-			openFrom: '#compare-button'
-			closeTo: '#compare-button'
-		)
+	# $scope.showCompare = (ev) ->
+	# 	if !graphData
+	# 		Materia.ScoreCore.requestScoreDistribution()
+	# 	$mdDialog.show(
+	# 		contentElement: '#distribution-dialog-container'
+	# 		parent: angular.element(document.body)
+	# 		targetEvent: ev
+	# 		clickOutsideToClose: true
+	# 		openFrom: '#compare-button'
+	# 		closeTo: '#compare-button'
+	# 	)
 
 	$scope.cancel = () ->
 		$mdDialog.hide()
 
-	$scope.toggleQuestions = (groupIndex) ->
-		$('#group_' + groupIndex + ' .question-container').slideToggle()
+	# $scope.toggleQuestions = (groupIndex) ->
+	# 	$('#group_' + groupIndex + ' .question-container').slideToggle()
 
-		button = $('#group_' + groupIndex + ' button')
-		if (button.text().includes('Show'))
-			button.text("Hide Questions")
-		else
-			button.text("Show Questions")
+	# 	button = $('#group_' + groupIndex + ' button')
+	# 	if (button.text().includes('Show'))
+	# 		button.text("Hide Questions")
+	# 	else
+	# 		button.text("Show Questions")
 
-	createGroups = () ->
-		$scope.groups = {}
-		$scope.groupSubscores = new Array($scope.qset.options.groups.length).fill(0)
+	# createGroups = () ->
+	# 	$scope.groups = {}
+	# 	$scope.groupSubscores = new Array($scope.qset.options.groups.length).fill(0)
 
-		for item, i in $scope.qset.items
-			group = item.options.group
-			$scope.groupSubscores[group] += ~~$scope.scoreTable[i].score
-			if $scope.groups[group]?
-				$scope.groups[group].push(i)
-			else
-				$scope.groups[group] = [i]
+	# 	for item, i in $scope.qset.items
+	# 		group = item.options.group
+	# 		$scope.groupSubscores[group] += ~~$scope.scoreTable[i].score
+	# 		if $scope.groups[group]?
+	# 			$scope.groups[group].push(i)
+	# 		else
+	# 			$scope.groups[group] = [i]
 
 	calculateScore = ->
 		total = 0
@@ -88,54 +88,54 @@ PrivilegeWalk.controller 'PrivilegeWalkScoreCtrl', ['$scope', '$mdToast', '$mdDi
 		$scope.score = total
 		$scope.$apply()
 
-	drawGraph = () ->
-		# load chart.js when needed
-		# TODO graph should update when attempt number is changed
-		$LAB.script("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
-		.wait ->
-			# set the bar colors
-			backgroundColors = new Array(graphData.length)
-			backgroundColors.fill('rgba(50, 50, 50, 0.8)')
-			scoreIndex = graphData.indexOf($scope.score)
-			highlightColor = 'rgb(255, 64, 129)'
-			backgroundColors[scoreIndex] = highlightColor
+	# drawGraph = () ->
+	# 	# load chart.js when needed
+	# 	# TODO graph should update when attempt number is changed
+	# 	$LAB.script("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
+	# 	.wait ->
+	# 		# set the bar colors
+	# 		backgroundColors = new Array(graphData.length)
+	# 		backgroundColors.fill('rgba(50, 50, 50, 0.8)')
+	# 		scoreIndex = graphData.indexOf($scope.score)
+	# 		highlightColor = 'rgb(255, 64, 129)'
+	# 		backgroundColors[scoreIndex] = highlightColor
 
-			# required for bar chart
-			labels = new Array(graphData.length)
+	# 		# required for bar chart
+	# 		labels = new Array(graphData.length)
 
-			# set the legend box color
-			Chart.plugins.register
-				beforeDraw: (c) ->
-					legend = c.legend.legendItems[0];
-					legend.fillStyle = highlightColor
+	# 		# set the legend box color
+	# 		Chart.plugins.register
+	# 			beforeDraw: (c) ->
+	# 				legend = c.legend.legendItems[0];
+	# 				legend.fillStyle = highlightColor
 
-			myChart = new Chart 'graph',
-				type: 'horizontalBar'
-				data:
-					labels: labels
-					datasets: [
-							label: 'Your Privilege Score'
-							data: graphData
-							backgroundColor: backgroundColors
-					]
-				options:
-					responsive: true
-					maintainAspectRatio: false
-					tooltips: enabled: false
-					barThickness: 5
-					scales:
-						yAxes: [
-							display: false
-						]
-						xAxes: [
-							ticks:
-								min: 0
-								max: $scope.maxScore
-							scaleLabel:
-								display: true
-								labelString: 'Privilege Score'
-							categoryPercentage: 1
-						]
+	# 		myChart = new Chart 'graph',
+	# 			type: 'horizontalBar'
+	# 			data:
+	# 				labels: labels
+	# 				datasets: [
+	# 						label: 'Your Privilege Score'
+	# 						data: graphData
+	# 						backgroundColor: backgroundColors
+	# 				]
+	# 			options:
+	# 				responsive: true
+	# 				maintainAspectRatio: false
+	# 				tooltips: enabled: false
+	# 				barThickness: 5
+	# 				scales:
+	# 					yAxes: [
+	# 						display: false
+	# 					]
+	# 					xAxes: [
+	# 						ticks:
+	# 							min: 0
+	# 							max: $scope.maxScore
+	# 						scaleLabel:
+	# 							display: true
+	# 							labelString: 'Privilege Score'
+	# 						categoryPercentage: 1
+	# 					]
 
 	generateResponses = ->
 		$scope.responses = []

@@ -45,8 +45,6 @@ PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($sco
 
 		$scope.progress = numAnswered / numQuestions * 100
 
-		console.log $scope.responses
-
 	# TODO can remove this?
 	createStorageTable = (tableName, columns) ->
 		args = columns
@@ -63,7 +61,26 @@ PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($sco
 		if $scope.progress == 100
 			try
 				$scope.responses.forEach( (response, i) ->
-					answer = $scope.qset.items[i].answers[~~response].text
+					
+					answer = {}
+					switch $scope.qset.items[i].options.questionType
+						when "free-response"
+							answer = response
+						
+						when "check-all-that-apply"
+							checkedItems = []
+
+							keys = Object.getOwnPropertyNames response
+
+							for key, j in keys
+								checked = response[parseInt(keys[key])]
+								if checked then checkedItems.push $scope.qset.items[i].answers[j].text
+
+							answer = checkedItems.join ", "
+						else
+
+							answer = $scope.qset.items[i].answers[~~response].text
+
 					Materia.Score.submitQuestionForScoring $scope.qset.items[i].id, answer
 				)
 				Materia.Engine.end()
