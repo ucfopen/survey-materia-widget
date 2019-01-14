@@ -25,32 +25,38 @@
 		<script src="scorescreen.js"></script>
 	</head>
 
-	<body ng-app="PrivilegeWalkScorescreen" ng-controller="PrivilegeWalkScoreCtrl" ng-cloak>
+	<body ng-app="SurveyWidgetScorescreen" ng-controller="SurveyWidgetScoreCtrl" ng-cloak>
 		<md-content id="container">
 
 			<div layout-gt-sm="row" layout="column" id="content">
 				<div flex="55" id="card-container">
 
-					<md-card id="score-card" class="md-whiteframe-3dp card" ng-show="qset">
+					<!-- <md-card id="score-card" class="md-whiteframe-3dp card" ng-show="qset">
 						<div class="card-center" layout="column">
+							<md-card-title class="score-title">Hey Everybody It's Larry!</md-card-title>
 
-							<md-card-title class="score-title">
-								<span class="md-headline">Your Privilege Score</span>
+							
+						</div>
+					</md-card> -->
+					
+
+					<div class="question-container">
+						<md-card class="md-whiteframe-3dp card" ng-repeat="response in responses">
+							<md-card-title>
+								<span class="md-headline">
+									{{qset.items[$index].questions[0].text}}
+								</span>
 							</md-card-title>
 
-							<md-card-content class="score-content">
-								<span id="score-value">
-									{{score}}
-								</span>
-								<span>out of {{maxScore}}</span>
-								<md-button id="compare-button" class="md-accent md-raised" ng-click="showCompare()" ng-show="!isPreview">
-									Compare with Others
-								</md-button>
+							<md-card-content>
+								<label>You Answered:</label>
+								<p>
+									{{responses[$index]}}
+								</p>
 							</md-card-content>
-						</div>
-					</md-card>
-
-					<md-card
+						</md-card>
+					</div>
+					<!-- <md-card
 						id="group_{{groupNumber}}"
 						class="md-whiteframe-3dp card group-card"
 						ng-repeat="(groupNumber, group) in groups"
@@ -83,14 +89,14 @@
 						<md-button ng-click="toggleQuestions(groupNumber)">
 							Show Questions
 						</md-button>
-					</md-card>
+					</md-card> -->
 
 				</div>
 			</div>
 		</md-content>
 
 		<!-- Distribution Dialog -->
-		<div style="visibility: hidden">
+		<!-- <div style="visibility: hidden">
 			<div class="md-dialog-container" id="distribution-dialog-container">
 				<md-dialog id="distribution-dialog" aria-label="Distribution Dialog">
 					<md-toolbar>
@@ -116,6 +122,6 @@
 					</md-dialog-content>
 				</md-dialog>
 			</div>
-		</div>
+		</div> -->
 	</body>
 </html>

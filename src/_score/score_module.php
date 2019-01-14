@@ -23,21 +23,29 @@
  */
 namespace Materia;
 
-class Score_Modules_PrivilegeWalk extends Score_Module
+class Score_Modules_SurveyWidget extends Score_Module
 {
 	public $allow_distribution = true;
 
 	public function check_answer($log)
 	{
-		$answers = $this->questions[$log->item_id]->answers;
-		foreach($answers as $answer)
+		if ($log->text != null && $log->text != '')
 		{
-			if ($log->text == $answer['text'])
-			{
-				return $answer['value'];
-			}
+			return 100;
 		}
-		return 0;
+		// $answers = $this->questions[$log->item_id]->answers;
+		// foreach($answers as $answer)
+		// {
+		// 	if ($log->text != null && $log->text != ''
+		// 	{
+		// 		return 100;
+		// 	}
+		// 	// if ($log->text == $answer['text'])
+		// 	// {
+		// 	// 	return $answer['value'];
+		// 	// }
+		// }
+		// return 0;
 	}
 
 }

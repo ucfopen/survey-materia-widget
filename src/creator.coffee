@@ -264,8 +264,6 @@ PrivilegeWalk.factory 'Resource', ['$sanitize', ($sanitize) ->
 		return qset
 
 	processQsetItem: (item) ->
-		# console.log "PROCESSING!! BEEP BOOP"
-		# console.log item.displayStyle
 		question = $sanitize item.question
 		questionType = $sanitize item.questionType
 		answerType = $sanitize item.answerType
