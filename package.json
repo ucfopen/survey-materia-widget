@@ -1,7 +1,7 @@
 {
   "name": "@ucfopen/survey-materia-widget",
   "materia": {
-    "cleanName": "larry"
+    "cleanName": "survey-widget"
   },
   "version": "0.0.1",
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "angular-sortable-view": "^0.0.13",
-    "materia-widget-development-kit": "^2.0.0"
+    "materia-widget-development-kit": "^2.3.0"
   },
   "author": "University of Central Florida, Center for Distributed Learning",
   "description": "TBD",
