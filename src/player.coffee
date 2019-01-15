@@ -61,7 +61,6 @@ PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($sco
 		if $scope.progress == 100
 			try
 				$scope.responses.forEach( (response, i) ->
-					
 					answer = {}
 					switch $scope.qset.items[i].options.questionType
 						when "free-response"
@@ -70,11 +69,8 @@ PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($sco
 						when "check-all-that-apply"
 							checkedItems = []
 
-							keys = Object.getOwnPropertyNames response
-
-							for key, j in keys
-								checked = response[parseInt(keys[key])]
-								if checked then checkedItems.push $scope.qset.items[i].answers[j].text
+							for key, check of response
+								if check then checkedItems.push $scope.qset.items[i].answers[key].text
 
 							answer = checkedItems.join ", "
 						else

@@ -5,9 +5,11 @@
 }
 
 .card {
+	position: relative;
 	margin: 20px;
 
 	.md-headline {
+		max-width: 90%;
 		font-weight: bold;
 		font-size: 1.1em;
 	}
@@ -16,9 +18,15 @@
 		font-size: 0.7em;
 		color: #979797;
 	}
+
+	i.material-icons {
+		position: absolute;
+		right: 10px;
+		top: 10px;
+
+		opacity: 0.25;
+	}
 }
-
-
 
 #score-card.card {
 	width: 50%;
