@@ -32,8 +32,8 @@
 		<script src="creator.js"></script>
 	</head>
 
-	<body ng-app="PrivilegeWalkCreator">
-		<md-content id="container" ng-controller="PrivilegeWalkController">
+	<body ng-app="SurveyWidgetCreator">
+		<md-content id="container" ng-controller="SurveyWidgetController">
 
 			<md-toolbar>
 				<div class="md-toolbar-tools">
@@ -134,7 +134,7 @@
 								<!-- Style input selection ( horizontal || drop-down ) -->
 								<md-input-container ng-show="card.answerType == custom">
 									<label>Display Style</label>
-									<md-select ng-model="card.displayStyle">
+									<md-select ng-model="card.displayStyle" ng-change="updateDisplayStyle(cardIndex)">
 										<md-option
 											ng-repeat="displayStyle in displayStyles"
 											value="{{displayStyle.value}}">

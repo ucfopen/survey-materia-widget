@@ -23,8 +23,8 @@ meta_data:
   features:
     - Customizable
   supported_data:
-    - Custom
+    - Question/Answer
   about: >
-    A survey tool forked from Privilege Walk, codenamed "Larry"
+    Build simple surveys with multiple choice, check-all-that-apply, and free response questions.
   excerpt: >
-    A survey tool forked from Privilege Walk, codenamed "Larry"
+    Build surveys or questionnaires with a range of question options including multiple choice, check-all-that-apply, and free response. Questions are not scored and students are given full credit upon completion.

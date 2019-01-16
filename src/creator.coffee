@@ -1,12 +1,12 @@
 # Create an angular module to house our controller
-PrivilegeWalk = angular.module 'PrivilegeWalkCreator', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angular-sortable-view']
+SurveyWidget = angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angular-sortable-view']
 
-PrivilegeWalk.config ['$mdThemingProvider', ($mdThemingProvider) ->
+SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
 			.primaryPalette('teal')
 			.accentPalette('blue-grey')
 ]
-PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource) ->
+SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource) ->
 
 	$scope.groups = [
 		{text:'General', color:'#616161'}
@@ -92,9 +92,10 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 				questionCount++
 			$scope.ready = true
 
-	$scope.openColorMenu = ($mdMenu, ev, cardIndex) ->
-		originatorEv = ev; # saved for animations
-		$mdMenu.open(ev);
+	# NYI - used for groups
+	# $scope.openColorMenu = ($mdMenu, ev, cardIndex) ->
+	# 	originatorEv = ev; # saved for animations
+	# 	$mdMenu.open(ev);
 
 	$scope.swapCards = (index1, index2) ->
 		[$scope.cards[index1], $scope.cards[index2]] = [$scope.cards[index2], $scope.cards[index1]]
@@ -119,12 +120,10 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 	$scope.addOption = (cardIndex) ->
 		style = $scope.cards[cardIndex].displayStyle
 		len = $scope.cards[cardIndex].answers.length
-		if (style == '0' && len >= 5)
+		if (style == $scope.horizontalScale && len >= 5)
 			$scope.showToast "Can only have 5 options per scale. Set Display Type to Dropdown to add more.", 10000
 			return
-		$scope.cards[cardIndex].answers.push {
-			text:'', value: 1, id: ''
-		}
+		$scope.cards[cardIndex].answers.push { text:'' }
 
 	$scope.removeOption = (cardIndex, optionIndex) ->
 		$scope.cards[cardIndex].answers.splice optionIndex, 1
@@ -132,6 +131,8 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 			$scope.showToast("Must have at least one option.")
 			$scope.addOption(cardIndex)
 
+	# Called when EITHER the question type or answer type changes (when MC is selected)
+	# Populates the response section depending on question type and whether or not presets are selected
 	$scope.updateResponseType = (cardIndex) ->
 		
 		switch ($scope.cards[cardIndex].questionType)
@@ -156,10 +157,18 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 			when $scope.freeResponse
 				$scope.cards[cardIndex].displayStyle = 'text-area'
 				$scope.cards[cardIndex].answerType = $scope.custom		
-				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]
+				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]		
 		
 	$scope.reverseValues = (cardIndex) ->
 		$scope.cards[cardIndex].answers = $scope.cards[cardIndex].answers.reverse()
+	
+	$scope.updateDisplayStyle = (cardIndex) ->
+		responseCount = $scope.cards[cardIndex].answers.length
+
+		if $scope.cards[cardIndex].displayStyle is $scope.horizontalScale && responseCount > 5
+			$scope.showToast "Sorry, can't use the Horizontal Scale display option with more than 5 response options."
+			$scope.cards[cardIndex].displayStyle = $scope.dropDown
+
 
 	# ------------------------------// groups //-------------------------------------
 	# Groups -- to be re-instated
@@ -246,7 +255,7 @@ PrivilegeWalk.controller 'PrivilegeWalkController', [ '$scope','$mdToast','$mdDi
 	Materia.CreatorCore.start $scope
 ]
 
-PrivilegeWalk.factory 'Resource', ['$sanitize', ($sanitize) ->
+SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 	buildQset: (title, questions, groups) ->
 		qsetItems = []
 		qset = {}
