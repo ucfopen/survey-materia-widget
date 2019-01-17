@@ -1,6 +1,6 @@
 ---
 general:
-  name: Survey Widget
+  name: Simple Survey
   group: Materia
   height: 600
   width: 800
