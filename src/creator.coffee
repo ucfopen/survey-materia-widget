@@ -110,7 +110,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	$scope.addQuestion = ->
 		questionCount++
 		$scope.cards.push
-			question: 'Question '+questionCount 											# question text
+			question: ''																	# question text
 			answers: angular.copy $scope.presets[$scope.presetLikelihood].values			# array of answer responses of form [{text: 'answer text'}]
 			questionType: $scope.multipleChoice												# type of question - MC, check-all-that-apply, free response, etc
 			answerType: $scope.presetLikelihood												# type of answer: is it a preset range, or custom

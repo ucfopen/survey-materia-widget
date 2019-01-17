@@ -57,9 +57,9 @@
 							<form name="questionForm">
 								<md-input-container class="md-block">
 									<label>Question {{$index + 1}}</label>
-									<input ng-model="card.question" name="question" required spellcheck="true">
+									<input ng-model="card.question" name="question" required placeholder="Enter question text here." spellcheck="true">
 									<div ng-messages="questionForm.question.$error">
-										<div ng-message="required">Question title is required.</div>
+										<div ng-message="required">Question text is required.</div>
 									</div>
 								</md-input-container>
 							</form>
@@ -172,7 +172,7 @@
 								class="custom-choice"
 								ng-show="(card.questionType == multipleChoice && card.answerType == custom) || card.questionType == checkAllThatApply">
 								<div layout="column" sv-root sv-part="card.answers">
-									<div layout="row" ng-repeat="option in card.answers" sv-element="dragOpts">
+									<div layout="row" ng-repeat="option in card.answers" sv-element="dragOpts" class="md-block" flex>
 										<form name="optionsForm">
 											<md-button class="option-controls" sv-handle tabindex="-1">
 												<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
@@ -181,7 +181,7 @@
 
 											<md-input-container>
 												<label>Option {{$index + 1}}</label>
-												<input type="text" ng-model="option.text" name="text" required>
+												<input class="custom-options-input" type="text" ng-model="option.text" name="text" required>
 												<div ng-messages="optionsForm.text.$error">
 													<div ng-message="required">Option is required.</div>
 												</div>
