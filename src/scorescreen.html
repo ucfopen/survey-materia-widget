@@ -41,7 +41,7 @@
 					
 
 					<div class="question-container">
-						<md-card class="md-whiteframe-3dp card" ng-repeat="response in responses">
+						<md-card class="md-whiteframe-3dp card" ng-repeat="response in responses track by $index">
 							<md-card-title>
 								<span class="md-headline">
 									{{qset.items[$index].questions[0].text}}
