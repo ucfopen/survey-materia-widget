@@ -240,15 +240,18 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		return true
 
 	$scope.onQuestionImportComplete = (items) ->
-		for item in qset.items
+		for item in items
 			$scope.cards.push
 				question: item.questions[0].text
 				questionType: item.options.questionType
 				answerType: item.options.answerType
 				answers: item.answers
-				displayStyle: item.options.style
+				displayStyle: item.options.displayStyle
 				group: item.options.group
 			questionCount++
+		
+		$scope.$apply ->
+			$scope.showToast "Added " + items.length + " imported questions."
 
 	$scope.onSaveComplete = (title, widget, qset, version) -> true
 
