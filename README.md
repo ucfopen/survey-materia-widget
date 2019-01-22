@@ -1,11 +1,11 @@
 <h1>
-    <!-- <img src="src/_icons/icon-60.png" width="36px"/> -->
+    <img src="src/_icons/icon-60.png" width="36px"/>
     Simple Survey
 </h1>
 
 Simple Survey allows users to create straightfoward surveys with a mix of multiple choice, check-all-that-apply, and free response questions. Responses are not scored, but students are given an automatic 100% upon completion.
 
-. Simple Survey is designed for use with [Materia](https://github.com/ucfopen/Materia), an open-source platform for interactive course content developed by the University of Central Florida.
+Simple Survey is designed for use with [Materia](https://github.com/ucfopen/Materia), an open-source platform for interactive course content developed by the University of Central Florida.
 
 ![Simple Survey Player](src/_screen-shots/2.png)
 
