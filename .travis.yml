@@ -17,8 +17,8 @@ deploy:
   api_key:
     secure: "yL6oe8++Z5kCj6VT2+8B1tUsLDQKjPahWdNtSLPbiEaNxj8rqd10c/zxkonf1CcfUGpg6y7XxWDcmrvmGv4teBZFaB/lzffUEqSLFQo8fQCrIPl/Y1TH/dYofnqobcRL7PvFZ19R036wzuP938YiKj4BTj8htxQG46L5P9g8sRtZ2Cj2gbIhlgxAnXJcmyopq4/bPdPydiz45LdSiSEy8VdAyzN0bw37qpSQFgO3b8gSoGTgxFDBi/PfUtbqk30NusBWeXyN3UgoG/aNkmUGVDWESruu98J9Ufjy7aameLJK4cnW8dGsDaNJudBPCJV0t6gr+UdAMTsRP3F+bUWqQAj3wEiDApNmmm83MTjlvzlgnrqwcwUp7BW0vUZGbMlJi1ntjLifPlStPprLIJzV4otYtDjMIDdF6p+9Vhrbd2IbcQG5WGXkE6v8QFSzILI6KYFlc7cAE2o56xgeTuXr3lddQ8nL1J+yc2j5EvU0Xs0A0jQ8MxUYRe+Ea89LHWid/ttf5fO+M4h9tVVl3UVWZaCZVrQwWckWU18ASqKnVqp7vCKPw2zy0KbpUBVhtN7lv1aRce8sorvm4YLIvba/z7FoSU3KClFWUHQih0upAlPdjABsDRQ3FNwdcFobSHfIVS8I1sMO0WIicYfM186rK3gmJxWEwuEVLLaDzIPDFEM="
   file:
-    - build/_output/survey-widget.wigt
-    - build/_output/survey-widget-build-info.yml
+    - build/_output/simple-survey.wigt
+    - build/_output/simple-survey-build-info.yml
   on:
     tags: true
     repo: ucfopen/survey-materia-widget
