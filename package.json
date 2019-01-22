@@ -3,7 +3,7 @@
   "materia": {
     "cleanName": "simple-survey"
   },
-  "version": "0.5.0",
+  "version": "1.0.0",
   "scripts": {
     "start": "webpack-dev-server",
     "build-dev": "webpack",
@@ -19,4 +19,3 @@
   "description": "TBD",
   "license": "AGPL-3.0"
 }
-
