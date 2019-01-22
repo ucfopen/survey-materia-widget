@@ -1,9 +1,9 @@
 {
-  "name": "@ucfopen/simple-survey-materia-widget",
+  "name": "@ucfopen/survey-materia-widget",
   "materia": {
-    "cleanName": "simple-survey"
+    "cleanName": "survey-widget"
   },
-  "version": "0.5.0",
+  "version": "0.0.1",
   "scripts": {
     "start": "webpack-dev-server",
     "build-dev": "webpack",

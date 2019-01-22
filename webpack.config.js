@@ -12,10 +12,6 @@ const customCopy = copy.concat([
 	{
 		from: path.join(__dirname, 'node_modules', 'angular-sortable-view', 'src', 'angular-sortable-view.min.js'),
 		to: path.join(outputPath, 'vendor'),
-	},
-	{
-		from: path.join(__dirname,'src','_exports','playdata_exporters.php'),
-		to: path.join(outputPath,'_exports/','playdata_exporters.php')
 	}
 ])
 

@@ -1,10 +1,10 @@
 ---
 general:
-  name: Simple Survey
+  name: Privilege Walk
   group: Materia
   height: 600
   width: 800
-  in_catalog: Yes
+  in_catalog: No
   is_editable: Yes
   is_playable: Yes
   is_qset_encrypted: Yes
@@ -17,14 +17,16 @@ files:
   flash_version: 0
 score:
   is_scorable: Yes
-  score_module: SurveyWidget
+  score_module: PrivilegeWalk
   score_screen: scorescreen.html
 meta_data:
   features:
     - Customizable
   supported_data:
-    - Question/Answer
+    - Custom
   about: >
-    Build simple surveys with multiple choice, check-all-that-apply, and free response questions.
+    Build a questionnaire for students that provides them with a privilege "score",
+    after which they can compare themselves to the rest of the course.
   excerpt: >
-    Build surveys or questionnaires with a range of question options including multiple choice, check-all-that-apply, and free response. Questions are not scored and students are given full credit upon completion.
+    Build a questionnaire for students that provides them with a privilege "score",
+    after which they can compare themselves to the rest of the course.

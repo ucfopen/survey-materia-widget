@@ -1,223 +1,473 @@
 {
-	"name": "Severe Weather Survey",
+	"name": "Privilege Walk Demo",
 	"qset": {
-		"version": "1",
+		"version": 1,
 		"data": {
 			"items": [
 				{
 					"materiaType": "question",
-					"id": "",
+					"id": null,
 					"type": "QA",
-					"created_at": 1547743689,
-					"questions": [
-						{
-							"text": "How do you typically check for daily weather updates?"
-						}
-					],
-					"answers": [
-						{
-							"text": "Built-in notifications on my phone",
-							"id": ""
-						},
-						{
-							"text": "A dedicated weather app on my phone",
-							"id": ""
-						},
-						{
-							"text": "Social media (Twitter, Facebook, etc)",
-							"id": ""
-						},
-						{
-							"text": "TV news",
-							"id": ""
-						}
-					],
 					"options": {
-						"questionType": "check-all-that-apply",
-						"answerType": "-1",
-						"displayStyle": "vertical-list",
+						"questionType": "1",
+						"style": "0",
+						"reversed": "false",
 						"group": "0"
 					},
-					"assets": []
-				},
-				{
-					"materiaType": "question",
-					"id": "",
-					"type": "QA",
-					"created_at": 1547743689,
 					"questions": [
 						{
-							"text": "Generally speaking, do you plan in advance for inclement weather before leaving home?"
+							"text": "How often are you discriminated against because of your skin color?"
 						}
 					],
 					"answers": [
 						{
 							"text": "Very Often",
+							"value": 5,
 							"id": ""
 						},
 						{
 							"text": "Often",
+							"value": 4,
 							"id": ""
 						},
 						{
 							"text": "Sometimes",
+							"value": 3,
 							"id": ""
 						},
 						{
 							"text": "Rarely",
+							"value": 2,
 							"id": ""
 						},
 						{
 							"text": "Never",
+							"value": 1,
 							"id": ""
 						}
-					],
-					"options": {
-						"questionType": "multiple-choice",
-						"answerType": "1",
-						"displayStyle": "horizontal-scale",
-						"group": "0"
-					},
-					"assets": []
+					]
 				},
 				{
 					"materiaType": "question",
-					"id": "",
+					"id": null,
 					"type": "QA",
-					"created_at": 1547743689,
+					"options": {
+						"questionType": "1",
+						"style": "0",
+						"reversed": "false",
+						"group": "0"
+					},
 					"questions": [
 						{
-							"text": "Large weather events (snow storms, hurricanes, nor'easters) cause me stress well in advance."
+							"text": "How often are you the only person of your race in a room?"
 						}
 					],
 					"answers": [
 						{
-							"text": "Strongly Agree",
+							"text": "Very Often",
+							"value": 5,
 							"id": ""
 						},
 						{
-							"text": "Somewhat Agree",
+							"text": "Often",
+							"value": 4,
 							"id": ""
 						},
 						{
-							"text": "No Opinion",
+							"text": "Sometimes",
+							"value": 3,
 							"id": ""
 						},
 						{
-							"text": "Somewhat Disagree",
+							"text": "Rarely",
+							"value": 2,
 							"id": ""
 						},
 						{
-							"text": "Strongly Disagree",
+							"text": "Never",
+							"value": 1,
 							"id": ""
 						}
-					],
-					"options": {
-						"questionType": "multiple-choice",
-						"answerType": "2",
-						"displayStyle": "horizontal-scale",
-						"group": "0"
-					},
-					"assets": []
+					]
 				},
 				{
 					"materiaType": "question",
-					"id": "",
+					"id": null,
 					"type": "QA",
-					"created_at": 1547743689,
+					"options": {
+						"questionType": "2",
+						"style": "1",
+						"reversed": "false",
+						"group": "1"
+					},
 					"questions": [
 						{
-							"text": "Do you keep an umbrella in your car or on your person when traveling to work?"
+							"text": "How do you identify your sexual orientation?"
+						}
+					],
+					"answers": [
+						{
+							"text": "Androphillic",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Asexual",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Bisexual",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Demi-sexuality",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Fluid",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Gay",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Gay-asexuality",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Heterosexual",
+							"value": 1,
+							"id": ""
+						},
+						{
+							"text": "Homosexual",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Lesbian",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Other",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Pansexual",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Polysexual",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Queer",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Straight",
+							"value": 1,
+							"id": ""
+						}
+					]
+				},
+				{
+					"materiaType": "question",
+					"id": null,
+					"type": "QA",
+					"options": {
+						"questionType": "0",
+						"style": "0",
+						"reversed": "false",
+						"group": "2"
+					},
+					"questions": [
+						{
+							"text": "Do you work in a salaried job?"
 						}
 					],
 					"answers": [
 						{
 							"text": "Yes",
+							"value": 5,
 							"id": ""
 						},
 						{
 							"text": "No",
+							"value": 1,
 							"id": ""
 						}
-					],
-					"options": {
-						"questionType": "multiple-choice",
-						"answerType": "0",
-						"displayStyle": "horizontal-scale",
-						"group": "0"
-					},
-					"assets": []
+					]
 				},
 				{
 					"materiaType": "question",
-					"id": "",
+					"id": null,
 					"type": "QA",
-					"created_at": 1547743689,
+					"options": {
+						"questionType": "1",
+						"style": "0",
+						"reversed": "false",
+						"group": "2"
+					},
 					"questions": [
 						{
-							"text": "I feel comfortable driving in severe weather conditions."
+							"text": "How often have you (or the caregivers who you lived with as a child) ever lived below the poverty line?"
 						}
 					],
 					"answers": [
 						{
-							"text": "Strongly Agree",
+							"text": "Very Often",
+							"value": 5,
 							"id": ""
 						},
 						{
-							"text": "Somewhat Agree",
+							"text": "Often",
+							"value": 4,
 							"id": ""
 						},
 						{
-							"text": "No Opinion",
+							"text": "Sometimes",
+							"value": 3,
 							"id": ""
 						},
 						{
-							"text": "Somewhat Disagree",
+							"text": "Rarely",
+							"value": 2,
 							"id": ""
 						},
 						{
-							"text": "Strongly Disagree",
+							"text": "Never",
+							"value": 1,
 							"id": ""
 						}
-					],
-					"options": {
-						"questionType": "multiple-choice",
-						"answerType": "2",
-						"displayStyle": "horizontal-scale",
-						"group": "0"
-					},
-					"assets": []
+					]
 				},
 				{
 					"materiaType": "question",
-					"id": "",
+					"id": null,
 					"type": "QA",
-					"created_at": 1547743689,
+					"options": {
+						"questionType": "1",
+						"style": "0",
+						"reversed": "false",
+						"group": "2"
+					},
 					"questions": [
 						{
-							"text": "Thinking back, what was the most severe or stressful weather event you've had to endure?"
+							"text": "Do you have any student loans?"
 						}
 					],
 					"answers": [
 						{
-							"text": "Enter Your Response Here.",
+							"text": "Very Often",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Often",
+							"value": 4,
+							"id": ""
+						},
+						{
+							"text": "Sometimes",
+							"value": 3,
+							"id": ""
+						},
+						{
+							"text": "Rarely",
+							"value": 2,
+							"id": ""
+						},
+						{
+							"text": "Never",
+							"value": 1,
 							"id": ""
 						}
-					],
+					]
+				},
+				{
+					"materiaType": "question",
+					"id": null,
+					"type": "QA",
 					"options": {
-						"questionType": "free-response",
-						"answerType": "-1",
-						"displayStyle": "text-area",
-						"group": "0"
+						"questionType": "2",
+						"style": "0",
+						"reversed": "false",
+						"group": "2"
 					},
-					"assets": []
+					"questions": [
+						{
+							"text": "How much of your tuition is covered by your parents?"
+						}
+					],
+					"answers": [
+						{
+							"text": "none",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "1-25%",
+							"value": 4,
+							"id": ""
+						},
+						{
+							"text": "26-50%",
+							"value": 3,
+							"id": ""
+						},
+						{
+							"text": "51-75%",
+							"value": 2,
+							"id": ""
+						},
+						{
+							"text": "76-100%",
+							"value": 1,
+							"id": ""
+						}
+					]
+				},
+				{
+					"materiaType": "question",
+					"id": null,
+					"type": "QA",
+					"options": {
+						"questionType": "1",
+						"style": "0",
+						"reversed": "false",
+						"group": "2"
+					},
+					"questions": [
+						{
+							"text": "How often do you skip meals to save money?"
+						}
+					],
+					"answers": [
+						{
+							"text": "Very Often",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Often",
+							"value": 4,
+							"id": ""
+						},
+						{
+							"text": "Sometimes",
+							"value": 3,
+							"id": ""
+						},
+						{
+							"text": "Rarely",
+							"value": 2,
+							"id": ""
+						},
+						{
+							"text": "Never",
+							"value": 1,
+							"id": ""
+						}
+					]
+				},
+				{
+					"materiaType": "question",
+					"id": null,
+					"type": "QA",
+					"options": {
+						"questionType": "0",
+						"style": "0",
+						"reversed": "false",
+						"group": "2"
+					},
+					"questions": [
+						{
+							"text": "Do you have frequent flier miles?"
+						}
+					],
+					"answers": [
+						{
+							"text": "Yes",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "No",
+							"value": 1,
+							"id": ""
+						}
+					]
+				},
+				{
+					"materiaType": "question",
+					"id": null,
+					"type": "QA",
+					"options": {
+						"questionType": "1",
+						"style": "0",
+						"reversed": "false",
+						"group": "1"
+					},
+					"questions": [
+						{
+							"text": "How often do you experience difficulties with finding a bathroom that is accessible and safe?"
+						}
+					],
+					"answers": [
+						{
+							"text": "Very Often",
+							"value": 5,
+							"id": ""
+						},
+						{
+							"text": "Often",
+							"value": 4,
+							"id": ""
+						},
+						{
+							"text": "Sometimes",
+							"value": 3,
+							"id": ""
+						},
+						{
+							"text": "Rarely",
+							"value": 2,
+							"id": ""
+						},
+						{
+							"text": "Never",
+							"value": 1,
+							"id": ""
+						}
+					]
 				}
 			],
 			"options": {
 				"groups": [
 					{
-						"text": "General",
-						"color": "#616161"
+						"text": "Race",
+						"color": "#5D4037"
+					},
+					{
+						"text": "Sexual Orientation",
+						"color": "#C2185B"
+					},
+					{
+						"text": "Financial",
+						"color": "#689F38"
 					}
 				]
 			}

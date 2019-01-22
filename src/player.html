@@ -21,7 +21,7 @@
 		<script src="player.js"></script>
 	</head>
 
-	<body ng-app="SurveyWidgetEngine" ng-controller="SurveyWidgetEngineCtrl" ng-cloak>
+	<body ng-app="PrivilegeWalkEngine" ng-controller="PrivilegeWalkEngineCtrl" ng-cloak>
 		<md-content id="container">
 			<md-toolbar>
 				<div class="md-toolbar-tools" layout="row">
@@ -47,7 +47,7 @@
 							</md-card-title>
 
 							<!-- Scale Style -->
-							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == horizontalScale">
+							<md-card-actions layout layout-align="start start" ng-show="question.options.style=='0'">
 								<md-radio-group layout="row" ng-model="responses[$index]" class="radio-spacing" ng-change="updateCompleted()">
 									<md-radio-button
 										ng-repeat="answer in question.answers"
@@ -58,7 +58,7 @@
 							</md-card-actions>
 
 							<!-- Dropdown Style -->
-							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == dropDown">
+							<md-card-actions layout layout-align="start start" ng-show="question.options.style=='1'">
 								<md-input-container layout="row">
 									<md-select class="dropdown-answer" placeholder="Select Answer" ng-model="responses[$index]" aria-label="Answer" ng-change="updateCompleted()">
 										<md-option
@@ -67,24 +67,6 @@
 											{{answer.text}}
 										</md-option>
 									</md-select>
-								</md-input-container>
-							</md-card-actions>
-
-							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == verticalList">
-								<md-input-container layout="column">
-									<md-checkbox
-										ng-repeat="answer in question.answers"
-										ng-model="responses[$parent.$index][$index]"
-										ng-init="responses[$parent.$index][$index] = false"
-										ng-change="updateCompleted()">
-										{{answer.text}}									
-									</md-checkbox>
-								</md-input-container>
-							</md-card-actions>
-
-							<md-card-actions layout ng-if="question.options.displayStyle == textArea">
-								<md-input-container class="md-block" flex>
-									<textarea type="text" ng-model="responses[$index]" aria-label="Answer Text Area" ng-change="updateCompleted()" placeholder="{{question.answers[0].text}}"></textarea>
 								</md-input-container>
 							</md-card-actions>
 						</div>
