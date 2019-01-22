@@ -1,12 +1,12 @@
-PrivilegeWalk = angular.module 'PrivilegeWalkEngine', ['ngMaterial']
+SurveyWidget = angular.module 'SurveyWidgetEngine', ['ngMaterial']
 
-PrivilegeWalk.config ['$mdThemingProvider', ($mdThemingProvider) ->
+SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
 			.primaryPalette('teal')
 			.accentPalette('indigo')
 ]
 
-PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($scope, $mdToast) ->
+SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope, $mdToast) ->
 	
 	$scope.qset = null
 	$scope.instance = null
@@ -44,18 +44,6 @@ PrivilegeWalk.controller 'PrivilegeWalkEngineCtrl', ['$scope', '$mdToast', ($sco
 			numAnswered++ if response?
 
 		$scope.progress = numAnswered / numQuestions * 100
-
-	# TODO can remove this?
-	createStorageTable = (tableName, columns) ->
-		args = columns
-		args.splice(0, 0, tableName)
-		Materia.Storage.Manager.addTable.apply(this, args)
-
-	# TODO can remove this?
-	insertStorageRow = (tableName, values) ->
-		args = values
-		args.splice(0, 0, tableName)
-		Materia.Storage.Manager.insert.apply(this, args)
 
 	$scope.submit = ->
 		if $scope.progress == 100
