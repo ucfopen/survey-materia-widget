@@ -17,6 +17,26 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 	$scope.verticalList = 'vertical-list'
 	$scope.textArea = 'text-area'
 
+	SANITIZED_CHARACTERS =
+		'>' : '&gt;',
+		'<' : '&lt;',
+		'&' : '&amp;',
+		'"' : '&#34;'
+
+	desanitize = (input) ->
+		unless input then return
+		for k, v of SANITIZED_CHARACTERS
+			input = input.replace v, k
+		return input
+
+	desanitizeQset = (qset) ->
+		for index, item of qset.items
+			item.questions[0].text = desanitize(item.questions[0].text)
+
+			for answer of item.answers
+				answer.text = desanitize(answer.text)
+
+		return qset
 
 	$scope.showToast = (message) ->
 		$mdToast.show(
@@ -28,7 +48,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 
 	$scope.start = (instance, qset, version) ->
 		$scope.instance = instance
-		$scope.qset = qset
+		$scope.qset = desanitizeQset(qset)
 		$scope.progress = 0
 		$scope.$apply()
 
