@@ -1,5 +1,5 @@
 # Create an angular module to house our controller
-SurveyWidget = angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angular-sortable-view']
+SurveyWidget = angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngAnimate', 'ngSanitize', 'angular-sortable-view']
 
 SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
@@ -100,15 +100,22 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	$scope.swapCards = (index1, index2) ->
 		[$scope.cards[index1], $scope.cards[index2]] = [$scope.cards[index2], $scope.cards[index1]]
 
+	$scope.duplicateQuestion = (index) ->
+		duplicate = angular.copy($scope.cards[index])
+		duplicate.fresh = true
+		$scope.cards.splice index + 1, 0, duplicate
+		questionCount++
+		focusedCard = $scope.cards[index + 1]
+
 	$scope.deleteQuestion = (index) ->
-		$scope.cards.splice index, 1
+		$scope.cards[index].fresh = false
 		questionCount--
+		$scope.cards.splice index, 1
 		if $scope.cards.length == 0
 			$scope.showToast("Must have at least one question.")
 			$scope.addQuestion()
 
 	$scope.addQuestion = ->
-		questionCount++
 		$scope.cards.push
 			question: ''																	# question text
 			answers: angular.copy $scope.presets[$scope.presetLikelihood].values			# array of answer responses of form [{text: 'answer text'}]
@@ -116,6 +123,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			answerType: $scope.presetLikelihood												# type of answer: is it a preset range, or custom
 			displayStyle: $scope.horizontalScale											# should answers be displayed horizontally or via drop-down
 			group: 0																		# group - NYI
+			fresh: true
 
 	$scope.addOption = (cardIndex) ->
 		style = $scope.cards[cardIndex].displayStyle
@@ -134,7 +142,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	# Called when EITHER the question type or answer type changes (when MC is selected)
 	# Populates the response section depending on question type and whether or not presets are selected
 	$scope.updateResponseType = (cardIndex) ->
-		
+
 		switch ($scope.cards[cardIndex].questionType)
 
 			when $scope.multipleChoice
@@ -144,7 +152,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				if $scope.cards[cardIndex].answerType >= 0
 					index = $scope.cards[cardIndex].answerType
 					$scope.cards[cardIndex].answers = angular.copy $scope.presets[index].values
-				# Otherwise give it some default range values 
+				# Otherwise give it some default range values
 				else
 					$scope.cards[cardIndex].answers = angular.copy $scope.presets[1].values
 
@@ -156,18 +164,22 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 			when $scope.freeResponse
 				$scope.cards[cardIndex].displayStyle = 'text-area'
-				$scope.cards[cardIndex].answerType = $scope.custom		
-				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]		
-		
+				$scope.cards[cardIndex].answerType = $scope.custom
+				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]
+
+		$scope.cards[cardIndex].fresh = false
+
 	$scope.reverseValues = (cardIndex) ->
 		$scope.cards[cardIndex].answers = $scope.cards[cardIndex].answers.reverse()
-	
+		$scope.cards[cardIndex].fresh = false
+
 	$scope.updateDisplayStyle = (cardIndex) ->
 		responseCount = $scope.cards[cardIndex].answers.length
 
 		if $scope.cards[cardIndex].displayStyle is $scope.horizontalScale && responseCount > 5
 			$scope.showToast "Sorry, can't use the Horizontal Scale display option with more than 5 response options."
 			$scope.cards[cardIndex].displayStyle = $scope.dropDown
+		$scope.cards[cardIndex].fresh = false
 
 
 	# ------------------------------// groups //-------------------------------------
@@ -249,7 +261,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				displayStyle: item.options.displayStyle
 				group: item.options.group
 			questionCount++
-		
+
 		$scope.$apply ->
 			$scope.showToast "Added " + items.length + " imported questions."
 
@@ -296,4 +308,14 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 			group: group
 		questions: [{ text: question }]
 		answers: item.answers
+]
+
+SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
+	link: (scope, element, attrs) ->
+		model = $parse(attrs.focusMe)
+		scope.$watch model, (value) ->
+			if value
+				$timeout ->
+					element[0].focus()
+			value
 ]

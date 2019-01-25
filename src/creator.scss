@@ -1,5 +1,4 @@
 /* Creator CSS */
-
 #container {
 	background-color: #F3F3F3;
 	height: 100%;
@@ -24,7 +23,7 @@
 	md-input-container {
 		min-width: 125px;
 		margin: 5px;
-		
+
 		input.custom-options-input {
 			min-width: 250px;
 		}
@@ -45,6 +44,21 @@
 				padding: 5px 10px;
 				max-width: 800px;
 
+				&.fresh {
+					background-color: #deefed;
+
+					&.ng-enter {
+						opacity: 0;
+						transform: translateY(20px);
+						transition: opacity ease 0.4s, transform ease 0.4s;
+					}
+
+					&.ng-enter.ng-enter-active {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+
 				.card-right {
 					padding-left: 10px;
 					position: relative;
@@ -61,6 +75,7 @@
 							outline: none;
 							background: none;
 
+							&.duplicate:hover { color: green; }
 							&.delete:hover { color: red; }
 							&.move-arrow:hover { color: blue; }
 						}
