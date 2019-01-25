@@ -33,7 +33,18 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 		$scope.$apply()
 
 	$scope.isIncomplete = (index) ->
-		$scope.responses[index] == undefined
+		switch $scope.qset.items[index].options.questionType
+
+			when 'check-all-that-apply'
+				minResponses = $scope.qset.items[index].options.minResponseLimit
+				unless minResponses then return false
+				responses = 0
+				for i, value of $scope.responses[index]
+					if value is true then responses++
+
+				responses < minResponses
+			else
+				$scope.responses[index] == undefined
 
 	$scope.updateCompleted = ->
 		return false if !$scope.qset
@@ -44,6 +55,21 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 			numAnswered++ if response?
 
 		$scope.progress = numAnswered / numQuestions * 100
+
+	$scope.updateCheckAllThatApply = (qIndex, responseIndex) ->
+
+		maxChecked = $scope.qset.items[qIndex].options.maxResponseLimit
+
+		if maxChecked
+			checkedCount = 0
+			for i, value of $scope.responses[qIndex]
+				if value is true then checkedCount++
+
+			if checkedCount > maxChecked
+				$scope.showToast "You can only select " + maxChecked + " items!"
+				$scope.responses[qIndex][responseIndex] = false			
+
+		$scope.updateCompleted()		
 
 	$scope.submit = ->
 		if $scope.progress == 100

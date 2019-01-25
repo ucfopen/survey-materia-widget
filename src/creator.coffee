@@ -63,6 +63,11 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		{text: 'Drop Down', value: 'drop-down'}
 	]
 
+	$scope.helperMessages = [
+		'Set the minimum number of items to be checked. If the box is left blank, the limit is not applied.',
+		'Set the maximum number of items to be checked. If the box is left blank, the limit is not applied.'
+	]
+
 	$scope.ready = false
 	$scope.cards = []
 	$scope.dragging = false
@@ -116,6 +121,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			answerType: $scope.presetLikelihood												# type of answer: is it a preset range, or custom
 			displayStyle: $scope.horizontalScale											# should answers be displayed horizontally or via drop-down
 			group: 0																		# group - NYI
+			options: {}																		# extra options specific to individual question types
 
 	$scope.addOption = (cardIndex) ->
 		style = $scope.cards[cardIndex].displayStyle
@@ -154,6 +160,9 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				$scope.cards[cardIndex].answerType = $scope.custom
 				$scope.cards[cardIndex].answers = [{text: 'Option 1'}, {text: 'Option 2'},{text: 'Option 3'}]
 
+				$scope.cards[cardIndex].options.minResponseLimit = null
+				$scope.cards[cardIndex].options.maxResponseLimit = null
+
 			when $scope.freeResponse
 				$scope.cards[cardIndex].displayStyle = 'text-area'
 				$scope.cards[cardIndex].answerType = $scope.custom		
@@ -168,7 +177,6 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		if $scope.cards[cardIndex].displayStyle is $scope.horizontalScale && responseCount > 5
 			$scope.showToast "Sorry, can't use the Horizontal Scale display option with more than 5 response options."
 			$scope.cards[cardIndex].displayStyle = $scope.dropDown
-
 
 	# ------------------------------// groups //-------------------------------------
 	# Groups -- to be re-instated
@@ -201,8 +209,8 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	# ------------------------------// groups //-------------------------------------
 
-	$scope.showTypeDialog = (ev, questionType) ->
-		$scope.dialogText = reversedTooltips[questionType]
+	$scope.showHelpDialog = (ev, message) ->
+		$scope.dialogText = message
 		$mdDialog.show
 			contentElement: '#info-dialog-container'
 			parent: angular.element(document.body)
@@ -275,25 +283,32 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 		qset.options = {groups: groups}
 		return qset
 
-	processQsetItem: (item) ->
-		question = $sanitize item.question
-		questionType = $sanitize item.questionType
-		answerType = $sanitize item.answerType
-		displayStyle = $sanitize item.displayStyle
-		group = $sanitize item.group
+	processQsetItem: (q) ->
+		
+		questionText = $sanitize q.question
+		questionType = $sanitize q.questionType
+		answerType = $sanitize q.answerType
+		displayStyle = $sanitize q.displayStyle
+		group = $sanitize q.group
 
 		# clean out previously generated IDs
-		for answer in item.answers
+		for answer in q.answers
 			answer.id = ''
 
-		materiaType: "question"
-		id: null
-		type: 'QA'
-		options:
-			questionType: questionType
-			answerType: answerType
-			displayStyle: displayStyle
-			group: group
-		questions: [{ text: question }]
-		answers: item.answers
+		item =
+			materiaType: "question"
+			id: null
+			type: 'QA'
+			options:
+				questionType: questionType
+				answerType: answerType
+				displayStyle: displayStyle
+				group: group
+			questions: [{ text: questionText }]
+			answers: q.answers
+
+		for key, value of q.options
+			item.options[key] = value
+
+		return item	
 ]

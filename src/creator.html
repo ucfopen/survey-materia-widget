@@ -154,6 +154,24 @@
 								</div>
 							</div>
 
+							<div layout="row" ng-show="card.questionType == checkAllThatApply">
+								<md-input-container>
+									<label>Set Response Minimum</label>
+									<input type="number" placeholder="No Limit" ng-model="card.options.minResponseLimit" ng-min="0" ng-max="card.answers.length" />
+								</md-input-container>
+								<button class="reversed-info" ng-click="showHelpDialog($event, helperMessages[0])">
+									<i class="material-icons">&#xE88F;</i>
+								</button>
+
+								<md-input-container>
+										<label>Set Response Maximum</label>
+										<input type="number" placeholder="No Limit" ng-model="card.options.maxResponseLimit" ng-min="1" ng-max="card.answers.length" />
+									</md-input-container>
+									<button class="reversed-info" ng-click="showHelpDialog($event, helperMessages[1])">
+										<i class="material-icons">&#xE88F;</i>
+									</button>
+							</div>
+
 							<!-- Preset Option -->
 							<md-card-actions layout layout-align="start start" class="radio-choice" ng-show="card.questionType == multipleChoice && card.answerType != custom">
 								<md-radio-group layout="row">

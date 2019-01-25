@@ -36,6 +36,20 @@ md-toolbar {
 	.card-title {
 		padding-bottom: 5px;
 	}
+
+	span.response-limit-description {
+		margin: 5px 0px 5px 0px;
+		opacity: 0.6;
+		font-size:0.8em;
+
+		&:nth-child(2) {
+			&:before {
+				content: " ";
+				left: 0px;
+				margin-left: 0.25em;
+			}
+		}
+	}
 }
 
 .card.incomplete {

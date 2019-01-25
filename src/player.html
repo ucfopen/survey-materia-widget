@@ -56,7 +56,7 @@
 									</md-radio-button>
 								</md-radio-group>
 							</md-card-actions>
-
+							
 							<!-- Dropdown Style -->
 							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == dropDown">
 								<md-input-container layout="row">
@@ -69,14 +69,18 @@
 									</md-select>
 								</md-input-container>
 							</md-card-actions>
-
-							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == verticalList">
+							
+							<md-card-actions layout="column" layout-align="start start" ng-if="question.options.displayStyle == verticalList && question.options.questionType == 'check-all-that-apply'">
+								<div layout="row">
+									<span class="response-limit-description" ng-if="question.options.minResponseLimit">Select at least {{question.options.minResponseLimit}} item{{ question.options.minResponseLimit > 1 ? "s" : "" }}.</span>
+									<span class="response-limit-description" ng-if="question.options.maxResponseLimit">Select at most {{question.options.maxResponseLimit}} item{{ question.options.maxResponseLimit > 1 ? "s" : "" }}.</span>
+								</div>
 								<md-input-container layout="column">
 									<md-checkbox
 										ng-repeat="answer in question.answers"
 										ng-model="responses[$parent.$index][$index]"
 										ng-init="responses[$parent.$index][$index] = false"
-										ng-change="updateCompleted()">
+										ng-change="updateCheckAllThatApply($parent.$index, $index)">
 										{{answer.text}}									
 									</md-checkbox>
 								</md-input-container>
