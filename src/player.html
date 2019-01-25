@@ -60,11 +60,18 @@
 							<!-- Dropdown Style -->
 							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == dropDown">
 								<md-input-container layout="row">
-									<md-select class="dropdown-answer" placeholder="Select Answer" ng-model="responses[$index]" aria-label="Answer" ng-change="updateCompleted()">
-										<md-option
+									<md-select class="dropdown-answer"
+										ng-model="responses[$index]"
+										aria-label="Answer"
+										ng-change="updateCompleted()"
+										md-selected-text="dropDownAnswer(responses[$index])">
+										<md-option class="dropdown-answer-element"
 											ng-repeat="answer in question.answers"
-											value={{$index}}>
-											{{answer.text}}
+											ng-value="answer.text">
+												{{answer.text}}
+												<span class="answer-number">
+													{{$index+1}} of {{question.answers.length}}
+												</span>
 										</md-option>
 									</md-select>
 								</md-input-container>
@@ -77,7 +84,7 @@
 										ng-model="responses[$parent.$index][$index]"
 										ng-init="responses[$parent.$index][$index] = false"
 										ng-change="updateCompleted()">
-										{{answer.text}}									
+										{{answer.text}}
 									</md-checkbox>
 								</md-input-container>
 							</md-card-actions>

@@ -65,6 +65,19 @@ h1.md-headline {
 	min-width: 200px;
 }
 
+.dropdown-answer-element {
+	position: relative;
+
+	.answer-number {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		padding-right: 16px;
+		font-size: 10px;
+		pointer-events: none;
+	}
+}
+
 .arrow_box {
 	position: absolute;
 	background: #ffff82;
