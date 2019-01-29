@@ -241,13 +241,23 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	$scope.onQuestionImportComplete = (items) ->
 		for item in items
+			questionType = $scope.multipleChoice
+			answerType = $scope.custom
+			displayStyle = $scope.horizontalScale
+			group = '0'
+			if item.options
+				if item.options.questionType then questionType = item.options.questionType
+				if item.options.answerType then answerType = item.options.answerType
+				if item.options.displayStyle then displayStyle = item.options.displayStyle
+				if item.options.group then group = item.options.group
+
 			$scope.cards.push
 				question: item.questions[0].text
-				questionType: item.options.questionType
-				answerType: item.options.answerType
+				questionType: questionType
+				answerType: answerType
 				answers: item.answers
-				displayStyle: item.options.displayStyle
-				group: item.options.group
+				displayStyle: displayStyle
+				group: group
 			questionCount++
 		
 		$scope.$apply ->
@@ -288,7 +298,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 
 		materiaType: "question"
 		id: null
-		type: 'QA'
+		type: 'MC'
 		options:
 			questionType: questionType
 			answerType: answerType
