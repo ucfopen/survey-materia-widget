@@ -117,7 +117,7 @@
 								</md-input-container>
 							</div>
 
-							<!-- Multiple Choice Answer Selection -->
+							<!-- Multiple Choice Preset Selection -->
 							<div layout="row" ng-show="card.questionType == multipleChoice">
 								<md-input-container>
 									<label>Response Values</label>
@@ -131,7 +131,7 @@
 									</md-select>
 								</md-input-container>
 
-								<!-- Style input selection ( horizontal || drop-down ) -->
+								<!-- (MC) Style input selection ( horizontal || drop-down ) -->
 								<md-input-container ng-show="card.answerType == custom">
 									<label>Display Style</label>
 									<md-select ng-model="card.displayStyle" ng-change="updateDisplayStyle(cardIndex)">
@@ -154,10 +154,12 @@
 								</div>
 							</div>
 
+							<!-- Check All That Apply -->
+							<!-- Min/Max Response Settings -->
 							<div layout="row" ng-show="card.questionType == checkAllThatApply">
 								<md-input-container>
 									<label>Set Response Minimum</label>
-									<input type="number" placeholder=" > 0 Required!" ng-model="card.options.minResponseLimit" ng-min="1" ng-max="card.answers.length" required/>
+									<input type="number" placeholder=" > 0 Required!" ng-model="card.options.minResponseLimit" ng-min="1" ng-max="card.answers.length" ng-disabled="card.options.enableNoneOfTheAbove" required/>
 								</md-input-container>
 								<button class="reversed-info" ng-click="showHelpDialog($event, helperMessages[0])">
 									<i class="material-icons">&#xE88F;</i>
@@ -172,7 +174,7 @@
 									</button>
 							</div>
 
-							<!-- Preset Option -->
+							<!-- Multiple Choice Preset Answers -->
 							<md-card-actions layout layout-align="start start" class="radio-choice" ng-show="card.questionType == multipleChoice && card.answerType != custom">
 								<md-radio-group layout="row">
 									<md-radio-button
@@ -184,7 +186,7 @@
 								</md-radio-group>
 							</md-card-actions>
 
-							<!-- Custom -->
+							<!-- Custom Responses (Check All That Apply || Custom) -->
 							<md-card-actions layout 
 								layout-align="start start"
 								class="custom-choice"
@@ -214,15 +216,20 @@
 									<md-button class="md-accent md-raised toggle-option" ng-click="addOption(cardIndex)">
 										Add Option
 									</md-button>
+									<!-- None of the Above Toggle (Check All That Apply) -->
 									<div layout="column" ng-show="card.questionType == checkAllThatApply">
 										<div layout="row" class="md-block" flex>
 											<md-input-container>
 												<md-checkbox
 													ng-model="card.options.enableNoneOfTheAbove"
-													aria-label="Enable None of the Above Option">
+													aria-label="Enable None of the Above Option"
+													ng-click="enforceNoneOfTheAboveRestrictions(cardIndex)">
 													Enable "None of the Above" Option
 												</md-checkbox>
 											</md-input-container>
+											<button class="reversed-info" ng-click="showHelpDialog($event, helperMessages[2])">
+												<i class="material-icons">&#xE88F;</i>
+											</button>
 										</div>
 										<md-input-container ng-show="card.options.enableNoneOfTheAbove">
 											<label>None of the Above Option Text</label>
@@ -231,7 +238,7 @@
 									</div>
 								</div>
 							</md-card-actions>
-
+							<!-- Custom Placeholder Text (Free Response) -->
 							<div layout="row" ng-show="card.questionType == freeResponse">
 								<md-input-container class="md-block" flex>
 									<label>Customize Placeholder Text</label>
