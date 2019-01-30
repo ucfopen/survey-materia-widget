@@ -161,7 +161,7 @@
 									<label>Set Response Minimum</label>
 									<input type="number" placeholder=" > 0 Required!" ng-model="card.options.minResponseLimit" ng-min="1" ng-max="card.answers.length" ng-disabled="card.options.enableNoneOfTheAbove" required/>
 								</md-input-container>
-								<button class="reversed-info" ng-click="showHelpDialog($event, helperMessages[0])">
+								<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[0])">
 									<i class="material-icons">&#xE88F;</i>
 								</button>
 
@@ -169,7 +169,7 @@
 										<label>Set Response Maximum</label>
 										<input type="number" placeholder="No Limit" ng-model="card.options.maxResponseLimit" ng-min="1" ng-max="card.answers.length" />
 									</md-input-container>
-									<button class="reversed-info" ng-click="showHelpDialog($event, helperMessages[1])">
+									<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[1])">
 										<i class="material-icons">&#xE88F;</i>
 									</button>
 							</div>
@@ -227,7 +227,7 @@
 													Enable "None of the Above" Option
 												</md-checkbox>
 											</md-input-container>
-											<button class="reversed-info" ng-click="showHelpDialog($event, helperMessages[2])">
+											<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[2])">
 												<i class="material-icons">&#xE88F;</i>
 											</button>
 										</div>

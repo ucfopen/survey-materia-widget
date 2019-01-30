@@ -64,9 +64,9 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	]
 
 	$scope.helperMessages = [
-		'Set the minimum number of items to be checked. By default, at least one item must be selected. To allow zero responses, select the "None of the Above" option below.',
+		'Set the minimum number of items to be checked. By default, at least one item must be selected. To allow zero responses, select the "None of the Above" option below. Note that doing so will force the minimum response limit to 1.',
 		'Set the maximum number of items to be checked. If the box is left blank, the limit is not applied.',
-		'Provides a dedicated "None of the Above" option, allowing the user to opt out of all other responses without leaving the question blank. Immediately unchecks all other responses if selected. Note that if a user selects this option, they are exempt from the minimum response limit.'
+		'Provides a dedicated "None of the Above" option, allowing the user to opt out of all other responses without leaving the question blank. Immediately unchecks all other responses if selected. Note that if a user selects this option, the minumum response limit is set to 1 and cannot be modified.'
 	]
 
 	$scope.ready = false
