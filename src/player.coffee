@@ -96,8 +96,9 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 						when "check-all-that-apply"
 							checkedItems = []
 
-							for key, check of response
-								if check then checkedItems.push $scope.qset.items[i].answers[key].text
+							for key, check of response								
+								if parseInt(key) is $scope.qset.items[i].answers.length and check then checkedItems.push $scope.qset.items[i].options.noneOfTheAboveText
+								else if check then checkedItems.push $scope.qset.items[i].answers[key].text
 
 							answer = checkedItems.join ", "
 						else
