@@ -52,7 +52,8 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 		numQuestions = $scope.qset.items.length
 		numAnswered = 0.0
 		for response, i in $scope.responses[0...numQuestions]
-			numAnswered++ if response?
+			# numAnswered++ if response?
+			numAnswered++ unless $scope.isIncomplete(i)
 
 		$scope.progress = numAnswered / numQuestions * 100
 
@@ -65,6 +66,10 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 				# Uncheck all other options except the final checkbox
 				for i, response of $scope.responses[qIndex]
 					if i < $scope.qset.items[qIndex].answers.length then $scope.responses[qIndex][i] = false
+
+		# If "None of the Above" is enabled and user selects anything else, set "None of the Above" option to false
+		else if $scope.qset.items[qIndex].options.enableNoneOfTheAbove
+			$scope.responses[qIndex][$scope.qset.items[qIndex].answers.length] = false
 
 		maxChecked = $scope.qset.items[qIndex].options.maxResponseLimit
 
