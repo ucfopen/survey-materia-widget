@@ -64,7 +64,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	]
 
 	$scope.helperMessages = [
-		'Set the minimum number of items to be checked. If the box is left blank, the limit is not applied.',
+		'Set the minimum number of items to be checked. By default, at least one item must be selected. To allow zero responses, select the "None of the Above" option below.',
 		'Set the maximum number of items to be checked. If the box is left blank, the limit is not applied.'
 	]
 
@@ -86,7 +86,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		$scope.$apply ->
 			$scope.title = title
 			$scope.groups = qset.options.groups
-			for item in qset.items
+			for item, index in qset.items
 				$scope.cards.push
 					question: item.questions[0].text
 					questionType: item.options.questionType
@@ -94,6 +94,17 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 					answers: item.answers
 					displayStyle: item.options.displayStyle
 					group: item.options.group
+					options: {}
+
+				# conditional options
+				# ----------------------------
+				# check-all-that-apply options
+				if $scope.cards[index].questionType is $scope.checkAllThatApply
+					$scope.cards[index].options.enableNoneOfTheAbove = if item.options.enableNoneOfTheAbove then item.options.enableNoneOfTheAbove else false
+					$scope.cards[index].options.minResponseLimit = if item.options.minResponseLimit then item.options.minResponseLimit else 1
+					$scope.cards[index].options.maxResponseLimit = if item.options.maxResponseLimit then item.options.maxResponseLimit else null
+					$scope.cards[index].options.noneOfTheAboveText = if item.options.noneOfTheAboveText then item.options.noneOfTheAboveText else "None of the above."
+
 				questionCount++
 			$scope.ready = true
 
@@ -160,8 +171,11 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				$scope.cards[cardIndex].answerType = $scope.custom
 				$scope.cards[cardIndex].answers = [{text: 'Option 1'}, {text: 'Option 2'},{text: 'Option 3'}]
 
-				$scope.cards[cardIndex].options.minResponseLimit = null
+				# Optional parameters for min, max, and "None of the Above" responses
+				$scope.cards[cardIndex].options.minResponseLimit = 1
 				$scope.cards[cardIndex].options.maxResponseLimit = null
+				$scope.cards[cardIndex].options.enableNoneOfTheAbove = false
+				$scope.cards[cardIndex].options.noneOfTheAboveText = "None of the above."
 
 			when $scope.freeResponse
 				$scope.cards[cardIndex].displayStyle = 'text-area'

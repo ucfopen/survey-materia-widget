@@ -37,7 +37,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 
 			when 'check-all-that-apply'
 				minResponses = $scope.qset.items[index].options.minResponseLimit
-				unless minResponses then return false
+				unless minResponses then minResponses = 1
 				responses = 0
 				for i, value of $scope.responses[index]
 					if value is true then responses++
@@ -57,6 +57,14 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 		$scope.progress = numAnswered / numQuestions * 100
 
 	$scope.updateCheckAllThatApply = (qIndex, responseIndex) ->
+		# special case for handling "None of the Above" selection:
+		# The "None of the Above" option is always the last item in the response array
+		if $scope.qset.items[qIndex].options.enableNoneOfTheAbove && responseIndex == $scope.qset.items[qIndex].answers.length
+			# If None of the Above is true...
+			if $scope.responses[qIndex][responseIndex] is true
+				# Uncheck all other options except the final checkbox
+				for i, response of $scope.responses[qIndex]
+					if i < $scope.qset.items[qIndex].answers.length then $scope.responses[qIndex][i] = false
 
 		maxChecked = $scope.qset.items[qIndex].options.maxResponseLimit
 

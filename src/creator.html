@@ -157,7 +157,7 @@
 							<div layout="row" ng-show="card.questionType == checkAllThatApply">
 								<md-input-container>
 									<label>Set Response Minimum</label>
-									<input type="number" placeholder="No Limit" ng-model="card.options.minResponseLimit" ng-min="0" ng-max="card.answers.length" />
+									<input type="number" placeholder=" > 0 Required!" ng-model="card.options.minResponseLimit" ng-min="1" ng-max="card.answers.length" required/>
 								</md-input-container>
 								<button class="reversed-info" ng-click="showHelpDialog($event, helperMessages[0])">
 									<i class="material-icons">&#xE88F;</i>
@@ -214,6 +214,21 @@
 									<md-button class="md-accent md-raised toggle-option" ng-click="addOption(cardIndex)">
 										Add Option
 									</md-button>
+									<div layout="column" ng-show="card.questionType == checkAllThatApply">
+										<div layout="row" class="md-block" flex>
+											<md-input-container>
+												<md-checkbox
+													ng-model="card.options.enableNoneOfTheAbove"
+													aria-label="Enable None of the Above Option">
+													Enable "None of the Above" Option
+												</md-checkbox>
+											</md-input-container>
+										</div>
+										<md-input-container ng-show="card.options.enableNoneOfTheAbove">
+											<label>None of the Above Option Text</label>
+											<input type="text" ng-disabled="!card.options.enableNoneOfTheAbove" placeholder="None of the above." ng-model="card.options.noneOfTheAboveText" aria-label="None of the Above Option Text" />
+										</md-input-container>
+									</div>
 								</div>
 							</md-card-actions>
 
