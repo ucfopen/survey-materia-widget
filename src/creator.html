@@ -157,21 +157,33 @@
 							<!-- Check All That Apply -->
 							<!-- Min/Max Response Settings -->
 							<div layout="row" ng-show="card.questionType == checkAllThatApply">
-								<md-input-container>
-									<label>Set Response Minimum</label>
-									<input type="number" placeholder=" > 0 Required!" ng-model="card.options.minResponseLimit" ng-min="1" ng-max="card.answers.length" ng-disabled="card.options.enableNoneOfTheAbove" required/>
-								</md-input-container>
-								<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[0])">
-									<i class="material-icons">&#xE88F;</i>
-								</button>
+								<form name="minMaxForm">
+									<md-input-container>
+										<label>Set Response Minimum</label>
+										<input type="number" name="minLimit" placeholder=" > 0 Required!" ng-model="card.options.minResponseLimit" ng-min="1" ng-max="card.answers.length" ng-disabled="card.options.enableNoneOfTheAbove" required/>
+										<div ng-messages="minMaxForm.minLimit.$error">
+											<div ng-message="required">Enter a value.</div>
+											<div ng-message="min">Must be > 0.</div>
+											<div ng-message="max">Can't be more than number of options.</div>
+										</div>
+									</md-input-container>
+									<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[0])">
+										<i class="material-icons">&#xE88F;</i>
+									</button>
 
-								<md-input-container>
+									<md-input-container>
 										<label>Set Response Maximum</label>
-										<input type="number" placeholder="No Limit" ng-model="card.options.maxResponseLimit" ng-min="1" ng-max="card.answers.length" />
+										<input type="number" name="maxLimit" placeholder="No Limit" ng-model="card.options.maxResponseLimit" ng-min="1" ng-max="card.answers.length" />
+										<div ng-messages="minMaxForm.maxLimit.$error">
+												<div ng-message="required">Enter a value.</div>
+												<div ng-message="min">Must be > 0.</div>
+												<div ng-message="max">Can't be more than number of options.</div>
+											</div>
 									</md-input-container>
 									<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[1])">
 										<i class="material-icons">&#xE88F;</i>
 									</button>
+								</form>
 							</div>
 
 							<!-- Multiple Choice Preset Answers -->
@@ -233,7 +245,7 @@
 										</div>
 										<md-input-container ng-show="card.options.enableNoneOfTheAbove">
 											<label>None of the Above Option Text</label>
-											<input type="text" ng-disabled="!card.options.enableNoneOfTheAbove" placeholder="None of the above." ng-model="card.options.noneOfTheAboveText" aria-label="None of the Above Option Text" />
+											<input type="text" name="text" ng-disabled="!card.options.enableNoneOfTheAbove" placeholder="None of the above." ng-model="card.options.noneOfTheAboveText" aria-label="None of the Above Option Text" />
 										</md-input-container>
 									</div>
 								</div>

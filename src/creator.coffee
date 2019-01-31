@@ -263,6 +263,10 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			if !card.question || !card.answers then return false
 			for answer in card.answers
 				if !answer.text then return false
+
+			if card.questionType is $scope.checkAllThatApply
+				if card.options.minResponseLimit is undefined then return false
+				if card.options.maxResponseLimit is undefined then return false
 		return true
 
 	$scope.onQuestionImportComplete = (items) ->
