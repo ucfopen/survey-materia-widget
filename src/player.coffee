@@ -7,7 +7,7 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 ]
 
 SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope, $mdToast) ->
-	
+
 	$scope.qset = null
 	$scope.instance = null
 	$scope.responses = []
@@ -35,6 +35,10 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 	$scope.isIncomplete = (index) ->
 		$scope.responses[index] == undefined
 
+	$scope.dropDownAnswer = (answerString) ->
+		if answerString then return answerString
+		return 'Select Answer'
+
 	$scope.updateCompleted = ->
 		return false if !$scope.qset
 
@@ -53,7 +57,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 					switch $scope.qset.items[i].options.questionType
 						when "free-response"
 							answer = response
-						
+
 						when "check-all-that-apply"
 							checkedItems = []
 
