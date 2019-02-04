@@ -115,3 +115,16 @@ h1.md-headline {
 	border-width: 14px;
 	margin-top: -15px;
 }
+
+button.info-tooltip-button {
+	position: relative;
+	top: -0.25em;
+	opacity: 0.5;
+	border: none;
+	outline: none;
+	background: white;
+	padding-left: 3px;
+	i {
+		font-size: 18px;
+	}
+}

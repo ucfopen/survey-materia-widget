@@ -6,6 +6,7 @@
 
 		<!-- STYLESHEETS -->
 		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 		<link rel="stylesheet" type="text/css" href="player.css">
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
@@ -83,14 +84,17 @@
 										ng-change="updateCheckAllThatApply($parent.$index, $index)">
 										{{answer.text}}									
 									</md-checkbox>
-									<md-checkbox
-										ng-if="question.options.enableNoneOfTheAbove"
-										ng-model="responses[$parent.$index][question.answers.length]"
-										ng-init="responses[$parent.$index][question.answers.length] = false"
-										ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)">
-										{{question.options.noneOfTheAboveText}}
-									</md-checkbox>
-
+									<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
+										<md-checkbox
+											ng-model="responses[$parent.$index][question.answers.length]"
+											ng-init="responses[$parent.$index][question.answers.length] = false"
+											ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)">
+											{{question.options.noneOfTheAboveText}}
+										</md-checkbox>
+										<button class="info-tooltip-button" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')">
+											<i class="material-icons">&#xE88F;</i>
+										</button>
+									</div>
 								</md-input-container>
 							</md-card-actions>
 
@@ -102,6 +106,18 @@
 						</div>
 					</md-card>
 
+				</div>
+			</div>
+			<!-- Type Info Dialog -->
+			<div style="visibility: hidden">
+				<div class="md-dialog-container" id="info-dialog-container">
+					<md-dialog id="info-dialog" aria-label="Info Dialog">
+						<md-dialog-content>
+								<div class="md-dialog-content">
+								{{dialogText}}
+							</div>
+						</md-dialog-content>
+					</md-dialog>
 				</div>
 			</div>
 		</md-content>

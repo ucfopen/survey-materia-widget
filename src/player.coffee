@@ -6,7 +6,7 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.accentPalette('indigo')
 ]
 
-SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope, $mdToast) ->
+SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', ($scope, $mdToast, $mdDialog) ->
 	
 	$scope.qset = null
 	$scope.instance = null
@@ -45,6 +45,19 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 				responses < minResponses
 			else
 				$scope.responses[index] == undefined
+
+	$scope.showHelpDialog = (ev, message) ->
+		$scope.dialogText = message
+		$mdDialog.show
+			contentElement: '#info-dialog-container'
+			parent: angular.element(document.body)
+			targetEvent: ev
+			clickOutsideToClose: true
+			openFrom: ev.currentTarget
+			closeTo: ev.currentTarget
+
+	$scope.cancel = () ->
+		$mdDialog.hide()
 
 	$scope.updateCompleted = ->
 		return false if !$scope.qset
