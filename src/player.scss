@@ -68,13 +68,19 @@ h1.md-headline {
 .dropdown-answer-element {
 	position: relative;
 
-	.answer-number {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		padding-right: 16px;
-		font-size: 10px;
-		pointer-events: none;
+	.md-text {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+
+		.answer-text {
+			flex-grow: 1;
+		}
+
+		.answer-number {
+			margin: auto 0 auto 10px;
+			font-size: 10px;
+		}
 	}
 }
 

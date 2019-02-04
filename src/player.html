@@ -68,7 +68,9 @@
 										<md-option class="dropdown-answer-element"
 											ng-repeat="answer in question.answers"
 											ng-value="answer.text">
-												{{answer.text}}
+												<span class="answer-text">
+													{{answer.text}}
+												</span>
 												<span class="answer-number">
 													{{$index+1}} of {{question.answers.length}}
 												</span>
