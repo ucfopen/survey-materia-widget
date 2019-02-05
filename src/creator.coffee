@@ -6,7 +6,7 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.primaryPalette('teal')
 			.accentPalette('blue-grey')
 ]
-SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource) ->
+SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', 'sanitizeHelper', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, sanitizeHelper) ->
 
 	$scope.groups = [
 		{text:'General', color:'#616161'}
@@ -82,8 +82,12 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			$scope.title = title
 			$scope.groups = qset.options.groups
 			for item in qset.items
+
+				for answer in item.answers
+					answer.text = sanitizeHelper.desanitize(answer.text)
+
 				$scope.cards.push
-					question: item.questions[0].text
+					question: sanitizeHelper.desanitize(item.questions[0].text)
 					questionType: item.options.questionType
 					answerType: item.options.answerType
 					answers: item.answers
@@ -241,22 +245,20 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	$scope.onQuestionImportComplete = (items) ->
 		for item in items
-			questionType = $scope.multipleChoice
-			answerType = $scope.custom
-			displayStyle = $scope.horizontalScale
-			group = '0'
-			if item.options
-				if item.options.questionType then questionType = item.options.questionType
-				if item.options.answerType then answerType = item.options.answerType
-				if item.options.displayStyle then displayStyle = item.options.displayStyle
-				if item.options.group then group = item.options.group
+      questionType = if item.options.questionType then item.options.questionType else $scope.multipleChoice
+      answerType = if item.options.answerType then item.options.answerType else $scope.custom
+      displayStyle = item.options.displayStyle then item.options.displayStyle else $scope.dropDown
+      group = 0
+
+			for answer in item.answers
+				answer.text = sanitizeHelper.desanitize(answer.text)
 
 			$scope.cards.push
-				question: item.questions[0].text
+				question: sanitizeHelper.desanitize(item.questions[0].text)
 				questionType: questionType
 				answerType: answerType
+        displayStyle: displayStyle
 				answers: item.answers
-				displayStyle: displayStyle
 				group: group
 			questionCount++
 		
@@ -268,7 +270,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	Materia.CreatorCore.start $scope
 ]
 
-SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
+SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, sanitizeHelper) ->
 	buildQset: (title, questions, groups) ->
 		qsetItems = []
 		qset = {}
@@ -286,15 +288,16 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 		return qset
 
 	processQsetItem: (item) ->
-		question = $sanitize item.question
-		questionType = $sanitize item.questionType
-		answerType = $sanitize item.answerType
-		displayStyle = $sanitize item.displayStyle
-		group = $sanitize item.group
+		question = $sanitize sanitizeHelper.sanitize(item.question)
+		questionType = item.questionType
+		answerType = item.answerType
+		displayStyle = item.displayStyle
+		group = item.group
 
-		# clean out previously generated IDs
+		# clean out previously generated IDs and sanitize answer text
 		for answer in item.answers
 			answer.id = ''
+			answer.text = sanitizeHelper.sanitize(answer.text)
 
 		materiaType: "question"
 		id: null
@@ -306,4 +309,29 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 			group: group
 		questions: [{ text: question }]
 		answers: item.answers
+]
+
+SurveyWidget.service 'sanitizeHelper', [() ->
+	SANITIZE_CHARACTERS =
+		'&' : '&amp;',
+		'>' : '&gt;',
+		'<' : '&lt;',
+		'"' : '&#34;'
+
+	sanitize = (input) ->
+		unless input then return
+		for k, v of SANITIZE_CHARACTERS
+			re = new RegExp(k, "g")
+			input = input.replace re, v
+		return input
+
+	desanitize = (input) ->
+		unless input then return
+		for k, v of SANITIZE_CHARACTERS
+			re = new RegExp(v, "g")
+			input = input.replace re, k
+		return input
+
+	sanitize: sanitize
+	desanitize: desanitize
 ]
