@@ -172,7 +172,8 @@
 									<md-radio-button
 										ng-disabled="true"
 										ng-repeat="answer in card.answers"
-										value={{$index}}>
+										value={{$index}}
+										aria-label="Option {{$index}}: {{answer.text}}">
 										{{answer.text}}
 									</md-radio-button>
 								</md-radio-group>
@@ -181,7 +182,7 @@
 							<!-- Custom -->
 							<md-card-actions layout
 								layout-align="start start"
-								class="custom-choice"
+								class="custom-choice drag-choice"
 								ng-show="(card.questionType == multipleChoice && card.answerType == custom) || card.questionType == checkAllThatApply">
 								<div layout="column" sv-root sv-part="card.answers">
 									<div layout="row" ng-repeat="option in card.answers" sv-element="dragOpts" class="md-block" flex>
@@ -207,6 +208,51 @@
 									</div>
 									<md-button class="md-accent md-raised toggle-option" ng-click="addOption(cardIndex)">
 										Add Option
+									</md-button>
+								</div>
+							</md-card-actions>
+
+							<!-- Sequence -->
+							<md-card-actions layout
+								layout-align="start start"
+								class="sequence-choice drag-choice"
+								ng-show="card.questionType == sequence">
+								<div layout="column" sv-root sv-part="card.answers">
+									<div layout="row">
+										<md-checkbox
+											aria-label="Randomize Order"
+											class="reverse-checkbox"
+											ng-model="card.randomize">
+											<md-tooltip md-direction="below">Present these items to respondents in a random order</md-tooltip>
+											Randomize Order
+										</md-checkbox>
+									</div>
+									<div layout="row" ng-repeat="item in card.answers" sv-element="dragOpts" class="md-block" flex>
+										<form name="optionsForm">
+												<md-button class="option-controls" sv-handle tabindex="-1">
+													<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
+													<i class="material-icons">&#xE25D;</i>
+												</md-button>
+
+												<md-input-container>
+													<input class="custom-options-input"
+														type="text"
+														ng-model="item.text"
+														name="text" required
+														aria-label="{{item.text}}">
+													<div ng-messages="optionsForm.text.$error">
+														<div ng-message="required">Option is required.</div>
+													</div>
+												</md-input-container>
+
+												<md-button class="option-controls" ng-click="removeOption(cardIndex, $index)" tabindex="-1">
+													<md-tooltip md-direction="below">Remove Item</md-tooltip>
+													<i class="material-icons">&#xE15D;</i>
+												</md-button>
+											</form>
+									</div>
+									<md-button class="md-accent md-raised toggle-option" ng-click="addOption(cardIndex)">
+										Add Item
 									</md-button>
 								</div>
 							</md-card-actions>

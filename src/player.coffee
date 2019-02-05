@@ -31,6 +31,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 		$scope.qset = qset
 		$scope.progress = 0
 		$scope.$apply()
+		console.log(qset)
 
 	$scope.isIncomplete = (index) ->
 		$scope.responses[index] == undefined

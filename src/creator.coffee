@@ -45,12 +45,14 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	$scope.multipleChoice = 'multiple-choice'
 	$scope.checkAllThatApply = 'check-all-that-apply'
 	$scope.freeResponse = 'free-response'
+	$scope.sequence = 'sequence'
 
 	# Question Type Array
 	$scope.questionTypes = [
 		{text: 'Multiple Choice',value:'multiple-choice'},
 		{text: 'Check All That Apply', value:'check-all-that-apply'},
-		{text: 'Free Response', value:'free-response'}
+		{text: 'Free Response', value:'free-response'},
+		{text: 'Sequence', value: 'sequence'}
 	]
 
 	# Answer Display Types
@@ -66,7 +68,9 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	$scope.ready = false
 	$scope.cards = []
 	$scope.dragging = false
-	$scope.dragOpts = {containment: ".custom-choice"}
+	$scope.dragOpts = {
+		containment: ".drag-choice"
+	}
 
 	questionCount = 0
 	originatorEv = null
@@ -166,6 +170,11 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				$scope.cards[cardIndex].displayStyle = 'text-area'
 				$scope.cards[cardIndex].answerType = $scope.custom
 				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]
+
+			when $scope.sequence
+				$scope.cards[cardIndex].displayStyle = 'sequence'
+				$scope.cards[cardIndex].answerType = $scope.custom
+				$scope.cards[cardIndex].answers = [{text: 'Item 1'}, {text: 'Item 2'},{text: 'Item 3'}]
 
 		$scope.cards[cardIndex].fresh = false
 

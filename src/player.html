@@ -79,6 +79,7 @@
 								</md-input-container>
 							</md-card-actions>
 
+							<!-- Vertical Style -->
 							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == verticalList">
 								<md-input-container layout="column">
 									<md-checkbox
@@ -91,12 +92,27 @@
 								</md-input-container>
 							</md-card-actions>
 
+							<!-- Free Response Style -->
 							<md-card-actions layout ng-if="question.options.displayStyle == textArea">
 								<md-input-container class="md-block" flex>
 									<textarea type="text" ng-model="responses[$index]" aria-label="Answer Text Area" ng-change="updateCompleted()" placeholder="{{question.answers[0].text}}"></textarea>
 								</md-input-container>
 							</md-card-actions>
 						</div>
+
+						<!-- Sequence Style -->
+						<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == sequence">
+							<md-input-container layout="column">
+								<md-checkbox
+									ng-repeat="answer in question.answers"
+									ng-model="responses[$parent.$index][$index]"
+									ng-init="responses[$parent.$index][$index] = false"
+									ng-change="updateCompleted()">
+									{{answer.text}}
+								</md-checkbox>
+							</md-input-container>
+						</md-card-actions>
+
 					</md-card>
 
 				</div>
