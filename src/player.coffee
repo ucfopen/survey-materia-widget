@@ -1,4 +1,4 @@
-SurveyWidget = angular.module 'SurveyWidgetEngine', ['ngMaterial']
+SurveyWidget = angular.module 'SurveyWidgetEngine', ['ngMaterial', 'angular-sortable-view']
 
 SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
@@ -16,7 +16,11 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 	$scope.dropDown = 'drop-down'
 	$scope.verticalList = 'vertical-list'
 	$scope.textArea = 'text-area'
+	$scope.sequence = 'sequence'
 
+	$scope.dragOpts = {
+		containment: ".drag-choice"
+	}
 
 	$scope.showToast = (message) ->
 		$mdToast.show(
@@ -27,11 +31,29 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 		)
 
 	$scope.start = (instance, qset, version) ->
+		for item, index in qset.items
+			if item.options.displayStyle == $scope.sequence
+				$scope.responses[index] = false
+			if item.options.randomize
+				item.answers = shuffle item.answers
+
 		$scope.instance = instance
 		$scope.qset = qset
 		$scope.progress = 0
 		$scope.$apply()
-		console.log(qset)
+
+	shuffle = (array) ->
+		temp = null
+		currentPass = array.length
+
+		while currentPass
+			swapIndex = Math.floor(Math.random() * currentPass--)
+
+			temp = array[currentPass]
+			array[currentPass] = array[swapIndex]
+			array[swapIndex] = temp
+
+		array
 
 	$scope.isIncomplete = (index) ->
 		$scope.responses[index] == undefined
@@ -39,6 +61,10 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 	$scope.dropDownAnswer = (answerString) ->
 		if answerString then return answerString
 		return 'Select Answer'
+
+	$scope.toggleSequence = (index) ->
+		$scope.responses[index] = !$scope.responses[index]
+		$scope.updateCompleted()
 
 	$scope.updateCompleted = ->
 		return false if !$scope.qset
@@ -66,6 +92,11 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 								if check then checkedItems.push $scope.qset.items[i].answers[key].text
 
 							answer = checkedItems.join ", "
+
+						when $scope.sequence
+							answersText = $scope.qset.items[i].answers.map (answer) ->
+								answer.text
+							answer = answersText.join "\n"
 						else
 
 							answer = $scope.qset.items[i].answers[~~response].text

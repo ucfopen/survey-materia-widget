@@ -175,6 +175,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				$scope.cards[cardIndex].displayStyle = 'sequence'
 				$scope.cards[cardIndex].answerType = $scope.custom
 				$scope.cards[cardIndex].answers = [{text: 'Item 1'}, {text: 'Item 2'},{text: 'Item 3'}]
+				$scope.cards[cardIndex].randomize = false
 
 		$scope.cards[cardIndex].fresh = false
 
@@ -269,6 +270,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				answers: item.answers
 				displayStyle: item.options.displayStyle
 				group: item.options.group
+				randomize: item.options.randomize
 			questionCount++
 
 		$scope.$apply ->
@@ -297,6 +299,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 		return qset
 
 	processQsetItem: (item) ->
+		console.log(item)
 		question = $sanitize item.question
 		questionType = $sanitize item.questionType
 		answerType = $sanitize item.answerType
@@ -315,6 +318,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 			answerType: answerType
 			displayStyle: displayStyle
 			group: group
+			randomize: item.randomize
 		questions: [{ text: question }]
 		answers: item.answers
 ]

@@ -6,6 +6,7 @@
 
 		<!-- STYLESHEETS -->
 		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 		<link rel="stylesheet" type="text/css" href="player.css">
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
@@ -16,6 +17,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
+		<script src="vendor/angular-sortable-view.min.js"></script>
 
 		<!-- MAIN WIDGET SCRIPT -->
 		<script src="player.js"></script>
@@ -41,7 +43,6 @@
 						ng-repeat="question in qset.items"
 						ng-class="{'incomplete': showIncomplete && isIncomplete($index)}">
 						<div class="card-right" layout="column">
-
 							<md-card-title class="card-title">
 								<span class="md-headline">{{question.questions[0].text}}</span>
 							</md-card-title>
@@ -101,16 +102,33 @@
 						</div>
 
 						<!-- Sequence Style -->
-						<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == sequence">
-							<md-input-container layout="column">
-								<md-checkbox
-									ng-repeat="answer in question.answers"
-									ng-model="responses[$parent.$index][$index]"
-									ng-init="responses[$parent.$index][$index] = false"
-									ng-change="updateCompleted()">
-									{{answer.text}}
-								</md-checkbox>
-							</md-input-container>
+						<md-card-actions layout
+							layout-align="start start"
+							class="drag-choice"
+							ng-if="question.options.displayStyle == sequence">
+							<div layout="column" sv-root sv-part="question.answers">
+								<div layout="row">
+									<md-button
+										class="md-primary md-raised"
+										aria-label="{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}"
+										ng-click="toggleSequence($parent.$index)"
+										ng-model="responses[$parent.$index]">
+										<md-tooltip md-direction="below">
+											{{responses[$parent.$index] ? 'Click to rearrange these items' : 'Click to accept the current order of these items'}}
+										</md-tooltip>
+										{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}
+									</md-button>
+								</div>
+								<div layout="row" ng-repeat="item in question.answers" sv-element="dragOpts" class="md-block" flex>
+									<md-button ng-class="{'hidden': responses[$parent.$index]}"
+										class="option-controls"
+										sv-handle tabindex="-1">
+										<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
+										<i class="material-icons">&#xE25D;</i>
+									</md-button>
+									<p>{{item.text}}</p>
+								</div>
+							</div>
 						</md-card-actions>
 
 					</md-card>
