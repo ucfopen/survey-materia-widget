@@ -309,21 +309,23 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 
 SurveyWidget.service 'sanitizeHelper', [() ->
 	SANITIZE_CHARACTERS =
+		'&' : '&amp;',
 		'>' : '&gt;',
 		'<' : '&lt;',
-		'&' : '&amp;',
 		'"' : '&#34;'
 
 	sanitize = (input) ->
 		unless input then return
 		for k, v of SANITIZE_CHARACTERS
-			input = input.replace k, v
+			re = new RegExp(k, "g")
+			input = input.replace re, v
 		return input
 
 	desanitize = (input) ->
 		unless input then return
 		for k, v of SANITIZE_CHARACTERS
-			input = input.replace v, k
+			re = new RegExp(v, "g")
+			input = input.replace re, k
 		return input
 
 	sanitize: sanitize

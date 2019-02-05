@@ -18,15 +18,16 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 	$scope.textArea = 'text-area'
 
 	SANITIZED_CHARACTERS =
+		'&' : '&amp;',
 		'>' : '&gt;',
 		'<' : '&lt;',
-		'&' : '&amp;',
 		'"' : '&#34;'
 
 	desanitize = (input) ->
 		unless input then return
 		for k, v of SANITIZED_CHARACTERS
-			input = input.replace v, k
+			re = new RegExp(v, "g")
+			input = input.replace re, k
 		return input
 
 	desanitizeQset = (qset) ->
