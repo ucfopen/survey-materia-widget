@@ -247,7 +247,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		for item in items
 			questionType = if item.options.questionType then item.options.questionType else $scope.multipleChoice
 			answerType = if item.options.answerType then item.options.answerType else $scope.custom
-			displayStyle = item.options.displayStyle then item.options.displayStyle else $scope.dropDown
+			displayStyle = if item.options.displayStyle then item.options.displayStyle else $scope.dropDown
 			group = 0
 
 			for answer in item.answers
