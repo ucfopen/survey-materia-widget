@@ -6,7 +6,7 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.primaryPalette('teal')
 			.accentPalette('blue-grey')
 ]
-SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource) ->
+SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', '$timeout', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, $timeout) ->
 
 	$scope.groups = [
 		{text:'General', color:'#616161'}
@@ -93,6 +93,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 					answers: item.answers
 					displayStyle: item.options.displayStyle
 					group: item.options.group
+					randomize: item.options.randomize
 				questionCount++
 			$scope.ready = true
 
@@ -127,6 +128,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			answerType: $scope.presetLikelihood												# type of answer: is it a preset range, or custom
 			displayStyle: $scope.horizontalScale											# should answers be displayed horizontally or via drop-down
 			group: 0																		# group - NYI
+			randomize: false
 			fresh: true
 
 	$scope.addOption = (cardIndex) ->
@@ -142,6 +144,41 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		if $scope.cards[cardIndex].answers.length == 0
 			$scope.showToast("Must have at least one option.")
 			$scope.addOption(cardIndex)
+
+	$scope.handleSequenceKeyDown = (event, cardIndex, itemIndex) ->
+		switch event.which
+			when 38 #up arrow
+				event.preventDefault()
+				$scope.moveSequenceItemUp(cardIndex, itemIndex)
+				$timeout ->
+					event.target.focus()
+			when 40 #down arrow
+				event.preventDefault()
+				$scope.moveSequenceItemDown(cardIndex, itemIndex)
+				$timeout ->
+					event.target.focus()
+			else
+				return
+
+	$scope.moveSequenceItemUp = (cardIndex, itemIndex, event) ->
+		if itemIndex == 0
+			$scope.cards[cardIndex].answers.push $scope.cards[cardIndex].answers.shift()
+		else
+			item = $scope.cards[cardIndex].answers.splice(itemIndex, 1)
+			$scope.cards[cardIndex].answers.splice(itemIndex - 1, 0, item[0])
+		if event
+			$timeout ->
+					event.target.focus()
+
+	$scope.moveSequenceItemDown = (cardIndex, itemIndex, event) ->
+		if itemIndex == $scope.cards[cardIndex].answers.length - 1
+			$scope.cards[cardIndex].answers.unshift $scope.cards[cardIndex].answers.pop()
+		else
+			item = $scope.cards[cardIndex].answers.splice(itemIndex, 1)
+			$scope.cards[cardIndex].answers.splice(itemIndex + 1, 0, item[0])
+		if event
+			$timeout ->
+					event.target.focus()
 
 	# Called when EITHER the question type or answer type changes (when MC is selected)
 	# Populates the response section depending on question type and whether or not presets are selected
@@ -299,7 +336,6 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 		return qset
 
 	processQsetItem: (item) ->
-		console.log(item)
 		question = $sanitize item.question
 		questionType = $sanitize item.questionType
 		answerType = $sanitize item.answerType

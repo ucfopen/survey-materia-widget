@@ -227,7 +227,11 @@
 											Randomize Order
 										</md-checkbox>
 									</div>
-									<div layout="row" ng-repeat="item in card.answers" sv-element="dragOpts" class="md-block" flex>
+									<div layout="row"
+										ng-repeat="item in card.answers"
+										sv-element="dragOpts"
+										class="md-block"
+										flex>
 										<form name="optionsForm">
 												<md-button class="option-controls" sv-handle tabindex="-1">
 													<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
@@ -238,6 +242,7 @@
 													<input class="custom-options-input"
 														type="text"
 														ng-model="item.text"
+														ng-keydown="handleSequenceKeyDown($event, cardIndex, $index)"
 														name="text" required
 														aria-label="{{item.text}}">
 													<div ng-messages="optionsForm.text.$error">
@@ -245,7 +250,20 @@
 													</div>
 												</md-input-container>
 
-												<md-button class="option-controls" ng-click="removeOption(cardIndex, $index)" tabindex="-1">
+												<md-button class="option-controls"
+													ng-click="moveSequenceItemUp(cardIndex, $index, $event)">
+													<md-tooltip md-direction="below">Move Item Up</md-tooltip>
+													<i class="material-icons">&#xE316;</i>
+												</md-button>
+
+												<md-button class="option-controls"
+													ng-click="moveSequenceItemDown(cardIndex, $index, $event)">
+													<md-tooltip md-direction="below">Move Item Down</md-tooltip>
+													<i class="material-icons">&#xE313;</i>
+												</md-button>
+
+												<md-button class="option-controls"
+													ng-click="removeOption(cardIndex, $index)">
 													<md-tooltip md-direction="below">Remove Item</md-tooltip>
 													<i class="material-icons">&#xE15D;</i>
 												</md-button>
