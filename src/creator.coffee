@@ -257,7 +257,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				question: sanitizeHelper.desanitize(item.questions[0].text)
 				questionType: questionType
 				answerType: answerType
-        displayStyle: displayStyle
+				displayStyle: displayStyle
 				answers: item.answers
 				group: group
 			questionCount++
@@ -288,7 +288,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 		return qset
 
 	processQsetItem: (item) ->
-		question = $sanitize sanitizeHelper.sanitize(item.question)
+		question = sanitizeHelper.sanitize(item.question)
 		questionType = item.questionType
 		answerType = item.answerType
 		displayStyle = item.displayStyle
@@ -301,7 +301,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 
 		materiaType: "question"
 		id: null
-		type: 'MC'
+		type: 'Survey'
 		options:
 			questionType: questionType
 			answerType: answerType

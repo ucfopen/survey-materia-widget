@@ -24,6 +24,7 @@ meta_data:
     - Customizable
   supported_data:
     - Multiple Choice
+    - Survey
   about: >
     Build simple surveys with multiple choice, check-all-that-apply, and free response questions.
   excerpt: >
