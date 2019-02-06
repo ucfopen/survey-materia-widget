@@ -127,16 +127,42 @@ h1.md-headline {
 
 button.md-button.option-controls {
 	margin-top: 10px;
-	opacity: 0.5;
 	min-width: 30px;
-	transition: opacity linear 0.25s;
+	line-height: 36px;
 
-	&.hidden {
-		pointer-events: none;
-		opacity: 0;
+	p {
+		display: inline-block;
+		opacity: 1;
+		margin: 0 0 0 10px;
+		padding: 0;
 	}
 
 	i {
-		line-height: 36px;
+		margin-top: 10px;
+		opacity: 0.5;
+		transition: opacity linear 0.25s;
+	}
+	&.hidden {
+		pointer-events: none;
+
+		i {
+			opacity: 0;
+		}
+	}
+}
+
+.reorder-controls {
+	opacity: 0.5;
+	margin: auto 0;
+	user-select: none;
+	transition: opacity linear 0.25s;
+
+	&.hidden {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.move-arrow {
+		cursor: pointer;
 	}
 }

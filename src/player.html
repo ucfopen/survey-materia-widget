@@ -109,7 +109,8 @@
 							<div layout="column" sv-root sv-part="question.answers">
 								<div layout="row">
 									<md-button
-										class="md-primary md-raised"
+										class="md-raised"
+										ng-class="{'md-primary': responses[$parent.$index], 'md-accent': !responses[$parent.$index]}"
 										aria-label="{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}"
 										ng-click="toggleSequence($parent.$index)"
 										ng-model="responses[$parent.$index]">
@@ -119,14 +120,38 @@
 										{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}
 									</md-button>
 								</div>
-								<div layout="row" ng-repeat="item in question.answers" sv-element="dragOpts" class="md-block" flex>
+								<div layout="row"
+									ng-repeat="item in question.answers"
+									sv-element="dragOpts"
+									class="md-block"
+									ng-keydown="handleSequenceKeyDown($event, $parent.$index, $index)"
+									tabindex="{{responses[$parent.$index] ? '-1' : '0'}}"
+									flex>
 									<md-button ng-class="{'hidden': responses[$parent.$index]}"
 										class="option-controls"
-										sv-handle tabindex="-1">
-										<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
-										<i class="material-icons">&#xE25D;</i>
+										sv-handle
+										tabindex="-1">
+										<i class="material-icons">
+											&#xE25D;
+											<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
+										</i>
+										<p>{{item.text}}</p>
 									</md-button>
-									<p>{{item.text}}</p>
+									<span ng-class="{'hidden': responses[$parent.$index]}"
+										class="reorder-controls">
+										<span class="move-arrow"
+											ng-hide="$first"
+											ng-click="moveSequenceItemUp($parent.$index, $index)">
+											<md-tooltip md-direction="below">Move Item Up</md-tooltip>
+											<i class="material-icons">&#xE316;</i>
+										</span>
+										<span class="move-arrow"
+											ng-hide="$last"
+											ng-click="moveSequenceItemDown($parent.$index, $index)">
+											<md-tooltip md-direction="below">Move Item Down</md-tooltip>
+											<i class="material-icons">&#xE313;</i>
+										</span>
+									</span>
 								</div>
 							</div>
 						</md-card-actions>
