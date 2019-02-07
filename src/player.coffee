@@ -56,8 +56,8 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 	$scope.isIncomplete = (index) ->
 		$scope.responses[index] == undefined
 
-	$scope.dropDownAnswer = (answerString) ->
-		if answerString then return answerString
+	$scope.dropDownAnswer = (questionIndex, answerIndex) ->
+		if answerIndex then return $scope.qset.items[questionIndex].answers[answerIndex].text
 		return 'Select Answer'
 
 	$scope.updateCompleted = ->

@@ -64,10 +64,10 @@
 										ng-model="responses[$index]"
 										aria-label="Answer"
 										ng-change="updateCompleted()"
-										md-selected-text="dropDownAnswer(responses[$index])">
+										md-selected-text="dropDownAnswer($index, responses[$index])">
 										<md-option class="dropdown-answer-element"
 											ng-repeat="answer in question.answers"
-											ng-value="answer.text">
+											value="{{$index}}">
 												<span class="answer-text">
 													{{answer.text}}
 												</span>
