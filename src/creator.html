@@ -50,6 +50,7 @@
 					<md-card class="md-whiteframe-3dp card"
 						style="border-top: 5px solid {{groups[card.group].color}}"
 						ng-repeat="(cardIndex, card) in cards"
+						ng-class="{'fresh': card && card.fresh}"
 						layout="row">
 
 						<!-- Card Header -->
@@ -57,7 +58,13 @@
 							<form name="questionForm">
 								<md-input-container class="md-block">
 									<label>Question {{$index + 1}}</label>
-									<input ng-model="card.question" name="question" required placeholder="Enter question text here." spellcheck="true">
+									<input ng-model="card.question"
+										name="question"
+										required
+										placeholder="Enter question text here."
+										spellcheck="true"
+										focus-me="card.fresh"
+										ng-change="card.fresh = false">
 									<div ng-messages="questionForm.question.$error">
 										<div ng-message="required">Question text is required.</div>
 									</div>
@@ -95,7 +102,12 @@
 									</md-menu-content>
 								</md-menu> -->
 
-								<button class="delete" ng-click="deleteQuestion(cardIndex)">
+								<button class="duplicate" ng-click="duplicateQuestion(cardIndex)">
+									<md-tooltip md-direction="below">Duplicate this Question</md-tooltip>
+									<i class="material-icons">&#xE14D;</i>
+								</button>
+
+								<button class="delete" ng-click="card.fresh=false;deleteQuestion(cardIndex)">
 									<md-tooltip md-direction="below">Delete this Question</md-tooltip>
 									<i class="material-icons">&#xE872;</i>
 								</button>

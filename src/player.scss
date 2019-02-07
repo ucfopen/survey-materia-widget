@@ -79,6 +79,25 @@ h1.md-headline {
 	min-width: 200px;
 }
 
+.dropdown-answer-element {
+	position: relative;
+
+	.md-text {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+
+		.answer-text {
+			flex-grow: 1;
+		}
+
+		.answer-number {
+			margin: auto 0 auto 10px;
+			font-size: 10px;
+		}
+	}
+}
+
 .arrow_box {
 	position: absolute;
 	background: #ffff82;
@@ -127,4 +146,7 @@ button.info-tooltip-button {
 	i {
 		font-size: 18px;
 	}
+}
+.layout-row {
+	flex-wrap: wrap;
 }

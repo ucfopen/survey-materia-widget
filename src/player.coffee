@@ -17,6 +17,27 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 	$scope.verticalList = 'vertical-list'
 	$scope.textArea = 'text-area'
 
+	SANITIZED_CHARACTERS =
+		'&' : '&amp;',
+		'>' : '&gt;',
+		'<' : '&lt;',
+		'"' : '&#34;'
+
+	desanitize = (input) ->
+		unless input then return
+		for k, v of SANITIZED_CHARACTERS
+			re = new RegExp(v, "g")
+			input = input.replace re, k
+		return input
+
+	desanitizeQset = (qset) ->
+		for index, item of qset.items
+			item.questions[0].text = desanitize(item.questions[0].text)
+
+			for answer of item.answers
+				answer.text = desanitize(answer.text)
+
+		return qset
 
 	$scope.showToast = (message) ->
 		$mdToast.show(
@@ -28,7 +49,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	$scope.start = (instance, qset, version) ->
 		$scope.instance = instance
-		$scope.qset = qset
+		$scope.qset = desanitizeQset(qset)
 		$scope.progress = 0
 		$scope.$apply()
 
@@ -58,6 +79,10 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	$scope.cancel = () ->
 		$mdDialog.hide()
+
+	$scope.dropDownAnswer = (answerString) ->
+		if answerString then return answerString
+		return 'Select Answer'
 
 	$scope.updateCompleted = ->
 		return false if !$scope.qset
@@ -105,7 +130,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 					switch $scope.qset.items[i].options.questionType
 						when "free-response"
 							answer = response
-						
+
 						when "check-all-that-apply"
 							checkedItems = []
 

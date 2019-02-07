@@ -1,12 +1,12 @@
 # Create an angular module to house our controller
-SurveyWidget = angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngSanitize', 'angular-sortable-view']
+SurveyWidget = angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngAnimate', 'ngSanitize', 'angular-sortable-view']
 
 SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
 			.primaryPalette('teal')
 			.accentPalette('blue-grey')
 ]
-SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource) ->
+SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', 'sanitizeHelper', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, sanitizeHelper) ->
 
 	$scope.groups = [
 		{text:'General', color:'#616161'}
@@ -89,7 +89,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			$scope.groups = qset.options.groups
 			for item, index in qset.items
 				$scope.cards.push
-					question: item.questions[0].text
+					question: sanitizeHelper.desanitize(item.questions[0].text)
 					questionType: item.options.questionType
 					answerType: item.options.answerType
 					answers: item.answers
@@ -117,15 +117,22 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	$scope.swapCards = (index1, index2) ->
 		[$scope.cards[index1], $scope.cards[index2]] = [$scope.cards[index2], $scope.cards[index1]]
 
+	$scope.duplicateQuestion = (index) ->
+		duplicate = angular.copy($scope.cards[index])
+		duplicate.fresh = true
+		$scope.cards.splice index + 1, 0, duplicate
+		questionCount++
+		focusedCard = $scope.cards[index + 1]
+
 	$scope.deleteQuestion = (index) ->
-		$scope.cards.splice index, 1
+		$scope.cards[index].fresh = false
 		questionCount--
+		$scope.cards.splice index, 1
 		if $scope.cards.length == 0
 			$scope.showToast("Must have at least one question.")
 			$scope.addQuestion()
 
 	$scope.addQuestion = ->
-		questionCount++
 		$scope.cards.push
 			question: ''																	# question text
 			answers: angular.copy $scope.presets[$scope.presetLikelihood].values			# array of answer responses of form [{text: 'answer text'}]
@@ -134,6 +141,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			displayStyle: $scope.horizontalScale											# should answers be displayed horizontally or via drop-down
 			group: 0																		# group - NYI
 			options: {}																		# extra options specific to individual question types
+			fresh: true
 
 	$scope.addOption = (cardIndex) ->
 		style = $scope.cards[cardIndex].displayStyle
@@ -152,7 +160,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	# Called when EITHER the question type or answer type changes (when MC is selected)
 	# Populates the response section depending on question type and whether or not presets are selected
 	$scope.updateResponseType = (cardIndex) ->
-		
+
 		switch ($scope.cards[cardIndex].questionType)
 
 			when $scope.multipleChoice
@@ -162,7 +170,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				if $scope.cards[cardIndex].answerType >= 0
 					index = $scope.cards[cardIndex].answerType
 					$scope.cards[cardIndex].answers = angular.copy $scope.presets[index].values
-				# Otherwise give it some default range values 
+				# Otherwise give it some default range values
 				else
 					$scope.cards[cardIndex].answers = angular.copy $scope.presets[1].values
 
@@ -180,11 +188,14 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 			when $scope.freeResponse
 				$scope.cards[cardIndex].displayStyle = 'text-area'
-				$scope.cards[cardIndex].answerType = $scope.custom		
-				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]		
-		
+				$scope.cards[cardIndex].answerType = $scope.custom
+				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]
+
+		$scope.cards[cardIndex].fresh = false
+
 	$scope.reverseValues = (cardIndex) ->
 		$scope.cards[cardIndex].answers = $scope.cards[cardIndex].answers.reverse()
+		$scope.cards[cardIndex].fresh = false
 
 	$scope.enforceNoneOfTheAboveRestrictions = (cardIndex) ->
 		if !$scope.cards[cardIndex].options.enableNoneOfTheAbove then $scope.cards[cardIndex].options.minResponseLimit = 1
@@ -195,6 +206,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		if $scope.cards[cardIndex].displayStyle is $scope.horizontalScale && responseCount > 5
 			$scope.showToast "Sorry, can't use the Horizontal Scale display option with more than 5 response options."
 			$scope.cards[cardIndex].displayStyle = $scope.dropDown
+		$scope.cards[cardIndex].fresh = false
 
 	# ------------------------------// groups //-------------------------------------
 	# Groups -- to be re-instated
@@ -271,15 +283,19 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	$scope.onQuestionImportComplete = (items) ->
 		for item in items
+
+			for answer in item.answers
+				answer.text = sanitizeHelper.desanitize(answer.text)
+
 			$scope.cards.push
-				question: item.questions[0].text
+				question: sanitizeHelper.desanitize(item.questions[0].text)
 				questionType: item.options.questionType
 				answerType: item.options.answerType
 				answers: item.answers
 				displayStyle: item.options.displayStyle
 				group: item.options.group
 			questionCount++
-		
+
 		$scope.$apply ->
 			$scope.showToast "Added " + items.length + " imported questions."
 
@@ -288,7 +304,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	Materia.CreatorCore.start $scope
 ]
 
-SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
+SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, sanitizeHelper) ->
 	buildQset: (title, questions, groups) ->
 		qsetItems = []
 		qset = {}
@@ -305,17 +321,17 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 		qset.options = {groups: groups}
 		return qset
 
-	processQsetItem: (q) ->
-		
-		questionText = $sanitize q.question
-		questionType = $sanitize q.questionType
-		answerType = $sanitize q.answerType
-		displayStyle = $sanitize q.displayStyle
-		group = $sanitize q.group
+	processQsetItem: (item) ->
+		question = $sanitize sanitizeHelper.sanitize(item.question)
+		questionType = item.questionType
+		answerType = item.answerType
+		displayStyle = item.displayStyle
+		group = item.group
 
-		# clean out previously generated IDs
-		for answer in q.answers
+		# clean out previously generated IDs and sanitize answer text
+		for answer in item.answers
 			answer.id = ''
+			answer.text = sanitizeHelper.sanitize(answer.text)
 
 		item =
 			materiaType: "question"
@@ -333,4 +349,39 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 			item.options[key] = value
 
 		return item	
+]
+
+SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
+	link: (scope, element, attrs) ->
+		model = $parse(attrs.focusMe)
+		scope.$watch model, (value) ->
+			if value
+				$timeout ->
+					element[0].focus()
+			value
+]
+
+SurveyWidget.service 'sanitizeHelper', [() ->
+	SANITIZE_CHARACTERS =
+		'&' : '&amp;',
+		'>' : '&gt;',
+		'<' : '&lt;',
+		'"' : '&#34;'
+
+	sanitize = (input) ->
+		unless input then return
+		for k, v of SANITIZE_CHARACTERS
+			re = new RegExp(k, "g")
+			input = input.replace re, v
+		return input
+
+	desanitize = (input) ->
+		unless input then return
+		for k, v of SANITIZE_CHARACTERS
+			re = new RegExp(v, "g")
+			input = input.replace re, k
+		return input
+
+	sanitize: sanitize
+	desanitize: desanitize
 ]
