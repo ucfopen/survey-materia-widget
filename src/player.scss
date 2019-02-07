@@ -140,13 +140,15 @@ button.md-button.option-controls {
 	i {
 		margin-top: 10px;
 		opacity: 0.5;
-		transition: opacity linear 0.25s;
+		width: 30px;
+		transition: opacity linear 0.25s, width linear 0.25s;
 	}
 	&.hidden {
 		pointer-events: none;
 
 		i {
 			opacity: 0;
+			width: 0;
 		}
 	}
 }
@@ -155,14 +157,23 @@ button.md-button.option-controls {
 	opacity: 0.5;
 	margin: auto 0;
 	user-select: none;
-	transition: opacity linear 0.25s;
+	width: 55px;
+	transition: opacity linear 0.25s, width linear 0.25s;
 
 	&.hidden {
 		opacity: 0;
+		width: 0;
 		pointer-events: none;
 	}
 
 	.move-arrow {
 		cursor: pointer;
 	}
+}
+
+.instructions {
+	color: #575757;
+	font-size: 0.8em;
+	margin: 0 50px 10px 20px;
+	user-select: none;
 }

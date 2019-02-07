@@ -78,6 +78,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', '$timeo
 		$scope.updateCompleted()
 
 	$scope.handleSequenceKeyDown = (event, questionIndex, itemIndex) ->
+		return if $scope.responses[questionIndex]
 		switch event.which
 			when 38 #up arrow
 				event.preventDefault()

@@ -27,7 +27,7 @@
 		<md-content id="container">
 			<md-toolbar>
 				<div class="md-toolbar-tools" layout="row">
-					<h2>{{instance.name}}</h2>
+					<h2 aria-label="widget title {{instance.name}}" tabindex="0">{{instance.name}}</h2>
 					<span flex></span>
 					<md-button class="md-raised" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
 						Submit
@@ -40,11 +40,15 @@
 				<div flex="55" id="card-container">
 
 					<md-card class="md-whiteframe-3dp card"
+						role="region"
+						aria-labelledby="{{question$index + 1}}"
 						ng-repeat="question in qset.items"
 						ng-class="{'incomplete': showIncomplete && isIncomplete($index)}">
 						<div class="card-right" layout="column">
 							<md-card-title class="card-title">
-								<span class="md-headline">{{question.questions[0].text}}</span>
+								<span id="{{question$index + 1}}"
+									aria-label="question {{$index + 1}}: {{question.questions[0].text}}"
+									class="md-headline">{{question.questions[0].text}}</span>
 							</md-card-title>
 
 							<!-- Scale Style -->
@@ -106,11 +110,20 @@
 							layout-align="start start"
 							class="drag-choice"
 							ng-if="question.options.displayStyle == sequence">
-							<div layout="column" sv-root sv-part="question.answers">
+							<div layout="column" sv-root sv-part="question.answers" role="listbox">
+								<p tabindex="0" aria-live="polite" class='instructions'>
+									<span ng-if="responses[$parent.$index]">
+											Activate the 'Rearrange Items' button to rearrange the sequence.
+									</span>
+									<span ng-if="!responses[$parent.$index]">
+											Arrange the following sequence of items as desired and activate the 'Accept Order' button to proceed. Navigate through the list with the tab key and rearrange the items using the 'Up' or 'Down' arrow keys.
+									</span>
+								</p>
 								<div layout="row">
 									<md-button
 										class="md-raised"
 										ng-class="{'md-primary': responses[$parent.$index], 'md-accent': !responses[$parent.$index]}"
+										aria-live="polite"
 										aria-label="{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}"
 										ng-click="toggleSequence($parent.$index)"
 										ng-model="responses[$parent.$index]">
@@ -125,16 +138,20 @@
 									sv-element="dragOpts"
 									class="md-block"
 									ng-keydown="handleSequenceKeyDown($event, $parent.$index, $index)"
-									tabindex="{{responses[$parent.$index] ? '-1' : '0'}}"
+									tabindex="0"
+									role="option"
 									flex>
 									<span ng-class="{'hidden': responses[$parent.$index]}"
+										aria-hidden="true"
 										class="reorder-controls">
 										<span class="move-arrow"
+											tabindex="-1"
 											ng-click="moveSequenceItemUp($parent.$index, $index)">
 											<md-tooltip md-direction="below">Move Item Up</md-tooltip>
 											<i class="material-icons">&#xE316;</i>
 										</span>
 										<span class="move-arrow"
+											tabindex="-1"
 											ng-click="moveSequenceItemDown($parent.$index, $index)">
 											<md-tooltip md-direction="below">Move Item Down</md-tooltip>
 											<i class="material-icons">&#xE313;</i>
@@ -144,12 +161,20 @@
 										class="option-controls"
 										sv-handle
 										tabindex="-1">
-										<i class="material-icons">
+										<i class="material-icons" aria-hidden="true">
 											&#xE25D;
 											<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
 										</i>
 										<p>{{item.text}}</p>
 									</md-button>
+								</div>
+								<div layout="row">
+									<span
+										aria-live="polite"
+										aria-label="{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}"
+										ng-click="toggleSequence($parent.$index)"
+										ng-model="responses[$parent.$index]">
+									</span>
 								</div>
 							</div>
 						</md-card-actions>
