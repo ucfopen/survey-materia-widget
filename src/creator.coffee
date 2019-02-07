@@ -6,7 +6,7 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.primaryPalette('teal')
 			.accentPalette('blue-grey')
 ]
-SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', '$timeout', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, $timeout) ->
+SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', 'sanitizeHelper', '$timeout', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, sanitizeHelper, $timeout) ->
 
 	$scope.groups = [
 		{text:'General', color:'#616161'}
@@ -86,8 +86,12 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			$scope.title = title
 			$scope.groups = qset.options.groups
 			for item in qset.items
+
+				for answer in item.answers
+					answer.text = sanitizeHelper.desanitize(answer.text)
+
 				$scope.cards.push
-					question: item.questions[0].text
+					question: sanitizeHelper.desanitize(item.questions[0].text)
 					questionType: item.options.questionType
 					answerType: item.options.answerType
 					answers: item.answers
@@ -138,12 +142,14 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			$scope.showToast "Can only have 5 options per scale. Set Display Type to Dropdown to add more.", 10000
 			return
 		$scope.cards[cardIndex].answers.push { text:'' }
+		$scope.cards[cardIndex].fresh = false
 
 	$scope.removeOption = (cardIndex, optionIndex) ->
 		$scope.cards[cardIndex].answers.splice optionIndex, 1
 		if $scope.cards[cardIndex].answers.length == 0
 			$scope.showToast("Must have at least one option.")
 			$scope.addOption(cardIndex)
+		$scope.cards[cardIndex].fresh = false
 
 	$scope.handleSequenceKeyDown = (event, cardIndex, itemIndex) ->
 		switch event.which
@@ -169,6 +175,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		if event
 			$timeout ->
 					event.target.focus()
+		$scope.cards[cardIndex].fresh = false
 
 	$scope.moveSequenceItemDown = (cardIndex, itemIndex, event) ->
 		if itemIndex == $scope.cards[cardIndex].answers.length - 1
@@ -179,6 +186,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		if event
 			$timeout ->
 					event.target.focus()
+		$scope.cards[cardIndex].fresh = false
 
 	# Called when EITHER the question type or answer type changes (when MC is selected)
 	# Populates the response section depending on question type and whether or not presets are selected
@@ -300,8 +308,12 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	$scope.onQuestionImportComplete = (items) ->
 		for item in items
+
+			for answer in item.answers
+				answer.text = sanitizeHelper.desanitize(answer.text)
+
 			$scope.cards.push
-				question: item.questions[0].text
+				question: sanitizeHelper.desanitize(item.questions[0].text)
 				questionType: item.options.questionType
 				answerType: item.options.answerType
 				answers: item.answers
@@ -318,7 +330,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	Materia.CreatorCore.start $scope
 ]
 
-SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
+SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, sanitizeHelper) ->
 	buildQset: (title, questions, groups) ->
 		qsetItems = []
 		qset = {}
@@ -336,15 +348,16 @@ SurveyWidget.factory 'Resource', ['$sanitize', ($sanitize) ->
 		return qset
 
 	processQsetItem: (item) ->
-		question = $sanitize item.question
-		questionType = $sanitize item.questionType
-		answerType = $sanitize item.answerType
-		displayStyle = $sanitize item.displayStyle
-		group = $sanitize item.group
+		question = $sanitize sanitizeHelper.sanitize(item.question)
+		questionType = item.questionType
+		answerType = item.answerType
+		displayStyle = item.displayStyle
+		group = item.group
 
-		# clean out previously generated IDs
+		# clean out previously generated IDs and sanitize answer text
 		for answer in item.answers
 			answer.id = ''
+			answer.text = sanitizeHelper.sanitize(answer.text)
 
 		materiaType: "question"
 		id: null
@@ -367,4 +380,29 @@ SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 				$timeout ->
 					element[0].focus()
 			value
+]
+
+SurveyWidget.service 'sanitizeHelper', [() ->
+	SANITIZE_CHARACTERS =
+		'&' : '&amp;',
+		'>' : '&gt;',
+		'<' : '&lt;',
+		'"' : '&#34;'
+
+	sanitize = (input) ->
+		unless input then return
+		for k, v of SANITIZE_CHARACTERS
+			re = new RegExp(k, "g")
+			input = input.replace re, v
+		return input
+
+	desanitize = (input) ->
+		unless input then return
+		for k, v of SANITIZE_CHARACTERS
+			re = new RegExp(v, "g")
+			input = input.replace re, k
+		return input
+
+	sanitize: sanitize
+	desanitize: desanitize
 ]
