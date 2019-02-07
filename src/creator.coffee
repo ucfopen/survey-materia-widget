@@ -283,17 +283,21 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	$scope.onQuestionImportComplete = (items) ->
 		for item in items
+			questionType = if item.options.questionType then item.options.questionType else $scope.multipleChoice
+			answerType = if item.options.answerType then item.options.answerType else $scope.custom
+			displayStyle = if item.options.displayStyle then item.options.displayStyle else $scope.dropDown
+			group = 0
 
 			for answer in item.answers
 				answer.text = sanitizeHelper.desanitize(answer.text)
 
 			$scope.cards.push
 				question: sanitizeHelper.desanitize(item.questions[0].text)
-				questionType: item.options.questionType
-				answerType: item.options.answerType
+				questionType: questionType
+				answerType: answerType
+				displayStyle: displayStyle
 				answers: item.answers
-				displayStyle: item.options.displayStyle
-				group: item.options.group
+				group: group
 			questionCount++
 
 		$scope.$apply ->
@@ -322,7 +326,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 		return qset
 
 	processQsetItem: (item) ->
-		question = $sanitize sanitizeHelper.sanitize(item.question)
+		question = sanitizeHelper.sanitize(item.question)
 		questionType = item.questionType
 		answerType = item.answerType
 		displayStyle = item.displayStyle
@@ -333,22 +337,22 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 			answer.id = ''
 			answer.text = sanitizeHelper.sanitize(answer.text)
 
-		item =
+		processed =
 			materiaType: "question"
 			id: null
-			type: 'QA'
+			type: 'Survey'
 			options:
 				questionType: questionType
 				answerType: answerType
 				displayStyle: displayStyle
 				group: group
-			questions: [{ text: questionText }]
-			answers: q.answers
+			questions: [{ text: question }]
+			answers: item.answers
 
-		for key, value of q.options
-			item.options[key] = value
+		for key, value of item.options
+			processed.options[key] = value
 
-		return item	
+		return processed
 ]
 
 SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->

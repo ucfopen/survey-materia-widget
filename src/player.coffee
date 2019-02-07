@@ -80,8 +80,8 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 	$scope.cancel = () ->
 		$mdDialog.hide()
 
-	$scope.dropDownAnswer = (answerString) ->
-		if answerString then return answerString
+	$scope.dropDownAnswer = (questionIndex, answerIndex) ->
+		if answerIndex then return $scope.qset.items[questionIndex].answers[answerIndex].text
 		return 'Select Answer'
 
 	$scope.updateCompleted = ->
