@@ -43,8 +43,6 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', '$timeo
 
 	$scope.start = (instance, qset, version) ->
 		for item, index in qset.items
-			if item.options.displayStyle == $scope.sequence
-				$scope.responses[index] = false
 			if item.options.randomize
 				item.answers = shuffle item.answers
 
