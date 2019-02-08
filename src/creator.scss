@@ -25,7 +25,7 @@
 	}
 
 	md-input-container {
-		min-width: 125px;
+		min-width: 160px;
 		margin: 5px;
 
 		input.custom-options-input {
@@ -100,11 +100,11 @@
 				}
 			}
 
-			button.reversed-info {
+			button.info-tooltip-button {
 				opacity: 0.5;
 				border: none;
 				outline: none;
-				background: white;
+				background: rgba(0,0,0,0);
 				padding-left: 3px;
 				i {
 					font-size: 18px;

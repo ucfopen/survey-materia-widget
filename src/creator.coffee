@@ -65,6 +65,12 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		{text: 'Drop Down', value: 'drop-down'}
 	]
 
+	$scope.helperMessages = [
+		'Set the minimum number of items to be checked. By default, at least one item must be selected. To allow zero responses, select the "None of the Above" option below. Note that doing so will force the minimum response limit to 1.',
+		'Set the maximum number of items to be checked. If the box is left blank, the limit is not applied.',
+		'Provides a dedicated "None of the Above" option, allowing the user to opt out of all other responses without leaving the question blank. Immediately unchecks all other responses if selected. Note that if a user selects this option, the minumum response limit is set to 1 and cannot be modified.'
+	]
+
 	$scope.ready = false
 	$scope.cards = []
 	$scope.dragging = false
@@ -85,11 +91,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		$scope.$apply ->
 			$scope.title = title
 			$scope.groups = qset.options.groups
-			for item in qset.items
-
-				for answer in item.answers
-					answer.text = sanitizeHelper.desanitize(answer.text)
-
+			for item, index in qset.items
 				$scope.cards.push
 					question: sanitizeHelper.desanitize(item.questions[0].text)
 					questionType: item.options.questionType
@@ -98,6 +100,17 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 					displayStyle: item.options.displayStyle
 					group: item.options.group
 					randomize: item.options.randomize
+					options: {}
+
+				# conditional options
+				# ----------------------------
+				# check-all-that-apply options
+				if $scope.cards[index].questionType is $scope.checkAllThatApply
+					$scope.cards[index].options.enableNoneOfTheAbove = if item.options.enableNoneOfTheAbove then item.options.enableNoneOfTheAbove else false
+					$scope.cards[index].options.minResponseLimit = if item.options.minResponseLimit then item.options.minResponseLimit else 1
+					$scope.cards[index].options.maxResponseLimit = if item.options.maxResponseLimit then item.options.maxResponseLimit else null
+					$scope.cards[index].options.noneOfTheAboveText = if item.options.noneOfTheAboveText then item.options.noneOfTheAboveText else "None of the above."
+
 				questionCount++
 			$scope.ready = true
 
@@ -133,6 +146,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			displayStyle: $scope.horizontalScale											# should answers be displayed horizontally or via drop-down
 			group: 0																		# group - NYI
 			randomize: false
+			options: {}																		# extra options specific to individual question types
 			fresh: true
 
 	$scope.addOption = (cardIndex) ->
@@ -147,7 +161,8 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	$scope.removeOption = (cardIndex, optionIndex) ->
 		$scope.cards[cardIndex].answers.splice optionIndex, 1
 		if $scope.cards[cardIndex].answers.length == 0
-			$scope.showToast("Must have at least one option.")
+			toastEnding = if $scope.cards[cardIndex].questionType == $scope.sequence then 'item' else 'question'
+			$scope.showToast('Must have at least one ' + toastEnding + '.')
 			$scope.addOption(cardIndex)
 		$scope.cards[cardIndex].fresh = false
 
@@ -211,6 +226,12 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				$scope.cards[cardIndex].answerType = $scope.custom
 				$scope.cards[cardIndex].answers = [{text: 'Option 1'}, {text: 'Option 2'},{text: 'Option 3'}]
 
+				# Optional parameters for min, max, and "None of the Above" responses
+				$scope.cards[cardIndex].options.minResponseLimit = 1
+				$scope.cards[cardIndex].options.maxResponseLimit = null
+				$scope.cards[cardIndex].options.enableNoneOfTheAbove = false
+				$scope.cards[cardIndex].options.noneOfTheAboveText = "None of the above."
+
 			when $scope.freeResponse
 				$scope.cards[cardIndex].displayStyle = 'text-area'
 				$scope.cards[cardIndex].answerType = $scope.custom
@@ -228,6 +249,9 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		$scope.cards[cardIndex].answers = $scope.cards[cardIndex].answers.reverse()
 		$scope.cards[cardIndex].fresh = false
 
+	$scope.enforceNoneOfTheAboveRestrictions = (cardIndex) ->
+		if !$scope.cards[cardIndex].options.enableNoneOfTheAbove then $scope.cards[cardIndex].options.minResponseLimit = 1
+
 	$scope.updateDisplayStyle = (cardIndex) ->
 		responseCount = $scope.cards[cardIndex].answers.length
 
@@ -235,7 +259,6 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			$scope.showToast "Sorry, can't use the Horizontal Scale display option with more than 5 response options."
 			$scope.cards[cardIndex].displayStyle = $scope.dropDown
 		$scope.cards[cardIndex].fresh = false
-
 
 	# ------------------------------// groups //-------------------------------------
 	# Groups -- to be re-instated
@@ -268,8 +291,8 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	# ------------------------------// groups //-------------------------------------
 
-	$scope.showTypeDialog = (ev, questionType) ->
-		$scope.dialogText = reversedTooltips[questionType]
+	$scope.showHelpDialog = (ev, message) ->
+		$scope.dialogText = message
 		$mdDialog.show
 			contentElement: '#info-dialog-container'
 			parent: angular.element(document.body)
@@ -304,18 +327,27 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			if !card.question || !card.answers then return false
 			for answer in card.answers
 				if !answer.text then return false
+
+			if card.questionType is $scope.checkAllThatApply
+				if card.options.minResponseLimit is undefined then return false
+				if card.options.maxResponseLimit is undefined then return false
 		return true
 
 	$scope.onQuestionImportComplete = (items) ->
 		for item in items
+			questionType = if item.options.questionType then item.options.questionType else $scope.multipleChoice
+			answerType = if item.options.answerType then item.options.answerType else $scope.custom
+			displayStyle = if item.options.displayStyle then item.options.displayStyle else $scope.dropDown
+			group = 0
 
 			for answer in item.answers
 				answer.text = sanitizeHelper.desanitize(answer.text)
 
 			$scope.cards.push
 				question: sanitizeHelper.desanitize(item.questions[0].text)
-				questionType: item.options.questionType
-				answerType: item.options.answerType
+				questionType: questionType
+				answerType: answerType
+				displayStyle: displayStyle
 				answers: item.answers
 				displayStyle: item.options.displayStyle
 				group: item.options.group
@@ -348,7 +380,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 		return qset
 
 	processQsetItem: (item) ->
-		question = $sanitize sanitizeHelper.sanitize(item.question)
+		question = sanitizeHelper.sanitize(item.question)
 		questionType = item.questionType
 		answerType = item.answerType
 		displayStyle = item.displayStyle
@@ -359,17 +391,23 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 			answer.id = ''
 			answer.text = sanitizeHelper.sanitize(answer.text)
 
-		materiaType: "question"
-		id: null
-		type: 'QA'
-		options:
-			questionType: questionType
-			answerType: answerType
-			displayStyle: displayStyle
-			group: group
-			randomize: item.randomize
-		questions: [{ text: question }]
-		answers: item.answers
+		processed =
+			materiaType: "question"
+			id: null
+			type: 'Survey'
+			options:
+				questionType: questionType
+				answerType: answerType
+				displayStyle: displayStyle
+				group: group
+				randomize: item.randomize
+			questions: [{ text: question }]
+			answers: item.answers
+
+		for key, value of item.options
+			processed.options[key] = value
+
+		return processed
 ]
 
 SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->

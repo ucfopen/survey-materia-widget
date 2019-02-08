@@ -69,10 +69,10 @@
 										ng-model="responses[$index]"
 										aria-label="Answer"
 										ng-change="updateCompleted()"
-										md-selected-text="dropDownAnswer(responses[$index])">
+										md-selected-text="dropDownAnswer($index, responses[$index])">
 										<md-option class="dropdown-answer-element"
 											ng-repeat="answer in question.answers"
-											ng-value="answer.text">
+											value="{{$index}}">
 												<span class="answer-text">
 													{{answer.text}}
 												</span>
@@ -84,16 +84,31 @@
 								</md-input-container>
 							</md-card-actions>
 
-							<!-- Vertical Style -->
-							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == verticalList">
+							<!-- Check All That Apply -->
+							<md-card-actions layout="column" layout-align="start start" ng-if="question.options.displayStyle == verticalList && question.options.questionType == 'check-all-that-apply'">
+								<div layout="row">
+									<span class="response-limit-description" ng-if="question.options.minResponseLimit">Select at least {{question.options.minResponseLimit}} item{{ question.options.minResponseLimit > 1 ? "s" : "" }}.</span>
+									<span class="response-limit-description" ng-if="question.options.maxResponseLimit">Select at most {{question.options.maxResponseLimit}} item{{ question.options.maxResponseLimit > 1 ? "s" : "" }}.</span>
+								</div>
 								<md-input-container layout="column">
 									<md-checkbox
 										ng-repeat="answer in question.answers"
 										ng-model="responses[$parent.$index][$index]"
 										ng-init="responses[$parent.$index][$index] = false"
-										ng-change="updateCompleted()">
+										ng-change="updateCheckAllThatApply($parent.$index, $index)">
 										{{answer.text}}
 									</md-checkbox>
+									<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
+										<md-checkbox
+											ng-model="responses[$parent.$index][question.answers.length]"
+											ng-init="responses[$parent.$index][question.answers.length] = false"
+											ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)">
+											{{question.options.noneOfTheAboveText}}
+										</md-checkbox>
+										<button class="info-tooltip-button" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')">
+											<i class="material-icons">&#xE88F;</i>
+										</button>
+									</div>
 								</md-input-container>
 							</md-card-actions>
 
@@ -181,6 +196,18 @@
 
 					</md-card>
 
+				</div>
+			</div>
+			<!-- Type Info Dialog -->
+			<div style="visibility: hidden">
+				<div class="md-dialog-container" id="info-dialog-container">
+					<md-dialog id="info-dialog" aria-label="Info Dialog">
+						<md-dialog-content>
+								<div class="md-dialog-content">
+								{{dialogText}}
+							</div>
+						</md-dialog-content>
+					</md-dialog>
 				</div>
 			</div>
 		</md-content>
