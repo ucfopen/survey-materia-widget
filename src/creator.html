@@ -129,7 +129,7 @@
 								</md-input-container>
 							</div>
 
-							<!-- Multiple Choice Answer Selection -->
+							<!-- Multiple Choice Preset Selection -->
 							<div layout="row" ng-show="card.questionType == multipleChoice">
 								<md-input-container>
 									<label>Response Values</label>
@@ -143,7 +143,7 @@
 									</md-select>
 								</md-input-container>
 
-								<!-- Style input selection ( horizontal || drop-down ) -->
+								<!-- (MC) Style input selection ( horizontal || drop-down ) -->
 								<md-input-container ng-show="card.answerType == custom">
 									<label>Display Style</label>
 									<md-select ng-model="card.displayStyle" ng-change="updateDisplayStyle(cardIndex)">
@@ -166,7 +166,39 @@
 								</div>
 							</div>
 
-							<!-- Preset Option -->
+							<!-- Check All That Apply -->
+							<!-- Min/Max Response Settings -->
+							<div layout="row" ng-show="card.questionType == checkAllThatApply">
+								<form name="minMaxForm">
+									<md-input-container>
+										<label>Set Response Minimum</label>
+										<input type="number" name="minLimit" placeholder=" > 0 Required!" ng-model="card.options.minResponseLimit" ng-min="1" ng-max="card.answers.length" ng-disabled="card.options.enableNoneOfTheAbove" required/>
+										<div ng-messages="minMaxForm.minLimit.$error">
+											<div ng-message="required">Enter a value.</div>
+											<div ng-message="min">Must be > 0.</div>
+											<div ng-message="max">Can't be more than number of options.</div>
+										</div>
+									</md-input-container>
+									<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[0])">
+										<i class="material-icons">&#xE88F;</i>
+									</button>
+
+									<md-input-container>
+										<label>Set Response Maximum</label>
+										<input type="number" name="maxLimit" placeholder="No Limit" ng-model="card.options.maxResponseLimit" ng-min="1" ng-max="card.answers.length" />
+										<div ng-messages="minMaxForm.maxLimit.$error">
+												<div ng-message="required">Enter a value.</div>
+												<div ng-message="min">Must be > 0.</div>
+												<div ng-message="max">Can't be more than number of options.</div>
+											</div>
+									</md-input-container>
+									<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[1])">
+										<i class="material-icons">&#xE88F;</i>
+									</button>
+								</form>
+							</div>
+
+							<!-- Multiple Choice Preset Answers -->
 							<md-card-actions layout layout-align="start start" class="radio-choice" ng-show="card.questionType == multipleChoice && card.answerType != custom">
 								<md-radio-group layout="row">
 									<md-radio-button
@@ -178,8 +210,8 @@
 								</md-radio-group>
 							</md-card-actions>
 
-							<!-- Custom -->
-							<md-card-actions layout
+							<!-- Custom Responses (Check All That Apply || Custom) -->
+							<md-card-actions layout 
 								layout-align="start start"
 								class="custom-choice"
 								ng-show="(card.questionType == multipleChoice && card.answerType == custom) || card.questionType == checkAllThatApply">
@@ -208,9 +240,29 @@
 									<md-button class="md-accent md-raised toggle-option" ng-click="addOption(cardIndex)">
 										Add Option
 									</md-button>
+									<!-- None of the Above Toggle (Check All That Apply) -->
+									<div layout="column" ng-show="card.questionType == checkAllThatApply">
+										<div layout="row" class="md-block" flex>
+											<md-input-container>
+												<md-checkbox
+													ng-model="card.options.enableNoneOfTheAbove"
+													aria-label="Enable None of the Above Option"
+													ng-click="enforceNoneOfTheAboveRestrictions(cardIndex)">
+													Enable "None of the Above" Option
+												</md-checkbox>
+											</md-input-container>
+											<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[2])">
+												<i class="material-icons">&#xE88F;</i>
+											</button>
+										</div>
+										<md-input-container ng-show="card.options.enableNoneOfTheAbove">
+											<label>None of the Above Option Text</label>
+											<input type="text" name="text" ng-disabled="!card.options.enableNoneOfTheAbove" placeholder="None of the above." ng-model="card.options.noneOfTheAboveText" aria-label="None of the Above Option Text" />
+										</md-input-container>
+									</div>
 								</div>
 							</md-card-actions>
-
+							<!-- Custom Placeholder Text (Free Response) -->
 							<div layout="row" ng-show="card.questionType == freeResponse">
 								<md-input-container class="md-block" flex>
 									<label>Customize Placeholder Text</label>

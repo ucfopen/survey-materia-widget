@@ -6,8 +6,8 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.accentPalette('indigo')
 ]
 
-SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope, $mdToast) ->
-
+SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', ($scope, $mdToast, $mdDialog) ->
+	
 	$scope.qset = null
 	$scope.instance = null
 	$scope.responses = []
@@ -54,7 +54,31 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 		$scope.$apply()
 
 	$scope.isIncomplete = (index) ->
-		$scope.responses[index] == undefined
+		switch $scope.qset.items[index].options.questionType
+
+			when 'check-all-that-apply'
+				minResponses = $scope.qset.items[index].options.minResponseLimit
+				unless minResponses then minResponses = 1
+				responses = 0
+				for i, value of $scope.responses[index]
+					if value is true then responses++
+
+				responses < minResponses
+			else
+				$scope.responses[index] == undefined
+
+	$scope.showHelpDialog = (ev, message) ->
+		$scope.dialogText = message
+		$mdDialog.show
+			contentElement: '#info-dialog-container'
+			parent: angular.element(document.body)
+			targetEvent: ev
+			clickOutsideToClose: true
+			openFrom: ev.currentTarget
+			closeTo: ev.currentTarget
+
+	$scope.cancel = () ->
+		$mdDialog.hide()
 
 	$scope.dropDownAnswer = (questionIndex, answerIndex) ->
 		if answerIndex then return $scope.qset.items[questionIndex].answers[answerIndex].text
@@ -66,9 +90,37 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 		numQuestions = $scope.qset.items.length
 		numAnswered = 0.0
 		for response, i in $scope.responses[0...numQuestions]
-			numAnswered++ if response?
+			# numAnswered++ if response?
+			numAnswered++ unless $scope.isIncomplete(i)
 
 		$scope.progress = numAnswered / numQuestions * 100
+
+	$scope.updateCheckAllThatApply = (qIndex, responseIndex) ->
+		# special case for handling "None of the Above" selection:
+		# The "None of the Above" option is always the last item in the response array
+		if $scope.qset.items[qIndex].options.enableNoneOfTheAbove && responseIndex == $scope.qset.items[qIndex].answers.length
+			# If None of the Above is true...
+			if $scope.responses[qIndex][responseIndex] is true
+				# Uncheck all other options except the final checkbox
+				for i, response of $scope.responses[qIndex]
+					if i < $scope.qset.items[qIndex].answers.length then $scope.responses[qIndex][i] = false
+
+		# If "None of the Above" is enabled and user selects anything else, set "None of the Above" option to false
+		else if $scope.qset.items[qIndex].options.enableNoneOfTheAbove
+			$scope.responses[qIndex][$scope.qset.items[qIndex].answers.length] = false
+
+		maxChecked = $scope.qset.items[qIndex].options.maxResponseLimit
+
+		if maxChecked
+			checkedCount = 0
+			for i, value of $scope.responses[qIndex]
+				if value is true then checkedCount++
+
+			if checkedCount > maxChecked
+				$scope.showToast "You can only select " + maxChecked + " items!"
+				$scope.responses[qIndex][responseIndex] = false			
+
+		$scope.updateCompleted()		
 
 	$scope.submit = ->
 		if $scope.progress == 100
@@ -82,8 +134,9 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast', ($scope
 						when "check-all-that-apply"
 							checkedItems = []
 
-							for key, check of response
-								if check then checkedItems.push $scope.qset.items[i].answers[key].text
+							for key, check of response								
+								if parseInt(key) is $scope.qset.items[i].answers.length and check then checkedItems.push $scope.qset.items[i].options.noneOfTheAboveText
+								else if check then checkedItems.push $scope.qset.items[i].answers[key].text
 
 							answer = checkedItems.join ", "
 						else

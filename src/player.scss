@@ -36,6 +36,20 @@ md-toolbar {
 	.card-title {
 		padding-bottom: 5px;
 	}
+
+	span.response-limit-description {
+		margin: 5px 0px 5px 0px;
+		opacity: 0.6;
+		font-size:0.8em;
+
+		&:nth-child(2) {
+			&:before {
+				content: " ";
+				left: 0px;
+				margin-left: 0.25em;
+			}
+		}
+	}
 }
 
 .card.incomplete {
@@ -121,6 +135,18 @@ h1.md-headline {
 	margin-top: -15px;
 }
 
+button.info-tooltip-button {
+	position: relative;
+	top: -0.25em;
+	opacity: 0.5;
+	border: none;
+	outline: none;
+	background: white;
+	padding-left: 3px;
+	i {
+		font-size: 18px;
+	}
+}
 .layout-row {
 	flex-wrap: wrap;
 }
