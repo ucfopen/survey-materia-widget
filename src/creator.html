@@ -226,7 +226,12 @@
 
 											<md-input-container>
 												<label>Option {{$index + 1}}</label>
-												<input class="custom-options-input" type="text" ng-model="option.text" name="text" required>
+												<input type="text"
+													class="custom-options-input"
+													ng-model="option.text"
+													name="text"
+													focus-me="option.text == ''"
+													required >
 												<div ng-messages="optionsForm.text.$error">
 													<div ng-message="required">Option is required.</div>
 												</div>
@@ -291,12 +296,13 @@
 												</md-button>
 
 												<md-input-container>
-														<label>Item {{$index + 1}}</label>
-													<input class="custom-options-input"
-														type="text"
+													<label>Item {{$index + 1}}</label>
+													<input type="text"
+														class="custom-options-input"
 														ng-model="item.text"
 														ng-keydown="handleSequenceKeyDown($event, cardIndex, $index)"
 														name="text" required
+														focus-me="item.text == ''"
 														aria-label="{{item.text}}">
 													<div ng-messages="optionsForm.text.$error">
 														<div ng-message="required">Item is required.</div>
