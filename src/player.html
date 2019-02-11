@@ -57,7 +57,7 @@
 									</md-radio-button>
 								</md-radio-group>
 							</md-card-actions>
-							
+
 							<!-- Dropdown Style -->
 							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == dropDown">
 								<md-input-container layout="row">
@@ -91,7 +91,7 @@
 										ng-model="responses[$parent.$index][$index]"
 										ng-init="responses[$parent.$index][$index] = false"
 										ng-change="updateCheckAllThatApply($parent.$index, $index)">
-										{{answer.text}}									
+										{{answer.text}}
 									</md-checkbox>
 									<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
 										<md-checkbox
@@ -114,7 +114,9 @@
 							</md-card-actions>
 						</div>
 					</md-card>
-
+					<md-button class="md-raised bottom-submit" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
+						Submit
+					</md-button>
 				</div>
 			</div>
 			<!-- Type Info Dialog -->
@@ -130,6 +132,5 @@
 				</div>
 			</div>
 		</md-content>
-		<div class="arrow_box" ng-show="progress == 100">Click to finish</div>
 	</body>
 </html>

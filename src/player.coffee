@@ -36,8 +36,14 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 			for answer of item.answers
 				answer.text = desanitize(answer.text)
-
 		return qset
+
+	locateAndScrollToIncomplete = () ->
+		for index, question of $scope.qset.items
+			if $scope.isIncomplete(index)
+				cardElement = document.getElementsByClassName("card")[index]
+				cardElement.scrollIntoView()
+				return
 
 	$scope.showToast = (message) ->
 		$mdToast.show(
@@ -118,9 +124,9 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 			if checkedCount > maxChecked
 				$scope.showToast "You can only select " + maxChecked + " items!"
-				$scope.responses[qIndex][responseIndex] = false			
+				$scope.responses[qIndex][responseIndex] = false
 
-		$scope.updateCompleted()		
+		$scope.updateCompleted()
 
 	$scope.submit = ->
 		if $scope.progress == 100
@@ -134,7 +140,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 						when "check-all-that-apply"
 							checkedItems = []
 
-							for key, check of response								
+							for key, check of response
 								if parseInt(key) is $scope.qset.items[i].answers.length and check then checkedItems.push $scope.qset.items[i].options.noneOfTheAboveText
 								else if check then checkedItems.push $scope.qset.items[i].answers[key].text
 
@@ -151,6 +157,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		else
 			$scope.showIncomplete = true
 			$scope.showToast "Must complete all questions."
+			locateAndScrollToIncomplete()
 		return
 
 	Materia.Engine.start($scope)
