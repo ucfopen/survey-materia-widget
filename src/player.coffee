@@ -106,12 +106,11 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		if answerIndex then return $scope.qset.items[questionIndex].answers[answerIndex].text
 		return 'Select Answer'
 
-	$scope.toggleSequence = (index) ->
-		$scope.responses[index] = !$scope.responses[index]
+	$scope.markSequenceComplete = (index) ->
+		$scope.responses[index] = true
 		$scope.updateCompleted()
 
 	$scope.handleSequenceKeyDown = (event, questionIndex, itemIndex) ->
-		return if $scope.responses[questionIndex]
 		switch event.which
 			when 38 #up arrow
 				event.preventDefault()
@@ -132,6 +131,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		else
 			item = $scope.qset.items[questionIndex].answers.splice(itemIndex, 1)
 			$scope.qset.items[questionIndex].answers.splice(itemIndex - 1, 0, item[0])
+		$scope.markSequenceComplete(questionIndex)
 
 	$scope.moveSequenceItemDown = (questionIndex, itemIndex) ->
 		if itemIndex == $scope.qset.items[questionIndex].answers.length - 1
@@ -139,6 +139,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		else
 			item = $scope.qset.items[questionIndex].answers.splice(itemIndex, 1)
 			$scope.qset.items[questionIndex].answers.splice(itemIndex + 1, 0, item[0])
+		$scope.markSequenceComplete(questionIndex)
 
 	$scope.updateCompleted = ->
 		return false if !$scope.qset

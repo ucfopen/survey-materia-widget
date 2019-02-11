@@ -125,39 +125,49 @@
 							layout-align="start start"
 							class="drag-choice"
 							ng-if="question.options.displayStyle == sequence">
-							<div layout="column" sv-root sv-part="question.answers" role="listbox">
-								<p tabindex="0" aria-live="polite" class='instructions'>
-									<span ng-if="responses[$parent.$index]">
-											Activate the 'Rearrange Items' button to rearrange the sequence.
+							<div layout="column"
+								sv-root
+								sv-on-sort="markSequenceComplete($parent.$index)"
+								sv-part="question.answers"
+								role="listbox">
+								<p tabindex="0" class='instructions'>
+									<span>
+											Arrange the following sequence of items as desired.
+											Use the arrow buttons or click and drag the items to rearrange them.
 									</span>
-									<span ng-if="!responses[$parent.$index]">
-											Arrange the following sequence of items as desired and activate the 'Accept Order' button to proceed. Navigate through the list with the tab key and rearrange the items using the 'Up' or 'Down' arrow keys.
+									<span>
+										You may also navigate through the list with the tab key and rearrange the items using the 'Up' or 'Down' arrow keys.
 									</span>
 								</p>
-								<div layout="row">
+								<div layout="row"
+									ng-if="showIncomplete && isIncomplete($parent.$index)">
 									<md-button
-										class="md-raised"
-										ng-class="{'md-primary': responses[$parent.$index], 'md-accent': !responses[$parent.$index]}"
-										aria-live="polite"
-										aria-label="{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}"
-										ng-click="toggleSequence($parent.$index)"
+										class="md-raised md-primary"
+										aria-label="Accept Order"
+										ng-click="markSequenceComplete($parent.$index)"
 										ng-model="responses[$parent.$index]">
 										<md-tooltip md-direction="below">
-											{{responses[$parent.$index] ? 'Click to rearrange these items' : 'Click to accept the current order of these items'}}
+											Click to accept the current order of these items
 										</md-tooltip>
-										{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}
+										Accept Order
 									</md-button>
 								</div>
 								<div layout="row"
 									ng-repeat="item in question.answers"
 									sv-element="dragOpts"
-									class="md-block"
+									class="md-block sequence-item"
 									ng-keydown="handleSequenceKeyDown($event, $parent.$index, $index)"
 									tabindex="0"
 									role="option"
 									flex>
-									<span ng-class="{'hidden': responses[$parent.$index]}"
-										aria-hidden="true"
+									<span class="drag-handle"
+										tabindex="-1">
+										<i class="material-icons" aria-hidden="true">
+											drag_indicator
+											<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
+										</i>
+									</span>
+									<span aria-hidden="true"
 										class="reorder-controls">
 										<span class="move-arrow"
 											tabindex="-1"
@@ -172,23 +182,8 @@
 											<i class="material-icons">&#xE313;</i>
 										</span>
 									</span>
-									<md-button ng-class="{'hidden': responses[$parent.$index]}"
-										class="option-controls"
-										sv-handle
-										tabindex="-1">
-										<i class="material-icons" aria-hidden="true">
-											&#xE25D;
-											<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
-										</i>
-										<p>{{item.text}}</p>
-									</md-button>
-								</div>
-								<div layout="row">
-									<span
-										aria-live="polite"
-										aria-label="{{responses[$parent.$index] ? 'Rearrange Items' : 'Accept Order'}}"
-										ng-click="toggleSequence($parent.$index)"
-										ng-model="responses[$parent.$index]">
+									<span class='sequence-item-text'>
+										{{item.text}}
 									</span>
 								</div>
 							</div>
