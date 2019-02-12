@@ -41,8 +41,14 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 			for answer of item.answers
 				answer.text = desanitize(answer.text)
-
 		return qset
+
+	locateAndScrollToIncomplete = () ->
+		for index, question of $scope.qset.items
+			if $scope.isIncomplete(index)
+				cardElement = document.getElementsByClassName("card")[index]
+				cardElement.scrollIntoView()
+				return
 
 	$scope.showToast = (message) ->
 		$mdToast.show(
@@ -213,6 +219,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		else
 			$scope.showIncomplete = true
 			$scope.showToast "Must complete all questions."
+			locateAndScrollToIncomplete()
 		return
 
 	Materia.Engine.start($scope)

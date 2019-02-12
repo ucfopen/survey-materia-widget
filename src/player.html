@@ -190,7 +190,9 @@
 						</md-card-actions>
 
 					</md-card>
-
+					<md-button class="md-raised bottom-submit" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
+						Submit
+					</md-button>
 				</div>
 			</div>
 			<!-- Type Info Dialog -->
@@ -206,6 +208,5 @@
 				</div>
 			</div>
 		</md-content>
-		<div class="arrow_box" ng-show="progress == 100">Click to finish</div>
 	</body>
 </html>

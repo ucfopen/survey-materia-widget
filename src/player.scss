@@ -226,3 +226,13 @@ button.info-tooltip-button {
 		display: block;
 	}
 }
+
+.bottom-submit {
+	position: relative;
+	left: 50%;
+	transform: translate(-50% , 0);
+	max-width: 600px;
+	padding: 0px 6px 0px 6px;
+	margin: 6px 0px 18px 0px;
+	font-size:1.1em;
+}
