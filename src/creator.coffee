@@ -6,7 +6,7 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.primaryPalette('teal')
 			.accentPalette('blue-grey')
 ]
-SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', 'sanitizeHelper', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, sanitizeHelper) ->
+SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', 'sanitizeHelper', '$timeout', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, sanitizeHelper, $timeout) ->
 
 	$scope.groups = [
 		{text:'General', color:'#616161'}
@@ -45,12 +45,14 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	$scope.multipleChoice = 'multiple-choice'
 	$scope.checkAllThatApply = 'check-all-that-apply'
 	$scope.freeResponse = 'free-response'
+	$scope.sequence = 'sequence'
 
 	# Question Type Array
 	$scope.questionTypes = [
 		{text: 'Multiple Choice',value:'multiple-choice'},
 		{text: 'Check All That Apply', value:'check-all-that-apply'},
-		{text: 'Free Response', value:'free-response'}
+		{text: 'Free Response', value:'free-response'},
+		{text: 'Sequence', value: 'sequence'}
 	]
 
 	# Answer Display Types
@@ -72,7 +74,9 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	$scope.ready = false
 	$scope.cards = []
 	$scope.dragging = false
-	$scope.dragOpts = {containment: ".custom-choice"}
+	$scope.dragOpts = {
+		containment: ".drag-choice"
+	}
 
 	questionCount = 0
 	originatorEv = null
@@ -95,6 +99,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 					answers: item.answers
 					displayStyle: item.options.displayStyle
 					group: item.options.group
+					randomize: item.options.randomize
 					options: {}
 
 				# conditional options
@@ -140,6 +145,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			answerType: $scope.presetLikelihood												# type of answer: is it a preset range, or custom
 			displayStyle: $scope.horizontalScale											# should answers be displayed horizontally or via drop-down
 			group: 0																		# group - NYI
+			randomize: false
 			options: {}																		# extra options specific to individual question types
 			fresh: true
 
@@ -150,12 +156,52 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			$scope.showToast "Can only have 5 options per scale. Set Display Type to Dropdown to add more.", 10000
 			return
 		$scope.cards[cardIndex].answers.push { text:'' }
+		$scope.cards[cardIndex].fresh = false
 
 	$scope.removeOption = (cardIndex, optionIndex) ->
 		$scope.cards[cardIndex].answers.splice optionIndex, 1
 		if $scope.cards[cardIndex].answers.length == 0
-			$scope.showToast("Must have at least one option.")
+			toastEnding = if $scope.cards[cardIndex].questionType == $scope.sequence then 'item' else 'question'
+			$scope.showToast('Must have at least one ' + toastEnding + '.')
 			$scope.addOption(cardIndex)
+		$scope.cards[cardIndex].fresh = false
+
+	$scope.handleSequenceKeyDown = (event, cardIndex, itemIndex) ->
+		switch event.which
+			when 38 #up arrow
+				event.preventDefault()
+				$scope.moveSequenceItemUp(cardIndex, itemIndex)
+				$timeout ->
+					event.target.focus()
+			when 40 #down arrow
+				event.preventDefault()
+				$scope.moveSequenceItemDown(cardIndex, itemIndex)
+				$timeout ->
+					event.target.focus()
+			else
+				return
+
+	$scope.moveSequenceItemUp = (cardIndex, itemIndex, event) ->
+		if itemIndex == 0
+			$scope.cards[cardIndex].answers.push $scope.cards[cardIndex].answers.shift()
+		else
+			item = $scope.cards[cardIndex].answers.splice(itemIndex, 1)
+			$scope.cards[cardIndex].answers.splice(itemIndex - 1, 0, item[0])
+		if event
+			$timeout ->
+					event.target.focus()
+		$scope.cards[cardIndex].fresh = false
+
+	$scope.moveSequenceItemDown = (cardIndex, itemIndex, event) ->
+		if itemIndex == $scope.cards[cardIndex].answers.length - 1
+			$scope.cards[cardIndex].answers.unshift $scope.cards[cardIndex].answers.pop()
+		else
+			item = $scope.cards[cardIndex].answers.splice(itemIndex, 1)
+			$scope.cards[cardIndex].answers.splice(itemIndex + 1, 0, item[0])
+		if event
+			$timeout ->
+					event.target.focus()
+		$scope.cards[cardIndex].fresh = false
 
 	# Called when EITHER the question type or answer type changes (when MC is selected)
 	# Populates the response section depending on question type and whether or not presets are selected
@@ -191,6 +237,12 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				$scope.cards[cardIndex].answerType = $scope.custom
 				$scope.cards[cardIndex].answers = [{text: 'Enter Your Response Here.'}]
 
+			when $scope.sequence
+				$scope.cards[cardIndex].displayStyle = 'sequence'
+				$scope.cards[cardIndex].answerType = $scope.custom
+				$scope.cards[cardIndex].answers = [{text: 'Item 1'}, {text: 'Item 2'},{text: 'Item 3'}]
+				$scope.cards[cardIndex].randomize = false
+
 		$scope.cards[cardIndex].fresh = false
 
 	$scope.reverseValues = (cardIndex) ->
@@ -199,7 +251,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	$scope.enforceNoneOfTheAboveRestrictions = (cardIndex) ->
 		if !$scope.cards[cardIndex].options.enableNoneOfTheAbove then $scope.cards[cardIndex].options.minResponseLimit = 1
-	
+
 	$scope.updateDisplayStyle = (cardIndex) ->
 		responseCount = $scope.cards[cardIndex].answers.length
 
@@ -297,7 +349,9 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				answerType: answerType
 				displayStyle: displayStyle
 				answers: item.answers
-				group: group
+				displayStyle: item.options.displayStyle
+				group: item.options.group
+				randomize: item.options.randomize
 			questionCount++
 
 		$scope.$apply ->
@@ -346,6 +400,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 				answerType: answerType
 				displayStyle: displayStyle
 				group: group
+				randomize: item.randomize
 			questions: [{ text: question }]
 			answers: item.answers
 

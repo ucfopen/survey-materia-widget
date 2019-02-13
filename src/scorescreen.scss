@@ -7,6 +7,7 @@
 .card {
 	position: relative;
 	margin: 20px;
+	white-space: pre-line;
 
 	.md-headline {
 		max-width: 90%;
@@ -19,6 +20,10 @@
 		color: #979797;
 	}
 
+	md-card-content p {
+		line-height:1.25em;
+	}
+
 	// label.icon-label {
 	// 	position: absolute;
 	// 	right: 40px;
@@ -28,8 +33,6 @@
 
 	// 	// opacity: 0.66;
 	// }
-
-	
 
 	// i.material-icons {
 	// 	position: absolute;

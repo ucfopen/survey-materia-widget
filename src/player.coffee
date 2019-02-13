@@ -1,4 +1,4 @@
-SurveyWidget = angular.module 'SurveyWidgetEngine', ['ngMaterial']
+SurveyWidget = angular.module 'SurveyWidgetEngine', ['ngMaterial', 'angular-sortable-view']
 
 SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
@@ -6,8 +6,8 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.accentPalette('indigo')
 ]
 
-SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', ($scope, $mdToast, $mdDialog) ->
-	
+SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', '$timeout', ($scope, $mdToast, $mdDialog, $timeout) ->
+
 	$scope.qset = null
 	$scope.instance = null
 	$scope.responses = []
@@ -16,6 +16,11 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 	$scope.dropDown = 'drop-down'
 	$scope.verticalList = 'vertical-list'
 	$scope.textArea = 'text-area'
+	$scope.sequence = 'sequence'
+
+	$scope.dragOpts = {
+		containment: ".drag-choice"
+	}
 
 	SANITIZED_CHARACTERS =
 		'&' : '&amp;',
@@ -54,10 +59,27 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		)
 
 	$scope.start = (instance, qset, version) ->
+		for item, index in qset.items
+			if item.options.randomize
+				item.answers = shuffle item.answers
+
 		$scope.instance = instance
 		$scope.qset = desanitizeQset(qset)
 		$scope.progress = 0
 		$scope.$apply()
+
+	shuffle = (array) ->
+		temp = null
+		currentPass = array.length
+
+		while currentPass
+			swapIndex = Math.floor(Math.random() * currentPass--)
+
+			temp = array[currentPass]
+			array[currentPass] = array[swapIndex]
+			array[swapIndex] = temp
+
+		array
 
 	$scope.isIncomplete = (index) ->
 		switch $scope.qset.items[index].options.questionType
@@ -89,6 +111,41 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 	$scope.dropDownAnswer = (questionIndex, answerIndex) ->
 		if answerIndex then return $scope.qset.items[questionIndex].answers[answerIndex].text
 		return 'Select Answer'
+
+	$scope.markSequenceComplete = (index) ->
+		$scope.responses[index] = true
+		$scope.updateCompleted()
+
+	$scope.handleSequenceKeyDown = (event, questionIndex, itemIndex) ->
+		switch event.which
+			when 38 #up arrow
+				event.preventDefault()
+				$scope.moveSequenceItemUp(questionIndex, itemIndex)
+				$timeout ->
+					event.target.focus()
+			when 40 #down arrow
+				event.preventDefault()
+				$scope.moveSequenceItemDown(questionIndex, itemIndex)
+				$timeout ->
+					event.target.focus()
+			else
+				return
+
+	$scope.moveSequenceItemUp = (questionIndex, itemIndex) ->
+		if itemIndex == 0
+			$scope.qset.items[questionIndex].answers.push $scope.qset.items[questionIndex].answers.shift()
+		else
+			item = $scope.qset.items[questionIndex].answers.splice(itemIndex, 1)
+			$scope.qset.items[questionIndex].answers.splice(itemIndex - 1, 0, item[0])
+		$scope.markSequenceComplete(questionIndex)
+
+	$scope.moveSequenceItemDown = (questionIndex, itemIndex) ->
+		if itemIndex == $scope.qset.items[questionIndex].answers.length - 1
+			$scope.qset.items[questionIndex].answers.unshift $scope.qset.items[questionIndex].answers.pop()
+		else
+			item = $scope.qset.items[questionIndex].answers.splice(itemIndex, 1)
+			$scope.qset.items[questionIndex].answers.splice(itemIndex + 1, 0, item[0])
+		$scope.markSequenceComplete(questionIndex)
 
 	$scope.updateCompleted = ->
 		return false if !$scope.qset
@@ -145,6 +202,11 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 								else if check then checkedItems.push $scope.qset.items[i].answers[key].text
 
 							answer = checkedItems.join ", "
+
+						when $scope.sequence
+							answersText = $scope.qset.items[i].answers.map (answer) ->
+								answer.text
+							answer = answersText.join "\n"
 						else
 
 							answer = $scope.qset.items[i].answers[~~response].text

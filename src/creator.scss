@@ -111,7 +111,8 @@
 				}
 			}
 
-			button.md-button.option-controls {
+			button.md-button.option-controls,
+			button.md-button.reorder-controls {
 				min-width: 30px;
 				margin-top: 10px;
 				opacity: 0.5;
