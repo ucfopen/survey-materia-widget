@@ -191,6 +191,51 @@
 				{
 					"materiaType": "question",
 					"id": "",
+					"type": "Survey",
+					"created_at": 1549998951,
+					"questions": [
+						{
+							"text": "Consider your potential levels of confidence and stress when faced with each of the following forms of severe weather. Try and rank them from least stressful (you are the most confident) to most stressful (you are not at all confident.)"
+						}
+					],
+					"answers": [
+						{
+							"text": "Hurricanes",
+							"id": ""
+						},
+						{
+							"text": "Tornadoes",
+							"id": ""
+						},
+						{
+							"text": "Extreme rain and flooding",
+							"id": ""
+						},
+						{
+							"text": "Blizzards/Snowstorms",
+							"id": ""
+						},
+						{
+							"text": "Extended drought or dryness",
+							"id": ""
+						},
+						{
+							"text": "Dust storms or haboobs",
+							"id": ""
+						}
+					],
+					"options": {
+						"questionType": "sequence",
+						"answerType": -1,
+						"displayStyle": "sequence",
+						"group": 0,
+						"randomize": true
+					},
+					"assets": []
+				},
+				{
+					"materiaType": "question",
+					"id": "",
 					"type": "QA",
 					"created_at": 1547743689,
 					"questions": [

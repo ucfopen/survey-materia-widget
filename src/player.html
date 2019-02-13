@@ -141,16 +141,18 @@
 								</p>
 								<div layout="row"
 									ng-if="showIncomplete && isIncomplete($parent.$index)">
-									<md-button
-										class="md-raised md-primary"
-										aria-label="Accept Order"
-										ng-click="markSequenceComplete($parent.$index)"
-										ng-model="responses[$parent.$index]">
-										<md-tooltip md-direction="below">
-											Click to accept the current order of these items
-										</md-tooltip>
-										Accept Order
-									</md-button>
+									<md-input-container>
+										<md-button
+											class="md-raised md-primary"
+											aria-label="Accept Order"
+											ng-click="markSequenceComplete($parent.$index)"
+											ng-model="responses[$parent.$index]">
+											<md-tooltip md-direction="below">
+												Click to accept the current order of these items
+											</md-tooltip>
+											Accept Order
+										</md-button>
+									</md-input-container>
 								</div>
 								<div layout="row"
 									ng-repeat="item in question.answers"
