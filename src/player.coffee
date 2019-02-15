@@ -1,4 +1,4 @@
-SurveyWidget = angular.module 'SurveyWidgetEngine', ['ngMaterial', 'angular-sortable-view']
+SurveyWidget = angular.module 'SurveyWidgetEngine', ['ngMaterial', 'angular-sortable-view', 'ngAria']
 
 SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
@@ -6,7 +6,7 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.accentPalette('indigo')
 ]
 
-SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', '$timeout', ($scope, $mdToast, $mdDialog, $timeout) ->
+SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', '$timeout', '$mdLiveAnnouncer', ($scope, $mdToast, $mdDialog, $timeout, $mdLiveAnnouncer) ->
 
 	$scope.qset = null
 	$scope.instance = null
@@ -48,6 +48,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 			if $scope.isIncomplete(index)
 				cardElement = document.getElementsByClassName("card")[index]
 				cardElement.scrollIntoView()
+				$mdLiveAnnouncer.announce("Question " + ( index + 1 ) + " must be completed.")
 				return
 
 	$scope.showToast = (message) ->
