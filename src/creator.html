@@ -200,7 +200,7 @@
 
 							<!-- Multiple Choice Preset Answers -->
 							<md-card-actions layout layout-align="start start" class="radio-choice" ng-show="card.questionType == multipleChoice && card.answerType != custom">
-								<md-radio-group layout="row">
+								<md-radio-group layout="row" tabindex="-1">
 									<md-radio-button
 										ng-disabled="true"
 										ng-repeat="answer in card.answers"
