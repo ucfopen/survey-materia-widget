@@ -340,7 +340,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			displayStyle = if item.options.displayStyle then item.options.displayStyle else $scope.dropDown
 			group = 0
 
-			for answer in item.answers
+			for answer in item.answers?
 				answer.text = sanitizeHelper.desanitize(answer.text)
 
 			$scope.cards.push
