@@ -1,5 +1,5 @@
 # Create an angular module to house our controller
-SurveyWidget = angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngAnimate', 'ngSanitize', 'angular-sortable-view']
+SurveyWidget = angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngAnimate', 'ngSanitize', 'angular-sortable-view', 'ngAria']
 
 SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')

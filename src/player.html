@@ -105,7 +105,7 @@
 											ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)">
 											{{question.options.noneOfTheAboveText}}
 										</md-checkbox>
-										<button class="info-tooltip-button" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')">
+										<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')" aria-label="Selecting this option will uncheck all other responses.">
 											<i class="material-icons">&#xE88F;</i>
 										</button>
 									</div>

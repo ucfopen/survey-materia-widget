@@ -179,7 +179,7 @@
 											<div ng-message="max">Can't be more than number of options.</div>
 										</div>
 									</md-input-container>
-									<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[0])">
+									<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, helperMessages[0])" aria-label="{{helperMessages[0]}}">
 										<i class="material-icons">&#xE88F;</i>
 									</button>
 
@@ -192,7 +192,7 @@
 												<div ng-message="max">Can't be more than number of options.</div>
 											</div>
 									</md-input-container>
-									<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[1])">
+									<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, helperMessages[1])" aria-label="{{helperMessages[1]}}">
 										<i class="material-icons">&#xE88F;</i>
 									</button>
 								</form>
@@ -237,7 +237,7 @@
 												</div>
 											</md-input-container>
 
-											<md-button class="option-controls" ng-click="removeOption(cardIndex, $index)" tabindex="-1">
+											<md-button class="option-controls" ng-click="removeOption(cardIndex, $index)">
 												<md-tooltip md-direction="below">Remove Option</md-tooltip>
 												<i class="material-icons">&#xE15D;</i>
 											</md-button>
@@ -257,7 +257,7 @@
 													Enable "None of the Above" Option
 												</md-checkbox>
 											</md-input-container>
-											<button class="info-tooltip-button" ng-click="showHelpDialog($event, helperMessages[2])">
+											<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, helperMessages[2])" aria-label="{{helperMessages[2]}}">
 												<i class="material-icons">&#xE88F;</i>
 											</button>
 										</div>
