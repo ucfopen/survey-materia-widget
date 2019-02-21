@@ -48,7 +48,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 			if $scope.isIncomplete(index)
 				cardElement = document.getElementsByClassName("card")[index]
 				cardElement.scrollIntoView()
-				$mdLiveAnnouncer.announce("Question " + ( index + 1 ) + " must be completed.")
+				$mdLiveAnnouncer.announce("Question " + ( parseInt(index) + 1 ) + " must be completed.")
 				return
 
 	$scope.showToast = (message) ->
