@@ -95,7 +95,8 @@
 												ng-repeat="answer in question.answers"
 												ng-model="responses[$parent.$index][$index]"
 												ng-init="responses[$parent.$index][$index] = false"
-												ng-change="updateCheckAllThatApply($parent.$index, $index)">
+												ng-change="updateCheckAllThatApply($parent.$index, $index)"
+												aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}">
 												{{answer.text}}
 											</md-checkbox>
 											<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
