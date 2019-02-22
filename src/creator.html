@@ -274,7 +274,10 @@
 								layout-align="start start"
 								class="sequence-choice drag-choice"
 								ng-show="card.questionType == sequence">
-								<div layout="column" sv-root sv-part="card.answers">
+								<div class='sequence-item-container'
+									layout="column"
+									sv-root
+									sv-part="card.answers">
 									<div layout="row">
 										<md-checkbox
 											aria-label="Randomize Order"
