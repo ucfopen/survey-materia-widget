@@ -27,13 +27,13 @@
 		<md-content id="container">
 			<md-toolbar>
 				<div class="md-toolbar-tools" layout="row">
-					<h2 aria-label="widget title {{instance.name}}" tabindex="0">{{instance.name}}</h2>
+					<h2 aria-label="widget title {{instance.name}}">{{instance.name}}</h2>
 					<span flex></span>
 					<md-button class="md-raised" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
 						Submit
 					</md-button>
 				</div>
-				<md-progress-linear class="md-accent" md-mode="determinate" value="{{progress}}"></md-progress-linear>
+				<md-progress-linear class="md-accent" md-mode="determinate" value="{{Math.round(progress)}}"></md-progress-linear>
 			</md-toolbar>
 
 			<div layout-gt-sm="row" layout="column" id="content">
@@ -41,24 +41,24 @@
 
 					<md-card class="md-whiteframe-3dp card"
 						role="region"
-						aria-labelledby="{{question$index + 1}}"
+						aria-label="question {{$index + 1}}"
 						ng-repeat="question in qset.items"
 						ng-class="{'incomplete': showIncomplete && isIncomplete($index)}">
 						<div class="card-right" layout="column">
 							<md-card-title class="card-title">
-								<span id="{{question$index + 1}}"
+								<h3 id="question {{$index + 1}}"
 									aria-label="question {{$index + 1}}: {{question.questions[0].text}}"
-									class="md-headline">{{question.questions[0].text}}</span>
+									class="md-headline">{{question.questions[0].text}}</h3>
 							</md-card-title>
 
 							<!-- Scale Style -->
 							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == horizontalScale">
 								<md-radio-group layout="row" ng-model="responses[$index]" class="radio-spacing" ng-change="updateCompleted()">
-									<md-radio-button
-										ng-repeat="answer in question.answers"
-										value={{$index}}>
-										{{answer.text}}
-									</md-radio-button>
+										<md-radio-button
+											ng-repeat="answer in question.answers"
+											value={{$index}}>
+											{{answer.text}}
+										</md-radio-button>
 								</md-radio-group>
 							</md-card-actions>
 
@@ -90,32 +90,33 @@
 									<span class="response-limit-description" ng-if="question.options.minResponseLimit">Select at least {{question.options.minResponseLimit}} item{{ question.options.minResponseLimit > 1 ? "s" : "" }}.</span>
 									<span class="response-limit-description" ng-if="question.options.maxResponseLimit">Select at most {{question.options.maxResponseLimit}} item{{ question.options.maxResponseLimit > 1 ? "s" : "" }}.</span>
 								</div>
-								<md-input-container layout="column">
-									<md-checkbox
-										ng-repeat="answer in question.answers"
-										ng-model="responses[$parent.$index][$index]"
-										ng-init="responses[$parent.$index][$index] = false"
-										ng-change="updateCheckAllThatApply($parent.$index, $index)">
-										{{answer.text}}
-									</md-checkbox>
-									<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
-										<md-checkbox
-											ng-model="responses[$parent.$index][question.answers.length]"
-											ng-init="responses[$parent.$index][question.answers.length] = false"
-											ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)">
-											{{question.options.noneOfTheAboveText}}
-										</md-checkbox>
-										<button class="info-tooltip-button" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')">
-											<i class="material-icons">&#xE88F;</i>
-										</button>
-									</div>
+								<md-input-container layout="column" class="checkbox-group">
+											<md-checkbox
+												ng-repeat="answer in question.answers"
+												ng-model="responses[$parent.$index][$index]"
+												ng-init="responses[$parent.$index][$index] = false"
+												ng-change="updateCheckAllThatApply($parent.$index, $index)"
+												aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}">
+												{{answer.text}}
+											</md-checkbox>
+											<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
+												<md-checkbox
+													ng-model="responses[$parent.$index][question.answers.length]"
+													ng-init="responses[$parent.$index][question.answers.length] = false"
+													ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)">
+													{{question.options.noneOfTheAboveText}}
+												</md-checkbox>
+												<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')" aria-label="Selecting this option will uncheck all other responses.">
+													<i class="material-icons">&#xE88F;</i>
+												</button>
+											</div>
 								</md-input-container>
 							</md-card-actions>
 
 							<!-- Free Response Style -->
 							<md-card-actions layout ng-if="question.options.displayStyle == textArea">
 								<md-input-container class="md-block" flex>
-									<textarea type="text" ng-model="responses[$index]" aria-label="Answer Text Area" ng-change="updateCompleted()" placeholder="{{question.answers[0].text}}"></textarea>
+									<textarea type="text" ng-model="responses[$index]" aria-label="{{question.answers[0].text}}" ng-change="updateCompleted()" placeholder="{{question.answers[0].text}}"></textarea>
 								</md-input-container>
 							</md-card-actions>
 						</div>
@@ -131,7 +132,7 @@
 								sv-on-sort="markSequenceComplete($parent.$index)"
 								sv-part="question.answers"
 								role="listbox">
-								<p tabindex="0" class='instructions'>
+								<p class='instructions'>
 									<span>
 											Arrange the following sequence of items as desired.
 											Use the arrow buttons or click and drag the items to rearrange them.

@@ -35,6 +35,10 @@ md-toolbar {
 
 	.card-title {
 		padding-bottom: 5px;
+
+		h3 {
+			margin: 0px;
+		}
 	}
 
 	span.response-limit-description {
@@ -49,6 +53,11 @@ md-toolbar {
 				margin-left: 0.25em;
 			}
 		}
+	}
+
+	textarea {
+		border-width: 0px 0px 2px 0px;
+		border-color: #909090;
 	}
 }
 

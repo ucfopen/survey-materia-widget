@@ -1,4 +1,4 @@
-SurveyWidget = angular.module 'SurveyWidgetScorescreen', ['ngMaterial', 'ngMessages']
+SurveyWidget = angular.module 'SurveyWidgetScorescreen', ['ngMaterial', 'ngMessages', 'ngAria']
 
 SurveyWidget.controller 'SurveyWidgetScoreCtrl', ['$scope', '$mdToast', '$mdDialog', ($scope, $mdToast, $mdDialog) ->
 	$scope.qset = null
