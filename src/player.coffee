@@ -133,20 +133,30 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 				return
 
 	$scope.moveSequenceItemUp = (questionIndex, itemIndex) ->
+		text = $scope.qset.items[questionIndex].answers[itemIndex].text
+		newIndex = 0
 		if itemIndex == 0
 			$scope.qset.items[questionIndex].answers.push $scope.qset.items[questionIndex].answers.shift()
+			newIndex = $scope.qset.items[questionIndex].answers.length
 		else
 			item = $scope.qset.items[questionIndex].answers.splice(itemIndex, 1)
 			$scope.qset.items[questionIndex].answers.splice(itemIndex - 1, 0, item[0])
+			newIndex = itemIndex
 		$scope.markSequenceComplete(questionIndex)
+		$mdLiveAnnouncer.announce(text + " now " + newIndex + " of " + $scope.qset.items[questionIndex].answers.length)
 
 	$scope.moveSequenceItemDown = (questionIndex, itemIndex) ->
+		text = $scope.qset.items[questionIndex].answers[itemIndex].text
+		newIndex = 0
 		if itemIndex == $scope.qset.items[questionIndex].answers.length - 1
 			$scope.qset.items[questionIndex].answers.unshift $scope.qset.items[questionIndex].answers.pop()
+			newIndex = 1
 		else
 			item = $scope.qset.items[questionIndex].answers.splice(itemIndex, 1)
 			$scope.qset.items[questionIndex].answers.splice(itemIndex + 1, 0, item[0])
+			newIndex = itemIndex + 2
 		$scope.markSequenceComplete(questionIndex)
+		$mdLiveAnnouncer.announce(text + " now " + newIndex + " of " + $scope.qset.items[questionIndex].answers.length)
 
 	$scope.updateCompleted = ->
 		return false if !$scope.qset
