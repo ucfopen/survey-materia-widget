@@ -160,6 +160,10 @@ button.info-tooltip-button {
 	flex-wrap: wrap;
 }
 
+.sequence-item-container.layout-column {
+  display: block;
+}
+
 .sequence-item {
 	display: flex;
 	z-index: 1;

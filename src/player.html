@@ -126,7 +126,8 @@
 							layout-align="start start"
 							class="drag-choice"
 							ng-if="question.options.displayStyle == sequence">
-							<div layout="column"
+							<div class="sequence-item-container"
+								layout="column"
 								sv-root
 								sv-on-sort="markSequenceComplete($parent.$index)"
 								sv-part="question.answers"
