@@ -134,11 +134,9 @@
 								role="listbox">
 								<p class='instructions'>
 									<span>
-											Arrange the following sequence of items as desired.
-											Use the arrow buttons or click and drag the items to rearrange them.
-									</span>
-									<span>
-										You may also navigate through the list with the tab key and rearrange the items using the 'Up' or 'Down' arrow keys.
+										Arrange the following sequence.
+										Drag and drop, use the arrow buttons,
+										or navigate through the list with 'Tab' and rearrange using the 'Up' or 'Down' keys.
 									</span>
 								</p>
 								<div layout="row"
@@ -171,20 +169,25 @@
 											<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
 										</i>
 									</span>
-									<span aria-hidden="true"
-										class="reorder-controls">
-										<span class="move-arrow"
+									<span class="move-arrow"
+										aria-hidden="true"
+										tabindex="-1">
+										<i class="material-icons"
 											tabindex="-1"
 											ng-click="moveSequenceItemUp($parent.$index, $index)">
+											&#xE316;
 											<md-tooltip md-direction="below">Move Item Up</md-tooltip>
-											<i class="material-icons">&#xE316;</i>
-										</span>
-										<span class="move-arrow"
+										</i>
+									</span>
+									<span class="move-arrow"
+										aria-hidden="true"
+										tabindex="-1">
+										<i class="material-icons"
 											tabindex="-1"
 											ng-click="moveSequenceItemDown($parent.$index, $index)">
+											&#xE313;
 											<md-tooltip md-direction="below">Move Item Down</md-tooltip>
-											<i class="material-icons">&#xE313;</i>
-										</span>
+										</i>
 									</span>
 									<span class='sequence-item-text'>
 										{{item.text}}
