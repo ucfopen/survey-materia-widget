@@ -50,6 +50,9 @@
 									aria-label="question {{$index + 1}}: {{question.questions[0].text}}"
 									class="md-headline">{{question.questions[0].text}}</h3>
 							</md-card-title>
+							<span class='card-media-container'>
+								<img class="card-media" ng-src="{{question.assets[0].url}}" />
+							</span>
 
 							<!-- Scale Style -->
 							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == horizontalScale">

@@ -41,6 +41,14 @@ md-toolbar {
 		}
 	}
 
+	.card-media-container {
+		margin: 0 20px;
+
+		.card-media {
+			max-width: 100%;
+		}
+	}
+
 	span.response-limit-description {
 		margin: 5px 0px 5px 0px;
 		opacity: 0.6;
