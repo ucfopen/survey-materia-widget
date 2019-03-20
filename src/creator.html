@@ -56,29 +56,62 @@
 						<!-- Card Header -->
 						<div class="card-right" layout="column" flex>
 							<form name="questionForm">
-								<md-input-container class="md-block">
-									<label>Question {{$index + 1}}</label>
-									<input ng-model="card.question"
-										name="question"
-										required
-										placeholder="Enter question text here."
-										spellcheck="true"
-										focus-me="card.fresh"
-										ng-change="card.fresh = false">
-									<div ng-messages="questionForm.question.$error">
-										<div ng-message="required">Question text is required.</div>
+								<md-input-container class="md-block question-content-container vertical-condense">
+									<span class='question-heading'>
+										<label class='md-container-ignore'>
+											Question {{$index + 1}}
+										</label>
+									</span>
+									<span class='question-input-container'>
+										<input ng-model="card.question"
+											name="question"
+											required
+											placeholder="Enter question text here."
+											spellcheck="true"
+											focus-me="card.fresh"
+											ng-change="card.fresh = false">
+										<div ng-messages="questionForm.question.$error">
+											<div ng-message="required">Question text is required.</div>
+										</div>
+									</span>
+
+									<div layout="row">
+										<md-input-container class='vertical-condense'>
+											<label>Optional Image</label>
+											<md-button class="md-accent md-raised toggle-option"
+												ng-hide="card.assets.length > 0"
+												ng-click="beginMediaImport(cardIndex)"
+												>
+												Add Image
+											</md-button>
+
+											<span class="card-media-container" ng-show="card.assets.length > 0">
+												<span>
+													<img class="card-media" ng-src="{{card.assets[0].url}}" />
+												</span>
+												<span class="media-buttons">
+													<button class='card-button remove-image'
+														ng-click="removeMedia(cardIndex)">
+														<md-tooltip md-direction="below">Remove Image</md-tooltip>
+														<i class="material-icons">clear</i>
+													</button>
+												</span>
+											</span>
+										</md-input-container>
 									</div>
+
 								</md-input-container>
 							</form>
 							<div class="card-buttons">
+
 								<button class="move-arrow" ng-hide="$first" ng-click="swapCards(cardIndex, cardIndex - 1)">
 									<md-tooltip md-direction="below">Move Question Up</md-tooltip>
-									<i class="material-icons">&#xE316;</i>
+									<i class="material-icons">keyboard_arrow_up</i>
 								</button>
 
 								<button class="move-arrow" ng-hide="$last" ng-click="swapCards(cardIndex, cardIndex + 1)">
 									<md-tooltip md-direction="below">Move Question Down</md-tooltip>
-									<i class="material-icons">&#xE313;</i>
+									<i class="material-icons">keyboard_arrow_down</i>
 								</button>
 								<!-- Group editing will return! -->
 								<!-- <md-menu md-offset="-150 10">
@@ -104,12 +137,12 @@
 
 								<button class="duplicate" ng-click="duplicateQuestion(cardIndex)">
 									<md-tooltip md-direction="below">Duplicate this Question</md-tooltip>
-									<i class="material-icons">&#xE14D;</i>
+									<i class="material-icons">content_copy</i>
 								</button>
 
 								<button class="delete" ng-click="card.fresh=false;deleteQuestion(cardIndex)">
 									<md-tooltip md-direction="below">Delete this Question</md-tooltip>
-									<i class="material-icons">&#xE872;</i>
+									<i class="material-icons">delete</i>
 								</button>
 							</div>
 
@@ -180,7 +213,7 @@
 										</div>
 									</md-input-container>
 									<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, helperMessages[0])" aria-label="{{helperMessages[0]}}">
-										<i class="material-icons">&#xE88F;</i>
+										<i class="material-icons">info_outline</i>
 									</button>
 
 									<md-input-container>
@@ -193,7 +226,7 @@
 											</div>
 									</md-input-container>
 									<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, helperMessages[1])" aria-label="{{helperMessages[1]}}">
-										<i class="material-icons">&#xE88F;</i>
+										<i class="material-icons">info_outline</i>
 									</button>
 								</form>
 							</div>
@@ -258,7 +291,7 @@
 												</md-checkbox>
 											</md-input-container>
 											<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, helperMessages[2])" aria-label="{{helperMessages[2]}}">
-												<i class="material-icons">&#xE88F;</i>
+												<i class="material-icons">info_outline</i>
 											</button>
 										</div>
 										<md-input-container ng-show="card.options.enableNoneOfTheAbove">
@@ -315,19 +348,19 @@
 												<md-button class="option-controls"
 													ng-click="moveSequenceItemUp(cardIndex, $index, $event)">
 													<md-tooltip md-direction="below">Move Item Up</md-tooltip>
-													<i class="material-icons">&#xE316;</i>
+													<i class="material-icons">keyboard_arrow_up</i>
 												</md-button>
 
 												<md-button class="option-controls"
 													ng-click="moveSequenceItemDown(cardIndex, $index, $event)">
 													<md-tooltip md-direction="below">Move Item Down</md-tooltip>
-													<i class="material-icons">&#xE313;</i>
+													<i class="material-icons">keyboard_arrow_down</i>
 												</md-button>
 
 												<md-button class="option-controls"
 													ng-click="removeOption(cardIndex, $index)">
 													<md-tooltip md-direction="below">Remove Item</md-tooltip>
-													<i class="material-icons">&#xE15D;</i>
+													<i class="material-icons">remove_circle_outline</i>
 												</md-button>
 											</form>
 									</div>
