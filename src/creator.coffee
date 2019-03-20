@@ -198,6 +198,8 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			url: if asset.remote_url then asset.remote_url else Materia.CreatorCore.getMediaUrl(asset.id)
 		}
 
+		$scope.$apply()
+
 	$scope.removeMedia = (cardIndex) ->
 		$scope.cards[cardIndex].assets = []
 
