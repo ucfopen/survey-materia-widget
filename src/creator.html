@@ -87,7 +87,9 @@
 
 											<span class="card-media-container" ng-show="card.assets.length > 0">
 												<span>
-													<img class="card-media" ng-src="{{card.assets[0].url}}" />
+													<img class="card-media"
+														ng-src="{{card.assets[0].url}}"
+														alt="Image: {{card.assets[0].name}}" />
 												</span>
 												<span class="media-buttons">
 													<button class='card-button remove-image'
