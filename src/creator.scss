@@ -65,6 +65,11 @@
 					align-items: flex-start;
 					min-height: 30px;
 				}
+
+				.question-heading .md-container-ignore {
+					transform: translate3d(0, 6px, 0);
+				}
+
 				.card-media-container {
 
 					.card-media {
@@ -129,6 +134,7 @@
 
 					&.vertical-condense {
 						margin-bottom: 0;
+						margin-left: 0;
 					}
 
 					.error {
