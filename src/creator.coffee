@@ -187,8 +187,8 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				return
 
 	$scope.beginMediaImport = (cardIndex) ->
-		Materia.CreatorCore.showMediaImporter($scope.acceptedMediaTypes)
 		mediaRef = cardIndex
+		Materia.CreatorCore.showMediaImporter($scope.acceptedMediaTypes)
 
 	$scope.onMediaImportComplete = (media) ->
 		asset = media[0]

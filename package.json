@@ -3,17 +3,50 @@
   "materia": {
     "cleanName": "simple-survey"
   },
-  "version": "1.0.2",
+  "version": "1.1.0",
+  "dependencies": {
+    "angular-sortable-view": "^0.0.13",
+    "materia-widget-development-kit": "^2.3.0"
+  },
+  "devDependencies": {
+    "angular": "1.6.9",
+    "angular-animate": "1.6.9",
+    "angular-aria": "1.6.9",
+    "angular-material": "1.1.8",
+    "angular-messages": "1.6.9",
+    "angular-mocks": "1.6.9",
+    "angular-sanitize": "1.6.9",
+    "jest": "^23.6.0",
+    "jest-coffee-preprocessor": "^1.0.0"
+  },
   "scripts": {
     "start": "webpack-dev-server",
     "build-dev": "webpack",
     "build": "webpack -p",
-    "test": "echo 'no tests implemented'",
-    "test-ci": "echo 'no tests implemented'"
+    "test": "TZ='America/New_York' jest --verbose",
+    "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura",
+    "test-dev": "TZ='America/New_York' jest --coverage --coverageReporters text-summary lcov"
   },
-  "dependencies": {
-    "angular-sortable-view": "^0.0.13",
-    "materia-widget-development-kit": "^2.3.0"
+  "jest": {
+    "coverageReporters": [
+      "text-summary",
+      "lcov"
+    ],
+    "verbose": false,
+    "collectCoverageFrom": [
+      "src/**/*.coffee"
+    ],
+    "transform": {
+      "^.+\\.coffee$": "jest-coffee-preprocessor"
+    },
+    "coverageThreshold": {
+      "global": {
+        "statements": 32,
+        "branches": 5,
+        "functions": 14,
+        "lines": 33
+      }
+    }
   },
   "author": "University of Central Florida, Center for Distributed Learning",
   "description": "TBD",
