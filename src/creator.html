@@ -62,6 +62,7 @@
 											Question {{$index + 1}}
 										</label>
 									</span>
+
 									<span class='question-input-container'>
 										<input ng-model="card.question"
 											name="question"
@@ -75,11 +76,56 @@
 										</div>
 									</span>
 
+									<div class="card-buttons">
+										<button class="move-arrow" ng-hide="$first" ng-click="swapCards(cardIndex, cardIndex - 1)">
+											<md-tooltip md-direction="below">Move Question Up</md-tooltip>
+											<i class="material-icons">keyboard_arrow_up</i>
+										</button>
+
+										<button class="move-arrow" ng-hide="$last" ng-click="swapCards(cardIndex, cardIndex + 1)">
+											<md-tooltip md-direction="below">Move Question Down</md-tooltip>
+											<i class="material-icons">keyboard_arrow_down</i>
+										</button>
+										<!-- Group editing will return! -->
+										<!-- <md-menu md-offset="-150 10">
+											<button aria-label="Open color/group menu" class="md-icon-button" ng-click="openColorMenu($mdMenu, $event, cardIndex)">
+												<md-tooltip md-direction="below">Question Group</md-tooltip>
+												<i class="material-icons">&#xE3B7;</i>
+											</button>
+											<md-menu-content class="color-menu-content" width="4">
+												<md-menu-item ng-repeat="group in groups" class="color-menu-option" ng-click="selectGroup(cardIndex, $index)">
+													<md-button ng-click="ctrl.redial($event)" ng-class="{'selected': $index == card.group}">
+														<div class="color-circle" style="background-color: {{group.color}}"></div>
+														{{group.text}}
+													</md-button>
+												</md-menu-item>
+												<md-menu-divider></md-menu-divider>
+												<md-menu-item>
+													<md-button ng-click="showEditGroups($event)">
+														Edit Groups
+													</md-button>
+												</md-menu-item>
+											</md-menu-content>
+										</md-menu> -->
+
+										<button class="duplicate" ng-click="duplicateQuestion(cardIndex)">
+											<md-tooltip md-direction="below">Duplicate this Question</md-tooltip>
+											<i class="material-icons">content_copy</i>
+										</button>
+
+										<button class="delete" ng-click="card.fresh=false;deleteQuestion(cardIndex)">
+											<md-tooltip md-direction="below">Delete this Question</md-tooltip>
+											<i class="material-icons">delete</i>
+										</button>
+									</div>
+
 									<div layout="row">
 										<md-input-container class='vertical-condense'>
 											<label>Optional Image</label>
 											<md-button class="md-accent md-raised toggle-option"
 												ng-hide="card.assets.length > 0"
+												focus-me="card.imageButtonHack"
+												ng-focus="card.imageButtonHack = false"
 												ng-click="beginMediaImport(cardIndex)"
 												>
 												Add Image
@@ -93,6 +139,8 @@
 												</span>
 												<span class="media-buttons">
 													<button class='card-button remove-image'
+														focus-me="card.imageButtonHack"
+														ng-focus="card.imageButtonHack = false"
 														ng-click="removeMedia(cardIndex)">
 														<md-tooltip md-direction="below">Remove Image</md-tooltip>
 														<i class="material-icons">clear</i>
@@ -104,49 +152,6 @@
 
 								</md-input-container>
 							</form>
-							<div class="card-buttons">
-
-								<button class="move-arrow" ng-hide="$first" ng-click="swapCards(cardIndex, cardIndex - 1)">
-									<md-tooltip md-direction="below">Move Question Up</md-tooltip>
-									<i class="material-icons">keyboard_arrow_up</i>
-								</button>
-
-								<button class="move-arrow" ng-hide="$last" ng-click="swapCards(cardIndex, cardIndex + 1)">
-									<md-tooltip md-direction="below">Move Question Down</md-tooltip>
-									<i class="material-icons">keyboard_arrow_down</i>
-								</button>
-								<!-- Group editing will return! -->
-								<!-- <md-menu md-offset="-150 10">
-									<button aria-label="Open color/group menu" class="md-icon-button" ng-click="openColorMenu($mdMenu, $event, cardIndex)">
-										<md-tooltip md-direction="below">Question Group</md-tooltip>
-										<i class="material-icons">&#xE3B7;</i>
-									</button>
-									<md-menu-content class="color-menu-content" width="4">
-										<md-menu-item ng-repeat="group in groups" class="color-menu-option" ng-click="selectGroup(cardIndex, $index)">
-											<md-button ng-click="ctrl.redial($event)" ng-class="{'selected': $index == card.group}">
-												<div class="color-circle" style="background-color: {{group.color}}"></div>
-												{{group.text}}
-											</md-button>
-										</md-menu-item>
-										<md-menu-divider></md-menu-divider>
-										<md-menu-item>
-											<md-button ng-click="showEditGroups($event)">
-												Edit Groups
-											</md-button>
-										</md-menu-item>
-									</md-menu-content>
-								</md-menu> -->
-
-								<button class="duplicate" ng-click="duplicateQuestion(cardIndex)">
-									<md-tooltip md-direction="below">Duplicate this Question</md-tooltip>
-									<i class="material-icons">content_copy</i>
-								</button>
-
-								<button class="delete" ng-click="card.fresh=false;deleteQuestion(cardIndex)">
-									<md-tooltip md-direction="below">Delete this Question</md-tooltip>
-									<i class="material-icons">delete</i>
-								</button>
-							</div>
 
 							<!-- Response Type Selection -->
 							<!-- multiple choice || check all that apply || free response -->

@@ -198,11 +198,13 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			type: asset.type
 			url: if asset.remote_url then asset.remote_url else Materia.CreatorCore.getMediaUrl(asset.id)
 		}
+		$scope.cards[mediaRef].imageButtonHack = true
 
 		$scope.$apply()
 
 	$scope.removeMedia = (cardIndex) ->
 		$scope.cards[cardIndex].assets = []
+		$scope.cards[cardIndex].imageButtonHack = true
 
 	$scope.moveSequenceItemUp = (cardIndex, itemIndex, event) ->
 		if itemIndex == 0
