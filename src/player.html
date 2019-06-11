@@ -50,7 +50,8 @@
 									aria-label="question {{$index + 1}}: {{question.questions[0].text}}"
 									class="md-headline">{{question.questions[0].text}}</h3>
 							</md-card-title>
-							<span class='card-media-container'>
+							<span class='card-media-container'
+								ng-if="question.assets.length > 0">
 								<img class="card-media"
 									ng-src="{{question.assets[0].url}}"
 									alt="Image: {{question.assets[0].name}}" />
