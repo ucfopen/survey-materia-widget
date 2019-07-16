@@ -27,6 +27,27 @@
     "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura",
     "test-dev": "TZ='America/New_York' jest --coverage --coverageReporters text-summary lcov"
   },
+  "jest": {
+    "coverageReporters": [
+      "text-summary",
+      "lcov"
+    ],
+    "verbose": false,
+    "collectCoverageFrom": [
+      "src/**/*.coffee"
+    ],
+    "transform": {
+      "^.+\\.coffee$": "jest-coffee-preprocessor"
+    },
+    "coverageThreshold": {
+      "global": {
+        "statements": 32,
+        "branches": 5,
+        "functions": 14,
+        "lines": 33
+      }
+    }
+  },
   "author": "University of Central Florida, Center for Distributed Learning",
   "description": "TBD",
   "license": "AGPL-3.0"
