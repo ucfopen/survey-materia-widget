@@ -85,8 +85,34 @@
 						padding: 0;
 					}
 				}
-				.question-input-container {
-					flex-grow: 1;
+
+				.question-body {
+					display: flex;
+
+					margin-top: 2em;
+
+					.question-input-container {
+						flex: 1 100%;
+	
+						// input {
+						// 	display: inline-block !important;
+						// 	flex: 1;
+						// }
+
+					}
+	
+					.icon-container {
+						flex-basis: 30px;
+						height: 30px;
+						opacity: 0.5;
+						border: none;
+						outline: none;
+						background: none;
+
+						&:hover {
+							color: teal;
+						}
+					}
 				}
 
 				&.fresh {

@@ -55,26 +55,37 @@
 
 						<!-- Card Header -->
 						<div class="card-right" layout="column" flex>
-							<form name="questionForm">
+							<form name="questionForm" novalidate="novalidate">
 								<md-input-container class="md-block question-content-container vertical-condense">
 									<span class='question-heading'>
 										<label class='md-container-ignore'>
 											Question {{$index + 1}}
 										</label>
 									</span>
-
-									<span class='question-input-container'>
-										<input ng-model="card.question"
-											name="question"
-											required
-											placeholder="Enter question text here."
-											spellcheck="true"
-											focus-me="card.fresh"
-											ng-change="card.fresh = false">
-										<div ng-messages="questionForm.question.$error">
-											<div ng-message="required">Question text is required.</div>
-										</div>
-									</span>
+									
+									<div class="question-body">
+										<span class='question-input-container'>
+											<input ng-model="card.question"
+												name="question"
+												required
+												placeholder="Enter question text here."
+												spellcheck="true"
+												focus-me="card.fresh"
+												ng-change="card.fresh = false">
+											<div ng-messages="questionForm.question.$error">
+												<div ng-message="required">Question text is required.</div>
+											</div>
+											
+										</span>
+										<button class="icon-container"
+											ng-hide="card.assets.length > 0"
+											focus-me="card.imageButtonHack"
+											ng-focus="card.imageButtonHack = false"
+											ng-click="beginMediaImport(cardIndex)">
+											<md-tooltip md-direction="below">Add Image</md-tooltip>
+											<i class="material-icons">add_photo_alternate</i>
+										</button>										
+									</div>
 
 									<div class="card-buttons">
 										<button class="move-arrow" ng-hide="$first" ng-click="swapCards(cardIndex, cardIndex - 1)">
@@ -121,15 +132,6 @@
 
 									<div layout="row">
 										<md-input-container class='vertical-condense'>
-											<label>Optional Image</label>
-											<md-button class="md-accent md-raised toggle-option"
-												ng-hide="card.assets.length > 0"
-												focus-me="card.imageButtonHack"
-												ng-focus="card.imageButtonHack = false"
-												ng-click="beginMediaImport(cardIndex)"
-												>
-												Add Image
-											</md-button>
 
 											<span class="card-media-container" ng-show="card.assets.length > 0">
 												<span>

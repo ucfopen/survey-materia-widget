@@ -42,10 +42,13 @@ md-toolbar {
 	}
 
 	.card-media-container {
-		margin: 0 20px;
+		margin: 20px;
 
 		.card-media {
-			max-width: 100%;
+			// width: 100%;
+			// max-width: 480px;
+			max-height: 400px;
+			height: 100%;
 		}
 	}
 
