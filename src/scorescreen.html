@@ -46,6 +46,10 @@
 								</span>
 							</md-card-title>
 
+							<img class="card-media" ng-if="qset.items[$index].assets[0]"
+									ng-src="{{qset.items[$index].assets[0].url}}"
+									alt="Image: {{qset.items[$index].assets[0].name}}" />
+
 							<md-card-content>
 								<label>You Answered:</label>
 								<p>{{responses[$index]}}</p>

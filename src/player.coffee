@@ -39,7 +39,7 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		for index, item of qset.items
 			item.questions[0].text = desanitize(item.questions[0].text)
 
-			for answer of item.answers
+			for answer in item.answers
 				answer.text = desanitize(answer.text)
 		return qset
 

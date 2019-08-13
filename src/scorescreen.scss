@@ -24,6 +24,15 @@
 		line-height:1.25em;
 	}
 
+	.card-media {
+		position: absolute;
+		width: 100px;
+		top: 16px;
+		right: 16px;
+
+		border: solid 1px #009688;
+		border-radius: 2px;
+	}
 	// label.icon-label {
 	// 	position: absolute;
 	// 	right: 40px;
