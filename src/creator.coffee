@@ -8,6 +8,9 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 ]
 SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', 'sanitizeHelper', '$timeout', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, sanitizeHelper, $timeout) ->
 
+	$scope.acceptedMediaTypes = ['image']
+	mediaRef = null
+
 	$scope.groups = [
 		{text:'General', color:'#616161'}
 	]
@@ -100,6 +103,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 					displayStyle: item.options.displayStyle
 					group: item.options.group
 					randomize: item.options.randomize
+					assets: if item.assets then item.assets else []
 					options: {}
 
 				# conditional options
@@ -139,15 +143,16 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	$scope.addQuestion = ->
 		$scope.cards.push
-			question: ''																	# question text
-			answers: angular.copy $scope.presets[$scope.presetLikelihood].values			# array of answer responses of form [{text: 'answer text'}]
-			questionType: $scope.multipleChoice												# type of question - MC, check-all-that-apply, free response, etc
-			answerType: $scope.presetLikelihood												# type of answer: is it a preset range, or custom
-			displayStyle: $scope.horizontalScale											# should answers be displayed horizontally or via drop-down
-			group: 0																		# group - NYI
-			randomize: false
-			options: {}																		# extra options specific to individual question types
-			fresh: true
+			question: ''                                                         # question text
+			answers: angular.copy $scope.presets[$scope.presetLikelihood].values # array of answer responses of form [{text: 'answer text'}]
+			questionType: $scope.multipleChoice                                  # type of question - MC, check-all-that-apply, free response, etc
+			answerType: $scope.presetLikelihood                                  # type of answer: is it a preset range, or custom
+			displayStyle: $scope.horizontalScale                                 # should answers be displayed horizontally or via drop-down
+			group: 0                                                             # group - NYI
+			randomize: false                                                     # answers/options will be presented in a random order
+			options: {}                                                          # extra options specific to individual question types
+			assets: []                                                           # refers to a media asset attached to this question
+			fresh: true                                                          # the question has been added/duplicated but not altered
 
 	$scope.addOption = (cardIndex) ->
 		style = $scope.cards[cardIndex].displayStyle
@@ -180,6 +185,26 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 					event.target.focus()
 			else
 				return
+
+	$scope.beginMediaImport = (cardIndex) ->
+		mediaRef = cardIndex
+		Materia.CreatorCore.showMediaImporter($scope.acceptedMediaTypes)
+
+	$scope.onMediaImportComplete = (media) ->
+		asset = media[0]
+		$scope.cards[mediaRef].assets[0] = {
+			id: asset.id
+			name: asset.name
+			type: asset.type
+			url: if asset.remote_url then asset.remote_url else Materia.CreatorCore.getMediaUrl(asset.id)
+		}
+		$scope.cards[mediaRef].imageButtonHack = true
+
+		$scope.$apply()
+
+	$scope.removeMedia = (cardIndex) ->
+		$scope.cards[cardIndex].assets = []
+		$scope.cards[cardIndex].imageButtonHack = true
 
 	$scope.moveSequenceItemUp = (cardIndex, itemIndex, event) ->
 		if itemIndex == 0
@@ -352,6 +377,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 				displayStyle: item.options.displayStyle
 				group: item.options.group
 				randomize: item.options.randomize
+				assets: if item.assets then item.assets else []
 			questionCount++
 
 		$scope.$apply ->
@@ -403,6 +429,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 				randomize: item.randomize
 			questions: [{ text: question }]
 			answers: item.answers
+			assets: item.assets
 
 		for key, value of item.options
 			processed.options[key] = value

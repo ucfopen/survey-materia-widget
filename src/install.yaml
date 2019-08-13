@@ -22,6 +22,7 @@ score:
 meta_data:
   features:
     - Customizable
+    - Media
   supported_data:
     - Multiple Choice
     - Survey
