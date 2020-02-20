@@ -201,16 +201,18 @@
 						</md-card-actions>
 						
 					</md-card>
-					<md-button class="md-raised previous" ng-if="qset.options.OneQuestionAtATime" ng-click="previous()">
-						Previous
-					</md-button>
-					
-					<md-button class="md-raised next" ng-if="qset.options.OneQuestionAtATime" ng-click="next()">
-						Next
-					</md-button>
-					<md-button class="md-raised bottom-submit" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
-						Submit
-					</md-button>
+					<div class="buttons">
+						<md-button class="md-raised previous" ng-if="qset.options.OneQuestionAtATime" ng-click="previous()">
+							Previous
+						</md-button>
+						<md-button class="md-raised bottom-submit" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
+							Submit
+						</md-button>
+						<md-button class="md-raised next" ng-if="qset.options.OneQuestionAtATime" ng-click="next()">
+							Next
+						</md-button>
+						
+					</div>
 				</div>
 			</div>
 			<!-- Type Info Dialog -->

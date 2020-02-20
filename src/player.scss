@@ -238,33 +238,25 @@ button.info-tooltip-button {
 	}
 }
 
+.buttons {
+	display: flex;
+	justify-content: space-between;
+}
+
 .bottom-submit {
-	position: relative;
-	left: 50%;
-	transform: translate(-50% , 0);
-	max-width: 600px;
-	padding: 0px 6px 0px 6px;
-	margin: 6px 0px 18px 0px;
+	width: 10%;
 	font-size:1.1em;
 }
 
 .previous {
-	position: relative;
-	float: left;
 	left: 25px;
-	max-width: 600px;
-	// padding: 0px 6px 0px 6px;
-	// margin: 6px 0px 18px 0px;
+	width: 10%;
 	font-size:1.1em;
 }
 
 .next {
-	position: relative;
-	float: right;
 	right: 25px;
-	max-width: 600px;
-	// padding: 0px 6px 0px 6px;
-	// margin: 6px 0px 18px 0px;
+	width: 10%;
 	font-size:1.1em;
 }
 
