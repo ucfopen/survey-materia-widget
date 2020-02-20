@@ -156,9 +156,9 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			assets: []                                                           # refers to a media asset attached to this question
 			fresh: true                                                          # the question has been added/duplicated but not altered
 
-	$scope.ChangeOneQuestionAtATime = ->
-		$scope.OneQuestionAtATime = !$scope.OneQuestionAtATime
-		console.log("onequestionatatime: " + $scope.OneQuestionAtATime)
+	# $scope.ChangeOneQuestionAtATime = ->
+	# 	$scope.OneQuestionAtATime = !$scope.OneQuestionAtATime
+	# 	console.log("onequestionatatime: " + $scope.OneQuestionAtATime)
 
 	$scope.addOption = (cardIndex) ->
 		style = $scope.cards[cardIndex].displayStyle
