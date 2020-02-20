@@ -394,8 +394,15 @@
 							Add Question
 						</md-button>
 					</div>
+					<div layout layout-align="center center" ng-show="ready">
+						<md-button class="md-accent md-raised" ng-click="ChangeOneQuestionAtATime()">
+							One Question At A Time
+						</md-button>
+					</div>
 				</div>
 			</div>
+
+			
 
 			<!-- Type Info Dialog -->
 			<div style="visibility: hidden">

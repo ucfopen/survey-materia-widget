@@ -247,3 +247,25 @@ button.info-tooltip-button {
 	margin: 6px 0px 18px 0px;
 	font-size:1.1em;
 }
+
+.previous {
+	position: relative;
+	float: left;
+	left: 25px;
+	max-width: 600px;
+	// padding: 0px 6px 0px 6px;
+	// margin: 6px 0px 18px 0px;
+	font-size:1.1em;
+}
+
+.next {
+	position: relative;
+	float: right;
+	right: 25px;
+	max-width: 600px;
+	// padding: 0px 6px 0px 6px;
+	// margin: 6px 0px 18px 0px;
+	font-size:1.1em;
+}
+
+

@@ -81,6 +81,8 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		containment: ".drag-choice"
 	}
 
+	$scope.OneQuestionAtATime = false
+
 	questionCount = 0
 	originatorEv = null
 
@@ -153,6 +155,10 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 			options: {}                                                          # extra options specific to individual question types
 			assets: []                                                           # refers to a media asset attached to this question
 			fresh: true                                                          # the question has been added/duplicated but not altered
+
+	$scope.ChangeOneQuestionAtATime = ->
+		$scope.OneQuestionAtATime = !$scope.OneQuestionAtATime
+		console.log("onequestionatatime: " + $scope.OneQuestionAtATime)
 
 	$scope.addOption = (cardIndex) ->
 		style = $scope.cards[cardIndex].displayStyle
@@ -341,7 +347,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		_isValid = validation()
 
 		if _isValid
-			qset = Resource.buildQset $scope.title, $scope.cards, $scope.groups
+			qset = Resource.buildQset $scope.title, $scope.cards, $scope.groups, $scope.OneQuestionAtATime
 			if qset then Materia.CreatorCore.save $scope.title, qset
 		else
 			Materia.CreatorCore.cancelSave "Please make sure every question is complete."
@@ -389,7 +395,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 ]
 
 SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, sanitizeHelper) ->
-	buildQset: (title, questions, groups) ->
+	buildQset: (title, questions, groups, OneQuestionAtATime) ->
 		qsetItems = []
 		qset = {}
 
@@ -402,7 +408,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 			if item then qsetItems.push item
 
 		qset.items = qsetItems
-		qset.options = {groups: groups}
+		qset.options = {groups: groups, OneQuestionAtATime: OneQuestionAtATime}
 		return qset
 
 	processQsetItem: (item) ->

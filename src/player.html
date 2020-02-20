@@ -41,13 +41,13 @@
 
 					<md-card class="md-whiteframe-3dp card"
 						role="region"
-						aria-label="question {{$index + 1}}"
-						ng-repeat="question in qset.items"
-						ng-class="{'incomplete': showIncomplete && isIncomplete($index)}">
+						aria-label="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}}"
+						ng-repeat="question in questions_displayed"
+						ng-class="{'incomplete': showIncomplete && isIncomplete(qset.options.OneQuestionAtATime ? question_index : $index)}">
 						<div class="card-right" layout="column">
 							<md-card-title class="card-title">
-								<h3 id="question {{$index + 1}}"
-									aria-label="question {{$index + 1}}: {{question.questions[0].text}}"
+								<h3 id="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}}"
+									aria-label="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}}: {{question.questions[0].text}}"
 									class="md-headline">{{question.questions[0].text}}</h3>
 							</md-card-title>
 							<span class='card-media-container'
@@ -59,7 +59,7 @@
 
 							<!-- Scale Style -->
 							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == horizontalScale">
-								<md-radio-group layout="row" ng-model="responses[$index]" class="radio-spacing" ng-change="updateCompleted()">
+								<md-radio-group layout="row" ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $index]" class="radio-spacing" ng-change="updateCompleted()">
 										<md-radio-button
 											ng-repeat="answer in question.answers"
 											value={{$index}}>
@@ -72,10 +72,10 @@
 							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == dropDown">
 								<md-input-container layout="row">
 									<md-select class="dropdown-answer"
-										ng-model="responses[$index]"
+										ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $index]"
 										aria-label="Answer"
 										ng-change="updateCompleted()"
-										md-selected-text="dropDownAnswer($index, responses[$index])">
+										md-selected-text="dropDownAnswer(qset.options.OneQuestionAtATime ? question_index : $index, responses[qset.options.OneQuestionAtATime ? question_index : $index])"> 
 										<md-option class="dropdown-answer-element"
 											ng-repeat="answer in question.answers"
 											value="{{$index}}">
@@ -99,17 +99,15 @@
 								<md-input-container layout="column" class="checkbox-group">
 											<md-checkbox
 												ng-repeat="answer in question.answers"
-												ng-model="responses[$parent.$index][$index]"
-												ng-init="responses[$parent.$index][$index] = false"
-												ng-change="updateCheckAllThatApply($parent.$index, $index)"
-												aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}">
+												ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $parent.$index][$index]"
+												ng-change="updateCheckAllThatApply(qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)"
+												aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}"> <!--TODO: FIGURE OUT HOW TO GET RID OF NG-INIT-->
 												{{answer.text}}
 											</md-checkbox>
 											<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
 												<md-checkbox
-													ng-model="responses[$parent.$index][question.answers.length]"
-													ng-init="responses[$parent.$index][question.answers.length] = false"
-													ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)">
+													ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $parent.$index][question.answers.length]"
+													ng-change="updateCheckAllThatApply(qset.options.OneQuestionAtATime ? question_index : $parent.$index, question.answers.length)"> <!--TODO: FIGURE OUT HOW TO GET RID OF NG-INIT-->
 													{{question.options.noneOfTheAboveText}}
 												</md-checkbox>
 												<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')" aria-label="Selecting this option will uncheck all other responses.">
@@ -122,7 +120,7 @@
 							<!-- Free Response Style -->
 							<md-card-actions layout ng-if="question.options.displayStyle == textArea">
 								<md-input-container class="md-block" flex>
-									<textarea type="text" ng-model="responses[$index]" aria-label="{{question.answers[0].text}}" ng-change="updateCompleted()" placeholder="{{question.answers[0].text}}"></textarea>
+									<textarea type="text" ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $index]" aria-label="{{question.answers[0].text}}" ng-change="updateCompleted()" placeholder="{{question.answers[0].text}}"></textarea>
 								</md-input-container>
 							</md-card-actions>
 						</div>
@@ -135,7 +133,7 @@
 							<div class="sequence-item-container"
 								layout="column"
 								sv-root
-								sv-on-sort="markSequenceComplete($parent.$index)"
+								sv-on-sort="markSequenceComplete(qset.options.OneQuestionAtATime ? question_index : $parent.$index)"
 								sv-part="question.answers"
 								role="listbox">
 								<p class='instructions'>
@@ -146,13 +144,13 @@
 									</span>
 								</p>
 								<div layout="row"
-									ng-if="showIncomplete && isIncomplete($parent.$index)">
+									ng-if="showIncomplete && isIncomplete(qset.options.OneQuestionAtATime ? question_index : $parent.$index)">
 									<md-input-container>
 										<md-button
 											class="md-raised md-primary"
 											aria-label="Accept Order"
-											ng-click="markSequenceComplete($parent.$index)"
-											ng-model="responses[$parent.$index]">
+											ng-click="markSequenceComplete(qset.options.OneQuestionAtATime ? question_index : $parent.$index)"
+											ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $parent.$index]"> 
 											<md-tooltip md-direction="below">
 												Click to accept the current order of these items
 											</md-tooltip>
@@ -164,7 +162,7 @@
 									ng-repeat="item in question.answers"
 									sv-element="dragOpts"
 									class="md-block sequence-item"
-									ng-keydown="handleSequenceKeyDown($event, $parent.$index, $index)"
+									ng-keydown="handleSequenceKeyDown($event, qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)"
 									tabindex="0"
 									role="option"
 									flex>
@@ -180,7 +178,7 @@
 										tabindex="-1">
 										<i class="material-icons"
 											tabindex="-1"
-											ng-click="moveSequenceItemUp($parent.$index, $index)">
+											ng-click="moveSequenceItemUp(qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)">
 											&#xE316;
 											<md-tooltip md-direction="below">Move Item Up</md-tooltip>
 										</i>
@@ -190,7 +188,7 @@
 										tabindex="-1">
 										<i class="material-icons"
 											tabindex="-1"
-											ng-click="moveSequenceItemDown($parent.$index, $index)">
+											ng-click="moveSequenceItemDown(qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)">
 											&#xE313;
 											<md-tooltip md-direction="below">Move Item Down</md-tooltip>
 										</i>
@@ -201,8 +199,15 @@
 								</div>
 							</div>
 						</md-card-actions>
-
+						
 					</md-card>
+					<md-button class="md-raised previous" ng-if="qset.options.OneQuestionAtATime" ng-click="previous()">
+						Previous
+					</md-button>
+					
+					<md-button class="md-raised next" ng-if="qset.options.OneQuestionAtATime" ng-click="next()">
+						Next
+					</md-button>
 					<md-button class="md-raised bottom-submit" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
 						Submit
 					</md-button>
@@ -213,7 +218,7 @@
 				<div class="md-dialog-container" id="info-dialog-container">
 					<md-dialog id="info-dialog" aria-label="Info Dialog">
 						<md-dialog-content>
-								<div class="md-dialog-content">
+							<div class="md-dialog-content">
 								{{dialogText}}
 							</div>
 						</md-dialog-content>
