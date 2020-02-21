@@ -101,13 +101,13 @@
 												ng-repeat="answer in question.answers"
 												ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $parent.$index][$index]"
 												ng-change="updateCheckAllThatApply(qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)"
-												aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}"> <!--TODO: FIGURE OUT HOW TO GET RID OF NG-INIT-->
+												aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}"> 
 												{{answer.text}}
 											</md-checkbox>
 											<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
 												<md-checkbox
 													ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $parent.$index][question.answers.length]"
-													ng-change="updateCheckAllThatApply(qset.options.OneQuestionAtATime ? question_index : $parent.$index, question.answers.length)"> <!--TODO: FIGURE OUT HOW TO GET RID OF NG-INIT-->
+													ng-change="updateCheckAllThatApply(qset.options.OneQuestionAtATime ? question_index : $parent.$index, question.answers.length)"> 
 													{{question.options.noneOfTheAboveText}}
 												</md-checkbox>
 												<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')" aria-label="Selecting this option will uncheck all other responses.">
@@ -199,7 +199,8 @@
 								</div>
 							</div>
 						</md-card-actions>
-						
+
+					<!--Buttons for previous, next, submit-->
 					</md-card>
 					<div class="buttons">
 						<md-button class="md-raised previous" ng-if="qset.options.OneQuestionAtATime" ng-click="previous()">
