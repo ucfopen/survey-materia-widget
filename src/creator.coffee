@@ -96,6 +96,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		$scope.$apply ->
 			$scope.title = title
 			$scope.groups = qset.options.groups
+			$scope.OneQuestionAtATime = qset.options.OneQuestionAtATime
 			for item, index in qset.items
 				$scope.cards.push
 					question: sanitizeHelper.desanitize(item.questions[0].text)
