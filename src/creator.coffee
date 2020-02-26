@@ -81,6 +81,8 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		containment: ".drag-choice"
 	}
 
+	$scope.OneQuestionAtATime = false
+
 	questionCount = 0
 	originatorEv = null
 
@@ -94,6 +96,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		$scope.$apply ->
 			$scope.title = title
 			$scope.groups = qset.options.groups
+			$scope.OneQuestionAtATime = qset.options.OneQuestionAtATime
 			for item, index in qset.items
 				$scope.cards.push
 					question: sanitizeHelper.desanitize(item.questions[0].text)
@@ -341,7 +344,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		_isValid = validation()
 
 		if _isValid
-			qset = Resource.buildQset $scope.title, $scope.cards, $scope.groups
+			qset = Resource.buildQset $scope.title, $scope.cards, $scope.groups, $scope.OneQuestionAtATime
 			if qset then Materia.CreatorCore.save $scope.title, qset
 		else
 			Materia.CreatorCore.cancelSave "Please make sure every question is complete."
@@ -389,7 +392,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 ]
 
 SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, sanitizeHelper) ->
-	buildQset: (title, questions, groups) ->
+	buildQset: (title, questions, groups, OneQuestionAtATime) ->
 		qsetItems = []
 		qset = {}
 
@@ -402,7 +405,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 			if item then qsetItems.push item
 
 		qset.items = qsetItems
-		qset.options = {groups: groups}
+		qset.options = {groups: groups, OneQuestionAtATime: OneQuestionAtATime}
 		return qset
 
 	processQsetItem: (item) ->
