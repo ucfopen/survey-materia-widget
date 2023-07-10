@@ -136,7 +136,7 @@ return [
 			// Return the csv zip.
 			$tempname = tempnam('/tmp', 'materia_raw_log_csv');
 			$zip = new \ZipArchive();
-			$zip->open($tempname);
+			$zip->open($tempname, \ZipArchive::OVERWRITE);
 			foreach ($csvs as $key => $csv)
 			{
 				$string = $headers . $csv['question_text'] . "\r\n" . implode("\r\n", $csv['rows']);
