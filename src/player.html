@@ -1,13 +1,16 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>Privilege Walk</title>
-		<meta charset="utf-8"/>
+		<meta charset="utf-8" />
 
 		<!-- STYLESHEETS -->
-		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-		<link rel="stylesheet" type="text/css" href="player.css">
+		<link
+			rel="stylesheet"
+			href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css"
+		/>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<link rel="stylesheet" type="text/css" href="player.css" />
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
 		<script src="materia.enginecore.js"></script>
@@ -29,130 +32,192 @@
 				<div class="md-toolbar-tools" layout="row">
 					<h2 aria-label="widget title {{instance.name}}">{{instance.name}}</h2>
 					<span flex></span>
-					<md-button class="md-raised" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
+					<md-button
+						class="md-raised"
+						ng-class="{'md-accent': progress == 100}"
+						aria-label="Submit"
+						ng-click="submit()"
+					>
 						Submit
 					</md-button>
 				</div>
-				<md-progress-linear class="md-accent" md-mode="determinate" value="{{Math.round(progress)}}"></md-progress-linear>
+				<md-progress-linear
+					class="md-accent"
+					md-mode="determinate"
+					value="{{Math.round(progress)}}"
+				></md-progress-linear>
 			</md-toolbar>
 
 			<div layout-gt-sm="row" layout="column" id="content">
 				<div flex="55" id="card-container">
-
-					<md-card class="md-whiteframe-3dp card"
+					<md-card
+						class="md-whiteframe-3dp card"
 						role="region"
 						aria-label="question {{$index + 1}}"
 						ng-repeat="question in qset.items"
-						ng-class="{'incomplete': showIncomplete && isIncomplete($index)}">
+						ng-class="{'incomplete': showIncomplete && isIncomplete($index)}"
+					>
 						<div class="card-right" layout="column">
 							<md-card-title class="card-title">
-								<h3 id="question {{$index + 1}}"
+								<h3
+									id="question {{$index + 1}}"
 									aria-label="question {{$index + 1}}: {{question.questions[0].text}}"
-									class="md-headline">{{question.questions[0].text}}</h3>
+									class="md-headline"
+								>
+									{{question.questions[0].text}}
+								</h3>
 							</md-card-title>
-							<span class='card-media-container'
-								ng-if="question.assets.length > 0">
-								<img class="card-media"
+							<span class="card-media-container" ng-if="question.assets.length > 0">
+								<img
+									class="card-media"
 									ng-src="{{question.assets[0].url}}"
-									alt="Image: {{question.assets[0].name}}" />
+									alt="Image: {{question.assets[0].name}}"
+								/>
 							</span>
 
 							<!-- Scale Style -->
-							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == horizontalScale">
-								<md-radio-group layout="row" ng-model="responses[$index]" class="radio-spacing" ng-change="updateCompleted()">
-										<md-radio-button
-											ng-repeat="answer in question.answers"
-											value={{$index}}>
-											{{answer.text}}
-										</md-radio-button>
+							<md-card-actions
+								layout
+								layout-align="start start"
+								ng-if="question.options.displayStyle == horizontalScale"
+							>
+								<md-radio-group
+									tabindex="0"
+									layout="row"
+									ng-model="responses[$index]"
+									class="radio-spacing"
+									ng-change="updateCompleted()"
+								>
+									<md-radio-button
+										tabindex="0"
+										ng-repeat="answer in question.answers"
+										value="{{$index}}"
+									>
+										{{answer.text}}
+									</md-radio-button>
 								</md-radio-group>
 							</md-card-actions>
 
 							<!-- Dropdown Style -->
-							<md-card-actions layout layout-align="start start" ng-if="question.options.displayStyle == dropDown">
+							<md-card-actions
+								layout
+								layout-align="start start"
+								ng-if="question.options.displayStyle == dropDown"
+							>
 								<md-input-container layout="row">
-									<md-select class="dropdown-answer"
+									<md-select
+										class="dropdown-answer"
 										ng-model="responses[$index]"
 										aria-label="Answer"
 										ng-change="updateCompleted()"
-										md-selected-text="dropDownAnswer($index, responses[$index])">
-										<md-option class="dropdown-answer-element"
+										md-selected-text="dropDownAnswer($index, responses[$index])"
+									>
+										<md-option
+											class="dropdown-answer-element"
 											ng-repeat="answer in question.answers"
-											value="{{$index}}">
-												<span class="answer-text">
-													{{answer.text}}
-												</span>
-												<span class="answer-number">
-													{{$index+1}} of {{question.answers.length}}
-												</span>
+											value="{{$index}}"
+										>
+											<span class="answer-text">
+												{{answer.text}}
+											</span>
+											<span class="answer-number">
+												{{$index+1}} of {{question.answers.length}}
+											</span>
 										</md-option>
 									</md-select>
 								</md-input-container>
 							</md-card-actions>
 
 							<!-- Check All That Apply -->
-							<md-card-actions layout="column" layout-align="start start" ng-if="question.options.displayStyle == verticalList && question.options.questionType == 'check-all-that-apply'">
+							<md-card-actions
+								layout="column"
+								layout-align="start start"
+								ng-if="question.options.displayStyle == verticalList && question.options.questionType == 'check-all-that-apply'"
+							>
 								<div layout="row">
-									<span class="response-limit-description" ng-if="question.options.minResponseLimit">Select at least {{question.options.minResponseLimit}} item{{ question.options.minResponseLimit > 1 ? "s" : "" }}.</span>
-									<span class="response-limit-description" ng-if="question.options.maxResponseLimit">Select at most {{question.options.maxResponseLimit}} item{{ question.options.maxResponseLimit > 1 ? "s" : "" }}.</span>
+									<span class="response-limit-description" ng-if="question.options.minResponseLimit"
+										>Select at least {{question.options.minResponseLimit}} item{{
+										question.options.minResponseLimit > 1 ? "s" : "" }}.</span
+									>
+									<span class="response-limit-description" ng-if="question.options.maxResponseLimit"
+										>Select at most {{question.options.maxResponseLimit}} item{{
+										question.options.maxResponseLimit > 1 ? "s" : "" }}.</span
+									>
 								</div>
 								<md-input-container layout="column" class="checkbox-group">
-											<md-checkbox
-												ng-repeat="answer in question.answers"
-												ng-model="responses[$parent.$index][$index]"
-												ng-init="responses[$parent.$index][$index] = false"
-												ng-change="updateCheckAllThatApply($parent.$index, $index)"
-												aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}">
-												{{answer.text}}
-											</md-checkbox>
-											<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
-												<md-checkbox
-													ng-model="responses[$parent.$index][question.answers.length]"
-													ng-init="responses[$parent.$index][question.answers.length] = false"
-													ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)">
-													{{question.options.noneOfTheAboveText}}
-												</md-checkbox>
-												<button class="info-tooltip-button" role="tooltip" ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')" aria-label="Selecting this option will uncheck all other responses.">
-													<i class="material-icons">&#xE88F;</i>
-												</button>
-											</div>
+									<md-checkbox
+										ng-repeat="answer in question.answers"
+										ng-model="responses[$parent.$index][$index]"
+										ng-init="responses[$parent.$index][$index] = false"
+										ng-change="updateCheckAllThatApply($parent.$index, $index)"
+										aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}"
+									>
+										{{answer.text}}
+									</md-checkbox>
+									<div layout="row" ng-if="question.options.enableNoneOfTheAbove">
+										<md-checkbox
+											ng-model="responses[$parent.$index][question.answers.length]"
+											ng-init="responses[$parent.$index][question.answers.length] = false"
+											ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)"
+										>
+											{{question.options.noneOfTheAboveText}}
+										</md-checkbox>
+										<button
+											class="info-tooltip-button"
+											role="tooltip"
+											ng-click="showHelpDialog($event, 'Selecting this option will uncheck all other responses.')"
+											aria-label="Selecting this option will uncheck all other responses."
+										>
+											<i class="material-icons">&#xE88F;</i>
+										</button>
+									</div>
 								</md-input-container>
 							</md-card-actions>
 
 							<!-- Free Response Style -->
 							<md-card-actions layout ng-if="question.options.displayStyle == textArea">
 								<md-input-container class="md-block" flex>
-									<textarea type="text" ng-model="responses[$index]" aria-label="{{question.answers[0].text}}" ng-change="updateCompleted()" placeholder="{{question.answers[0].text}}"></textarea>
+									<textarea
+										type="text"
+										ng-model="responses[$index]"
+										aria-label="{{question.answers[0].text}}"
+										ng-change="updateCompleted()"
+										placeholder="{{question.answers[0].text}}"
+									></textarea>
 								</md-input-container>
 							</md-card-actions>
 						</div>
 
 						<!-- Sequence Style -->
-						<md-card-actions layout
+						<md-card-actions
+							layout
 							layout-align="start start"
 							class="drag-choice"
-							ng-if="question.options.displayStyle == sequence">
-							<div class="sequence-item-container"
+							ng-if="question.options.displayStyle == sequence"
+						>
+							<div
+								class="sequence-item-container"
 								layout="column"
 								sv-root
 								sv-on-sort="markSequenceComplete($parent.$index)"
 								sv-part="question.answers"
-								role="listbox">
-								<p class='instructions'>
+								role="listbox"
+							>
+								<p class="instructions">
 									<span>
-										Arrange the following sequence.
-										Drag and drop, use the arrow buttons,
-										or navigate through the list with 'Tab' and rearrange using the 'Up' or 'Down' keys.
+										Arrange the following sequence. Drag and drop, use the arrow buttons, or
+										navigate through the list with 'Tab' and rearrange using the 'Up' or 'Down'
+										keys.
 									</span>
 								</p>
-								<div layout="row"
-									ng-if="showIncomplete && isIncomplete($parent.$index)">
+								<div layout="row" ng-if="showIncomplete && isIncomplete($parent.$index)">
 									<md-input-container>
 										<md-button
 											class="md-raised md-primary"
 											aria-label="Accept Order"
 											ng-click="markSequenceComplete($parent.$index)"
-											ng-model="responses[$parent.$index]">
+											ng-model="responses[$parent.$index]"
+										>
 											<md-tooltip md-direction="below">
 												Click to accept the current order of these items
 											</md-tooltip>
@@ -160,50 +225,55 @@
 										</md-button>
 									</md-input-container>
 								</div>
-								<div layout="row"
+								<div
+									layout="row"
 									ng-repeat="item in question.answers"
 									sv-element="dragOpts"
 									class="md-block sequence-item"
 									ng-keydown="handleSequenceKeyDown($event, $parent.$index, $index)"
 									tabindex="0"
 									role="option"
-									flex>
-									<span class="drag-handle"
-										tabindex="-1">
+									flex
+								>
+									<span class="drag-handle" tabindex="-1">
 										<i class="material-icons" aria-hidden="true">
 											drag_indicator
 											<md-tooltip md-direction="below">Drag to Reorder</md-tooltip>
 										</i>
 									</span>
-									<span class="move-arrow"
-										aria-hidden="true"
-										tabindex="-1">
-										<i class="material-icons"
+									<span class="move-arrow" aria-hidden="true" tabindex="-1">
+										<i
+											class="material-icons"
 											tabindex="-1"
-											ng-click="moveSequenceItemUp($parent.$index, $index)">
+											ng-click="moveSequenceItemUp($parent.$index, $index)"
+										>
 											&#xE316;
 											<md-tooltip md-direction="below">Move Item Up</md-tooltip>
 										</i>
 									</span>
-									<span class="move-arrow"
-										aria-hidden="true"
-										tabindex="-1">
-										<i class="material-icons"
+									<span class="move-arrow" aria-hidden="true" tabindex="-1">
+										<i
+											class="material-icons"
 											tabindex="-1"
-											ng-click="moveSequenceItemDown($parent.$index, $index)">
+											ng-click="moveSequenceItemDown($parent.$index, $index)"
+										>
 											&#xE313;
 											<md-tooltip md-direction="below">Move Item Down</md-tooltip>
 										</i>
 									</span>
-									<span class='sequence-item-text'>
+									<span class="sequence-item-text">
 										{{item.text}}
 									</span>
 								</div>
 							</div>
 						</md-card-actions>
-
 					</md-card>
-					<md-button class="md-raised bottom-submit" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
+					<md-button
+						class="md-raised bottom-submit"
+						ng-class="{'md-accent': progress == 100}"
+						aria-label="Submit"
+						ng-click="submit()"
+					>
 						Submit
 					</md-button>
 				</div>
@@ -213,7 +283,7 @@
 				<div class="md-dialog-container" id="info-dialog-container">
 					<md-dialog id="info-dialog" aria-label="Info Dialog">
 						<md-dialog-content>
-								<div class="md-dialog-content">
+							<div class="md-dialog-content">
 								{{dialogText}}
 							</div>
 						</md-dialog-content>
