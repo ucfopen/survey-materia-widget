@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Privilege Walk</title>
+	<title> Simple Survey Materia Widget</title>
 	<meta charset="utf-8" />
 
 	<!-- STYLESHEETS -->
@@ -56,8 +56,10 @@
 			</md-toolbar>
 
 			<div layout-gt-sm="row" layout="column" id="content">
-				<div flex="55" id="card-container">
+				<div flex="55" id="card-container" ng-focus="noScrolling()">
 					<md-card
+						ng-keyup="navigate($event, $index)"
+						ng-attr-id="{{'question-'+$index}}"
 						tabindex="0"
 						class="md-whiteframe-3dp card"
 						role="region"
@@ -99,6 +101,7 @@
 									ng-change="updateCompleted()"
 								>
 									<md-radio-button
+										id="btn1"
 										class="md-radio-button"
 										tabindex="0"
 										ng-repeat="answer in question.answers"

@@ -5,7 +5,6 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.primaryPalette('teal')
 			.accentPalette('indigo')
 ]
-
 SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', '$timeout', '$mdLiveAnnouncer', ($scope, $mdToast, $mdDialog, $timeout, $mdLiveAnnouncer) ->
 
 	$scope.qset = null
@@ -69,6 +68,8 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		$scope.progress = 0
 		$scope.$apply()
 
+		document.title = instance.name + ": Simple Survey Materia Widget"
+
 	shuffle = (array) ->
 		temp = null
 		currentPass = array.length
@@ -108,6 +109,20 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	$scope.cancel = () ->
 		$mdDialog.hide()
+
+	# run on keyup for any given card
+	$scope.navigate = (event, questionIndex) ->
+
+		# event.key // 'ArrowUp'
+		switch event.code
+			when 'KeyW'
+				if document.getElementById("question-" + (questionIndex - 1)) != null
+					document.getElementById("question-" + (questionIndex - 1)).focus()
+			when 'KeyR'
+				if document.getElementById("question-" + (questionIndex + 1)) != null
+					document.getElementById("question-" + (questionIndex + 1)).focus()
+
+			else return
 
 	$scope.dropDownAnswer = (questionIndex, answerIndex) ->
 		if answerIndex then return $scope.qset.items[questionIndex].answers[answerIndex].text
