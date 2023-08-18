@@ -183,13 +183,27 @@ button.info-tooltip-button {
 	flex-wrap: wrap;
 }
 
-.sequence-item-container.layout-column {
-  display: block;
+.sequence-item-container {
+
+	width: 50%;
+
+	@media (max-width: 900px) {
+		width: 100%;
+	}
+
+	.layout-column {
+		display: block;
+	}
+}
+
+.listbox-button-div {
+	width: 100%;
 }
 
 .sequence-item {
 	display: flex;
 	align-items: flex-start;
+	width: 100%;
 	cursor: grab;
 	z-index: 1;
 	background-color: rgba(245, 245, 245, 0.8);
