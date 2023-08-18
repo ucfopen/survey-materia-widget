@@ -85,7 +85,6 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	$scope.isIncomplete = (index) ->
 		switch $scope.qset.items[index].options.questionType
-
 			when 'check-all-that-apply'
 				minResponses = $scope.qset.items[index].options.minResponseLimit
 				unless minResponses then minResponses = 1
@@ -110,17 +109,24 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 	$scope.cancel = () ->
 		$mdDialog.hide()
 
-	# run on keyup for any given card
-	$scope.navigate = (event, questionIndex) ->
-
-		# event.key // 'ArrowUp'
+	# Navigate through the questions using left and right keys
+	$scope.navigateQuestions = (event, questionIndex) ->
 		switch event.code
-			when 'KeyW'
+			when 'ArrowLeft'
 				if document.getElementById("question-" + (questionIndex - 1)) != null
 					document.getElementById("question-" + (questionIndex - 1)).focus()
-			when 'KeyR'
+			when 'ArrowRight'
 				if document.getElementById("question-" + (questionIndex + 1)) != null
 					document.getElementById("question-" + (questionIndex + 1)).focus()
+
+			else return
+
+	# Allows user to select radio button with 'Enter' key. 'Space' unfortunately does not work because of its standard browser use.
+	$scope.radioButtonKeypress = (event, index, questionIndex) ->
+
+		switch event.code
+			when 'Enter'
+				$scope.responses[questionIndex] = index
 
 			else return
 

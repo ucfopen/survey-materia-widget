@@ -58,7 +58,7 @@
 			<div layout-gt-sm="row" layout="column" id="content">
 				<div flex="55" id="card-container" ng-focus="noScrolling()">
 					<md-card
-						ng-keyup="navigate($event, $index)"
+						ng-keyup="navigateQuestions($event, $index)"
 						ng-attr-id="{{'question-'+$index}}"
 						tabindex="0"
 						class="md-whiteframe-3dp card"
@@ -103,6 +103,7 @@
 									<md-radio-button
 										id="btn1"
 										class="md-radio-button"
+										ng-keyup="radioButtonKeypress($event, $index, $parent.$index)"
 										tabindex="0"
 										ng-repeat="answer in question.answers"
 										value="{{$index}}"
@@ -220,6 +221,32 @@
 							class="drag-choice"
 							ng-if="question.options.displayStyle == sequence"
 						>
+							<p class="instructions">
+								<span>
+									Arrange the following sequence. Drag and drop, use the arrow
+									buttons, or navigate through the list with 'Tab' and
+									rearrange using the 'Up' or 'Down' keys.
+								</span>
+							</p>
+							<div
+								class="listbox-button-div"
+								layout="row"
+								ng-if="showIncomplete && isIncomplete($parent.$index)"
+							>
+								<md-input-container>
+									<md-button
+										class="md-raised md-primary"
+										aria-label="Accept Order"
+										ng-click="markSequenceComplete($parent.$index)"
+										ng-model="responses[$parent.$index]"
+									>
+										<md-tooltip md-direction="below">
+											Click to accept the current order of these items
+										</md-tooltip>
+										Accept Order
+									</md-button>
+								</md-input-container>
+							</div>
 							<div
 								class="sequence-item-container"
 								layout="column"
@@ -228,31 +255,6 @@
 								sv-part="question.answers"
 								role="listbox"
 							>
-								<p class="instructions">
-									<span>
-										Arrange the following sequence. Drag and drop, use the arrow
-										buttons, or navigate through the list with 'Tab' and
-										rearrange using the 'Up' or 'Down' keys.
-									</span>
-								</p>
-								<div
-									layout="row"
-									ng-if="showIncomplete && isIncomplete($parent.$index)"
-								>
-									<md-input-container>
-										<md-button
-											class="md-raised md-primary"
-											aria-label="Accept Order"
-											ng-click="markSequenceComplete($parent.$index)"
-											ng-model="responses[$parent.$index]"
-										>
-											<md-tooltip md-direction="below">
-												Click to accept the current order of these items
-											</md-tooltip>
-											Accept Order
-										</md-button>
-									</md-input-container>
-								</div>
 								<div
 									layout="row"
 									ng-repeat="item in question.answers"
