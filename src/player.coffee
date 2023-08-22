@@ -5,7 +5,6 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.primaryPalette('teal')
 			.accentPalette('indigo')
 ]
-
 SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', '$timeout', '$mdLiveAnnouncer', ($scope, $mdToast, $mdDialog, $timeout, $mdLiveAnnouncer) ->
 
 	$scope.qset = null
@@ -82,6 +81,8 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		initCheckAllThatApply()
 		$scope.$apply()
 
+		document.title = instance.name + ": Simple Survey Materia Widget"
+
 	shuffle = (array) ->
 		temp = null
 		currentPass = array.length
@@ -97,7 +98,6 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	$scope.isIncomplete = (index) ->
 		switch $scope.qset.items[index].options.questionType
-
 			when 'check-all-that-apply'
 				minResponses = $scope.qset.items[index].options.minResponseLimit
 				unless minResponses then minResponses = 1
@@ -121,6 +121,27 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	$scope.cancel = () ->
 		$mdDialog.hide()
+
+	# Navigate through the questions using left and right keys
+	$scope.navigateQuestions = (event, questionIndex) ->
+		switch event.code
+			when 'ArrowLeft'
+				if document.getElementById("question-" + (questionIndex - 1)) != null
+					document.getElementById("question-" + (questionIndex - 1)).focus()
+			when 'ArrowRight'
+				if document.getElementById("question-" + (questionIndex + 1)) != null
+					document.getElementById("question-" + (questionIndex + 1)).focus()
+
+			else return
+
+	# Allows user to select radio button with 'Enter' key. 'Space' unfortunately does not work because of its standard browser use.
+	$scope.radioButtonKeypress = (event, index, questionIndex) ->
+
+		switch event.code
+			when 'Enter'
+				$scope.responses[questionIndex] = index
+
+			else return
 
 	$scope.dropDownAnswer = (questionIndex, answerIndex) ->
 		if answerIndex then return $scope.qset.items[questionIndex].answers[answerIndex].text
