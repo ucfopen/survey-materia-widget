@@ -304,14 +304,14 @@
 
 					<!--Buttons for previous, next, submit-->
 					</md-card>
-					<div class="buttons">
-						<md-button class="md-raised previous" ng-if="qset.options.OneQuestionAtATime" ng-click="previous()">
+					<div class="buttons" layout="row">
+						<md-button class="md-raised previous" ng-if="qset.options.OneQuestionAtATime && previousQuestionExists()" ng-click="previous()">
 							Previous
 						</md-button>
 						<md-button class="md-raised bottom-submit" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
 							Submit
 						</md-button>
-						<md-button class="md-raised next" ng-if="qset.options.OneQuestionAtATime" ng-click="next()">
+						<md-button class="md-raised next" ng-if="qset.options.OneQuestionAtATime && nextQuestionExists()" ng-click="next()">
 							Next
 						</md-button>
 

@@ -124,12 +124,24 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	# Navigate through the questions using left and right keys
 	$scope.navigateQuestions = (event, questionIndex) ->
+
 		switch event.code
 			when 'ArrowLeft'
-				if document.getElementById("question-" + (questionIndex - 1)) != null
+				if $scope.qset.options.OneQuestionAtATime
+					$scope.previous()
+					$timeout ->
+						document.getElementsByClassName("md-whiteframe-3dp card")[0].focus()
+
+				else if document.getElementById("question-" + (questionIndex - 1)) != null
 					document.getElementById("question-" + (questionIndex - 1)).focus()
+
 			when 'ArrowRight'
-				if document.getElementById("question-" + (questionIndex + 1)) != null
+				if $scope.qset.options.OneQuestionAtATime
+					$scope.next()
+					$timeout ->
+						document.getElementsByClassName("md-whiteframe-3dp card")[0].focus()
+
+				else if document.getElementById("question-" + (questionIndex + 1)) != null
 					document.getElementById("question-" + (questionIndex + 1)).focus()
 
 			else return
@@ -266,16 +278,31 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 			$scope.showToast "Must complete all questions."
 			locateAndScrollToIncomplete()
 		return
-	
-	$scope.previous = -> 
+
+	$scope.previous = ->
 		if $scope.question_index > 0
 			$scope.question_index--
 			$scope.questions_displayed = [$scope.qset.items[$scope.question_index]]
+			document.getElementsByClassName("md-raised previous")[0].blur();
 
-	$scope.next = -> 
+	$scope.next = ->
 		if $scope.question_index < ($scope.qset.items.length - 1)
 			$scope.question_index++
 			$scope.questions_displayed = [$scope.qset.items[$scope.question_index]]
+			document.getElementsByClassName("md-raised next")[0].blur();
+
+	$scope.previousQuestionExists = ->
+		if $scope.question_index == 0
+			return false
+		else
+			return true
+
+	$scope.nextQuestionExists = ->
+		if $scope.question_index == ($scope.qset.items.length - 1)
+			return false
+		else
+			return true
+
 
 	#initializes all values of Check All That Apply questions to false
 	initCheckAllThatApply = () ->
