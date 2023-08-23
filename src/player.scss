@@ -265,25 +265,23 @@ button.info-tooltip-button {
 }
 
 .buttons {
+	justify-content: space-evenly;
 	display: flex;
-	justify-content: space-between;
+
+	.bottom-submit {
+		font-size:1.1em;
+	}
+
+	.previous {
+		font-size:1.1em;
+	}
+
+	.next {
+		font-size:1.1em;
+	}
+
 }
 
-.bottom-submit {
-	width: 10%;
-	font-size:1.1em;
+.info-tooltip-button:focus {
+	border: 1px solid rgb(56, 41, 228);
 }
-
-.previous {
-	left: 25px;
-	width: 10%;
-	font-size:1.1em;
-}
-
-.next {
-	right: 25px;
-	width: 10%;
-	font-size:1.1em;
-}
-
-

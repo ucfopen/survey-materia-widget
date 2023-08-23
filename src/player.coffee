@@ -151,7 +151,10 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 		switch event.code
 			when 'Enter'
-				$scope.responses[questionIndex] = index
+				if $scope.qset.options.OneQuestionAtATime
+					$scope.responses[$scope.question_index] = index
+				else
+					$scope.responses[questionIndex] = index
 
 			else return
 
