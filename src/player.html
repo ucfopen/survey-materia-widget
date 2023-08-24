@@ -63,14 +63,14 @@
 						tabindex="0"
 						class="md-whiteframe-3dp card"
 						role="region"
-						aria-label="question {{$index + 1}}: {{question.questions[0].text}}"
-						ng-repeat="question in qset.items"
-						ng-class="{'incomplete': showIncomplete && isIncomplete($index)}"
+						aria-label="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}}"
+						ng-repeat="question in questions_displayed"
+						ng-class="{'incomplete': showIncomplete && isIncomplete(qset.options.OneQuestionAtATime ? question_index : $index)}"
 					>
 						<div class="card-right" layout="column">
 							<md-card-title class="card-title">
 								<h3
-									id="question {{$index + 1}}"
+									id="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}}"
 									class="md-headline"
 								>
 									{{question.questions[0].text}}
@@ -96,7 +96,7 @@
 								<md-radio-group
 									tabindex="-1"
 									layout="row"
-									ng-model="responses[$index]"
+									ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $index]"
 									class="radio-spacing"
 									ng-change="updateCompleted()"
 								>
@@ -122,10 +122,10 @@
 								<md-input-container layout="row">
 									<md-select
 										class="dropdown-answer"
-										ng-model="responses[$index]"
+										ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $index]"
 										aria-label="Answer"
 										ng-change="updateCompleted()"
-										md-selected-text="dropDownAnswer($index, responses[$index])"
+										md-selected-text="dropDownAnswer(qset.options.OneQuestionAtATime ? question_index : $index, responses[qset.options.OneQuestionAtATime ? question_index : $index])"
 									>
 										<md-option
 											class="dropdown-answer-element"
@@ -167,9 +167,9 @@
 								<md-input-container layout="column" class="checkbox-group">
 									<md-checkbox
 										ng-repeat="answer in question.answers"
-										ng-model="responses[$parent.$index][$index]"
+										ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $parent.$index][$index]"
 										ng-init="responses[$parent.$index][$index] = false"
-										ng-change="updateCheckAllThatApply($parent.$index, $index)"
+										ng-change="updateCheckAllThatApply(qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)"
 										aria-label="Option {{$index+1}} of {{question.answers.length}}: {{answer.text}}"
 									>
 										{{answer.text}}
@@ -179,9 +179,9 @@
 										ng-if="question.options.enableNoneOfTheAbove"
 									>
 										<md-checkbox
-											ng-model="responses[$parent.$index][question.answers.length]"
+											ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $parent.$index][question.answers.length]"
 											ng-init="responses[$parent.$index][question.answers.length] = false"
-											ng-change="updateCheckAllThatApply($parent.$index, question.answers.length)"
+											ng-change="updateCheckAllThatApply(qset.options.OneQuestionAtATime ? question_index : $parent.$index, question.answers.length)"
 										>
 											{{question.options.noneOfTheAboveText}}
 										</md-checkbox>
@@ -205,7 +205,7 @@
 								<md-input-container class="md-block" flex>
 									<textarea
 										type="text"
-										ng-model="responses[$index]"
+										ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $index]"
 										aria-label="{{question.answers[0].text}}"
 										ng-change="updateCompleted()"
 										placeholder="{{question.answers[0].text}}"
@@ -231,14 +231,14 @@
 							<div
 								class="listbox-button-div"
 								layout="row"
-								ng-if="showIncomplete && isIncomplete($parent.$index)"
+								ng-if="showIncomplete && isIncomplete(qset.options.OneQuestionAtATime ? question_index : $parent.$index)">
 							>
 								<md-input-container>
 									<md-button
 										class="md-raised md-primary"
 										aria-label="Accept Order"
-										ng-click="markSequenceComplete($parent.$index)"
-										ng-model="responses[$parent.$index]"
+										ng-click="markSequenceComplete(qset.options.OneQuestionAtATime ? question_index : $parent.$index)"
+										ng-model="responses[qset.options.OneQuestionAtATime ? question_index : $parent.$index]"
 									>
 										<md-tooltip md-direction="below">
 											Click to accept the current order of these items
@@ -251,7 +251,7 @@
 								class="sequence-item-container"
 								layout="column"
 								sv-root
-								sv-on-sort="markSequenceComplete($parent.$index)"
+								sv-on-sort="markSequenceComplete(qset.options.OneQuestionAtATime ? question_index : $parent.$index)"
 								sv-part="question.answers"
 								role="listbox"
 							>
@@ -260,7 +260,7 @@
 									ng-repeat="item in question.answers"
 									sv-element="dragOpts"
 									class="md-block sequence-item"
-									ng-keydown="handleSequenceKeyDown($event, $parent.$index, $index)"
+									ng-keydown="handleSequenceKeyDown($event, qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)"
 									tabindex="0"
 									role="option"
 									flex
@@ -277,7 +277,7 @@
 										<i
 											class="material-icons"
 											tabindex="-1"
-											ng-click="moveSequenceItemUp($parent.$index, $index)"
+											ng-click="moveSequenceItemUp(qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)"
 										>
 											&#xE316;
 											<md-tooltip md-direction="below">Move Item Up</md-tooltip>
@@ -287,7 +287,7 @@
 										<i
 											class="material-icons"
 											tabindex="-1"
-											ng-click="moveSequenceItemDown($parent.$index, $index)"
+											ng-click="moveSequenceItemDown(qset.options.OneQuestionAtATime ? question_index : $parent.$index, $index)"
 										>
 											&#xE313;
 											<md-tooltip md-direction="below"
@@ -301,15 +301,21 @@
 								</div>
 							</div>
 						</md-card-actions>
+
+					<!--Buttons for previous, next, submit-->
 					</md-card>
-					<md-button
-						class="md-raised bottom-submit"
-						ng-class="{'md-accent': progress == 100}"
-						aria-label="Submit"
-						ng-click="submit()"
-					>
-						Submit
-					</md-button>
+					<div class="buttons">
+						<md-button class="md-raised previous" ng-if="qset.options.OneQuestionAtATime && previousQuestionExists()" ng-click="previous()">
+							Previous
+						</md-button>
+						<md-button class="md-raised bottom-submit" ng-if="qset.options.OneQuestionAtATime && !nextQuestionExists()" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
+							Submit
+						</md-button>
+						<md-button class="md-raised next" ng-if="qset.options.OneQuestionAtATime && nextQuestionExists()" ng-click="next()">
+							Next
+						</md-button>
+
+					</div>
 				</div>
 			</div>
 			<!-- Type Info Dialog -->
