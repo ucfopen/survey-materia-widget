@@ -315,7 +315,7 @@
 						<md-button class="md-raised previous" ng-if="qset.options.OneQuestionAtATime && previousQuestionExists()" ng-click="previous()">
 							Previous
 						</md-button>
-						<md-button class="md-raised bottom-submit" ng-if="qset.options.OneQuestionAtATime && !nextQuestionExists()" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
+						<md-button class="md-raised bottom-submit" ng-if="!qset.options.OneQuestionAtATime || (qset.options.OneQuestionAtATime && !nextQuestionExists())" ng-class="{'md-accent': progress == 100}" aria-label="Submit" ng-click="submit()">
 							Submit
 						</md-button>
 						<md-button class="md-raised next" ng-if="qset.options.OneQuestionAtATime && nextQuestionExists()" ng-click="next()">
