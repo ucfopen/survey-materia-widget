@@ -96,7 +96,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 		$scope.$apply ->
 			$scope.title = title
 			$scope.groups = qset.options.groups
-			$scope.OneQuestionAtATime = qset.options.OneQuestionAtATime
+			$scope.OneQuestionAtATime = if qset.options.OneQuestionAtATime isnt undefined then qset.options.OneQuestionAtATime else false
 			for item, index in qset.items
 				$scope.cards.push
 					question: sanitizeHelper.desanitize(item.questions[0].text)
