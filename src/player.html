@@ -75,7 +75,7 @@
 						tabindex="0"
 						class="md-whiteframe-3dp card"
 						role="region"
-						aria-label="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}}"
+						aria-label="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}}: {{question.questions[0].text}}"
 						ng-repeat="question in questions_displayed"
 						ng-class="{'incomplete': showIncomplete && isIncomplete(qset.options.OneQuestionAtATime ? question_index : $index)}"
 					>
