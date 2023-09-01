@@ -129,8 +129,6 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 			when 'ArrowLeft'
 				if $scope.qset.options.OneQuestionAtATime
 					$scope.previous()
-					$timeout ->
-						document.getElementsByClassName("md-whiteframe-3dp card")[0].focus()
 
 				else if document.getElementById("question-" + (questionIndex - 1)) != null
 					document.getElementById("question-" + (questionIndex - 1)).focus()
@@ -138,8 +136,6 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 			when 'ArrowRight'
 				if $scope.qset.options.OneQuestionAtATime
 					$scope.next()
-					$timeout ->
-						document.getElementsByClassName("md-whiteframe-3dp card")[0].focus()
 
 				else if document.getElementById("question-" + (questionIndex + 1)) != null
 					document.getElementById("question-" + (questionIndex + 1)).focus()
@@ -286,13 +282,15 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		if $scope.question_index > 0
 			$scope.question_index--
 			$scope.questions_displayed = [$scope.qset.items[$scope.question_index]]
-			document.getElementsByClassName("md-raised previous")[0].blur();
+			$timeout ->
+				document.getElementsByClassName("md-whiteframe-3dp card")[0].focus()
 
 	$scope.next = ->
 		if $scope.question_index < ($scope.qset.items.length - 1)
 			$scope.question_index++
 			$scope.questions_displayed = [$scope.qset.items[$scope.question_index]]
-			document.getElementsByClassName("md-raised next")[0].blur();
+			$timeout ->
+				document.getElementsByClassName("md-whiteframe-3dp card")[0].focus()
 
 	$scope.previousQuestionExists = ->
 		if $scope.question_index == 0
