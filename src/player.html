@@ -65,7 +65,7 @@
 			<div layout-gt-sm="row" layout="column" id="content">
 				<div flex="55" id="card-container" ng-focus="noScrolling()">
 
-					<div class="questionNumber" ng-if="qset.options.OneQuestionAtATime">
+					<div class="questionNumber" tabindex="-1" ng-if="qset.options.OneQuestionAtATime">
 						Question {{question_index+1}} of {{qset.items.length}}
 					</div>
 
@@ -75,7 +75,7 @@
 						tabindex="0"
 						class="md-whiteframe-3dp card"
 						role="region"
-						aria-label="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}}: {{question.questions[0].text}}"
+						aria-label="question {{(qset.options.OneQuestionAtATime ? question_index : $index) + 1}} of {{qset.items.length}}: {{question.questions[0].text}}"
 						ng-repeat="question in questions_displayed"
 						ng-class="{'incomplete': showIncomplete && isIncomplete(qset.options.OneQuestionAtATime ? question_index : $index)}"
 					>
