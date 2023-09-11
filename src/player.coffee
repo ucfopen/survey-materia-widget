@@ -149,8 +149,10 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 			when 'Enter'
 				if $scope.qset.options.OneQuestionAtATime
 					$scope.responses[$scope.question_index] = index
+					$scope.updateCompleted()
 				else
 					$scope.responses[questionIndex] = index
+					$scope.updateCompleted()
 
 			else return
 
