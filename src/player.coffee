@@ -5,12 +5,15 @@ SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
 			.primaryPalette('teal')
 			.accentPalette('indigo')
 ]
-
 SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', '$timeout', '$mdLiveAnnouncer', ($scope, $mdToast, $mdDialog, $timeout, $mdLiveAnnouncer) ->
 
 	$scope.qset = null
 	$scope.instance = null
 	$scope.responses = []
+
+	#functionality for one question at a time
+	$scope.questions_displayed = []
+	$scope.question_index = 0
 
 	$scope.horizontalScale = 'horizontal-scale'
 	$scope.dropDown = 'drop-down'
@@ -46,10 +49,15 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 	locateAndScrollToIncomplete = () ->
 		for index, question of $scope.qset.items
 			if $scope.isIncomplete(index)
-				cardElement = document.getElementsByClassName("card")[index]
-				cardElement.scrollIntoView()
-				$mdLiveAnnouncer.announce("Question " + ( parseInt(index) + 1 ) + " must be completed.")
-				return
+				if $scope.qset.options.OneQuestionAtATime
+					$scope.questions_displayed = [$scope.qset.items[index]]
+					$scope.question_index = index
+					break
+				else
+					cardElement = document.getElementsByClassName("card")[index]
+					cardElement.scrollIntoView()
+					$mdLiveAnnouncer.announce("Question " + ( parseInt(index) + 1 ) + " must be completed.")
+					return
 
 	$scope.showToast = (message) ->
 		$mdToast.show(
@@ -67,7 +75,13 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 		$scope.instance = instance
 		$scope.qset = desanitizeQset(qset)
 		$scope.progress = 0
+		if $scope.qset.options.OneQuestionAtATime
+			$scope.questions_displayed = [$scope.qset.items[0]]
+		else $scope.questions_displayed = $scope.qset.items
+		initCheckAllThatApply()
 		$scope.$apply()
+
+		document.title = instance.name + ": Simple Survey Materia Widget"
 
 	shuffle = (array) ->
 		temp = null
@@ -84,7 +98,6 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	$scope.isIncomplete = (index) ->
 		switch $scope.qset.items[index].options.questionType
-
 			when 'check-all-that-apply'
 				minResponses = $scope.qset.items[index].options.minResponseLimit
 				unless minResponses then minResponses = 1
@@ -108,6 +121,40 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	$scope.cancel = () ->
 		$mdDialog.hide()
+
+	# Navigate through the questions using left and right keys
+	$scope.navigateQuestions = (event, questionIndex) ->
+
+		switch event.code
+			when 'ArrowLeft'
+				if $scope.qset.options.OneQuestionAtATime
+					$scope.previous()
+
+				else if document.getElementById("question-" + (questionIndex - 1)) != null
+					document.getElementById("question-" + (questionIndex - 1)).focus()
+
+			when 'ArrowRight'
+				if $scope.qset.options.OneQuestionAtATime
+					$scope.next()
+
+				else if document.getElementById("question-" + (questionIndex + 1)) != null
+					document.getElementById("question-" + (questionIndex + 1)).focus()
+
+			else return
+
+	# Allows user to select radio button with 'Enter' key. 'Space' unfortunately does not work because of its standard browser use.
+	$scope.radioButtonKeypress = (event, index, questionIndex) ->
+
+		switch event.code
+			when 'Enter'
+				if $scope.qset.options.OneQuestionAtATime
+					$scope.responses[$scope.question_index] = index
+					$scope.updateCompleted()
+				else
+					$scope.responses[questionIndex] = index
+					$scope.updateCompleted()
+
+			else return
 
 	$scope.dropDownAnswer = (questionIndex, answerIndex) ->
 		if answerIndex then return $scope.qset.items[questionIndex].answers[answerIndex].text
@@ -232,6 +279,41 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 			$scope.showToast "Must complete all questions."
 			locateAndScrollToIncomplete()
 		return
+
+	$scope.previous = ->
+		if $scope.question_index > 0
+			$scope.question_index--
+			$scope.questions_displayed = [$scope.qset.items[$scope.question_index]]
+			$timeout ->
+				document.getElementsByClassName("md-whiteframe-3dp card")[0].focus()
+
+	$scope.next = ->
+		if $scope.question_index < ($scope.qset.items.length - 1)
+			$scope.question_index++
+			$scope.questions_displayed = [$scope.qset.items[$scope.question_index]]
+			$timeout ->
+				document.getElementsByClassName("md-whiteframe-3dp card")[0].focus()
+
+	$scope.previousQuestionExists = ->
+		if $scope.question_index == 0
+			return false
+		else
+			return true
+
+	$scope.nextQuestionExists = ->
+		if $scope.question_index == ($scope.qset.items.length - 1)
+			return false
+		else
+			return true
+
+
+	#initializes all values of Check All That Apply questions to false
+	initCheckAllThatApply = () ->
+		for qIndex, question of $scope.qset.items #loop thru questions to find check all that apply questions
+			if question.options.questionType == 'check-all-that-apply'
+				$scope.responses[qIndex] = []
+				for aIndex of question.answers #loop thru answers and set them to false
+					$scope.responses[qIndex][aIndex] = false
 
 	Materia.Engine.start($scope)
 ]
