@@ -41,6 +41,11 @@
 						<label id="widget-title-label">Widget Name</label>
 						<input ng-model="title">
 					</md-input-container>
+					<div class="md-block" layout layout-align="end center" ng-show="ready" flex>
+						<md-checkbox class="md-accent md-raised" ng-model="OneQuestionAtATime">
+							Show One Question at a Time
+						</md-checkbox>
+					</div>
 				</div>
 			</md-toolbar>
 
@@ -394,10 +399,6 @@
 							Add Question
 						</md-button>
 					</div>
-					<div layout layout-align="center center" ng-show="ready">
-						<md-checkbox class="md-accent md-raised" ng-model="OneQuestionAtATime">
-							One Question At A Time
-						</md-checkbox>
 					</div>
 				</div>
 			</div>
