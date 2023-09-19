@@ -32,3 +32,5 @@ meta_data:
     Build simple surveys with multiple choice, check-all-that-apply, and free response questions.
   excerpt: >
     Build surveys or questionnaires with a range of question options including multiple choice, check-all-that-apply, and free response. Questions are not scored and students are given full credit upon completion.
+  accessibility_keyboard: Full
+  accessibility_reader: Full
