@@ -1,9 +1,9 @@
 (function() {
   var app;
 
-  app = angular.module("PrivilegeWalkEngine");
+  angular.module("PrivilegeWalkEngine")
 
-  app.provider("ngModalDefaults", function() {
+  .provider("ngModalDefaults", function() {
     return {
       options: {
         put_option_here: "<span>Sample</span>"
@@ -25,9 +25,9 @@
         }
       }
     };
-  });
+  })
 
-  app.directive('modalDialog', [
+  .directive('modalDialog', [
     'ngModalDefaults', '$sce', function(ngModalDefaults, $sce) {
       return {
         restrict: 'AE',

@@ -1,6 +1,6 @@
-SurveyWidget = angular.module 'SurveyWidgetScorescreen', ['ngMaterial', 'ngMessages', 'ngAria']
+angular.module 'SurveyWidgetScorescreen', ['ngMaterial', 'ngMessages', 'ngAria']
 
-SurveyWidget.controller 'SurveyWidgetScoreCtrl', ['$scope', '$mdToast', '$mdDialog', ($scope, $mdToast, $mdDialog) ->
+.controller 'SurveyWidgetScoreCtrl', ['$scope', '$mdToast', '$mdDialog', ($scope, $mdToast, $mdDialog) ->
 	$scope.qset = null
 	$scope.instance = null
 	$scope.groups = null
@@ -42,3 +42,5 @@ SurveyWidget.controller 'SurveyWidgetScoreCtrl', ['$scope', '$mdToast', '$mdDial
 	Materia.ScoreCore.hideResultsTable()
 	Materia.ScoreCore.start($scope)
 ]
+
+angular.bootstrap(document, ['SurveyWidgetScorescreen'])

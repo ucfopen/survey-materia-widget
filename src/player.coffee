@@ -1,12 +1,12 @@
-SurveyWidget = angular.module 'SurveyWidgetEngine', ['ngMaterial', 'angular-sortable-view', 'ngAria']
+angular.module 'SurveyWidgetEngine', ['ngMaterial', 'angular-sortable-view', 'ngAria']
 
-SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
+.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
 			.primaryPalette('teal')
 			.accentPalette('indigo')
 ]
 
-SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', '$timeout', '$mdLiveAnnouncer', ($scope, $mdToast, $mdDialog, $timeout, $mdLiveAnnouncer) ->
+.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDialog', '$timeout', '$mdLiveAnnouncer', ($scope, $mdToast, $mdDialog, $timeout, $mdLiveAnnouncer) ->
 
 	$scope.qset = null
 	$scope.instance = null
@@ -235,3 +235,5 @@ SurveyWidget.controller 'SurveyWidgetEngineCtrl', ['$scope', '$mdToast','$mdDial
 
 	Materia.Engine.start($scope)
 ]
+
+angular.bootstrap(document, ['SurveyWidgetEngine'])

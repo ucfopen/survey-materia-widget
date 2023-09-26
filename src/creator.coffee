@@ -387,7 +387,6 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 
 	Materia.CreatorCore.start $scope
 ]
-
 SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, sanitizeHelper) ->
 	buildQset: (title, questions, groups) ->
 		qsetItems = []
@@ -436,7 +435,6 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 
 		return processed
 ]
-
 SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 	link: (scope, element, attrs) ->
 		model = $parse(attrs.focusMe)
@@ -446,7 +444,6 @@ SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 					element[0].focus()
 			value
 ]
-
 SurveyWidget.service 'sanitizeHelper', [() ->
 	SANITIZE_CHARACTERS =
 		'&' : '&amp;',
@@ -471,3 +468,5 @@ SurveyWidget.service 'sanitizeHelper', [() ->
 	sanitize: sanitize
 	desanitize: desanitize
 ]
+
+angular.bootstrap(document, ['SurveyWidgetCreator'])
