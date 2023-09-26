@@ -1,7 +1,7 @@
 (function() {
   var app;
 
-  app =angular.module("PrivilegeWalkEngine")
+  app = angular.module("PrivilegeWalkEngine")
 
   app.provider("ngModalDefaults", function() {
     return {
@@ -25,7 +25,7 @@
         }
       }
     };
-  })
+  });
 
   app.directive('modalDialog', [
     'ngModalDefaults', '$sce', function(ngModalDefaults, $sce) {
