@@ -5,7 +5,6 @@ const outputPath = path.join(__dirname, 'build')
 const widgetWebpack = require('materia-widget-development-kit/webpack-widget')
 
 const rules = widgetWebpack.getDefaultRules()
-const entries = widgetWebpack.getDefaultEntries()
 const copy = widgetWebpack.getDefaultCopyList()
 
 const customCopy = copy.concat([
@@ -24,22 +23,23 @@ const customCopy = copy.concat([
 	}
 ])
 
-entries['scorescreen.js'] = [
-	srcPath+'scorescreen.coffee'
-]
-
-entries['scorescreen.css'] = [
-	srcPath+'scorescreen.html',
-	srcPath+'scorescreen.scss'
-]
-
-entries['guides/creator.temp.html'] = [
-	srcPath+'_guides/creator.md'
-]
-
-entries['guides/player.temp.html'] = [
-	srcPath+'_guides/player.md'
-]
+const entries = {
+	'player': [
+		path.join(srcPath, 'player.html'),
+		path.join(srcPath, 'player.coffee'),
+		path.join(srcPath, 'player.scss')
+	],
+	'creator': [
+		path.join(srcPath, 'creator.html'),
+		path.join(srcPath, 'creator.coffee'),
+		path.join(srcPath, 'creator.scss'),
+	],
+	'scoreScreen': [
+		path.join(srcPath, 'scoreScreen.html'),
+		path.join(srcPath, 'scoreScreen.coffee'),
+		path.join(srcPath, 'scoreScreen.scss'),
+	]
+}
 
 // this is needed to prevent html-loader from causing issues with
 // style tags in the player using angular
@@ -50,9 +50,6 @@ let customHTMLAndReplaceRule = {
 		{
 			loader: 'file-loader',
 			options: { name: '[name].html' }
-		},
-		{
-			loader: 'extract-loader'
 		},
 		{
 			loader: 'string-replace-loader',
@@ -71,10 +68,10 @@ let customRules = [
 	rules.loaderDoNothingToJs,
 	rules.loaderCompileCoffee,
 	rules.copyImages,
-	customHTMLAndReplaceRule, // <--- replaces "rules.loadHTMLAndReplaceMateriaScripts"
-	rules.loadAndPrefixCSS,
-	rules.loadAndPrefixSASS,
-	rules.loadAndCompileMarkdown
+	rules.loadHTMLAndReplaceMateriaScripts,
+	rules.loadAndPrefixSASS, // <--- replaces "rules.loadHTMLAndReplaceMateriaScripts"
+	// rules.loadAndPrefixCSS,
+	// rules.loadAndCompileMarkdown
 ]
 
 
