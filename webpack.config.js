@@ -34,10 +34,10 @@ const entries = {
 		path.join(srcPath, 'creator.coffee'),
 		path.join(srcPath, 'creator.scss'),
 	],
-	'scoreScreen': [
-		path.join(srcPath, 'scoreScreen.html'),
-		path.join(srcPath, 'scoreScreen.coffee'),
-		path.join(srcPath, 'scoreScreen.scss'),
+	'scorescreen': [
+		path.join(srcPath, 'scorescreen.html'),
+		path.join(srcPath, 'scorescreen.coffee'),
+		path.join(srcPath, 'scorescreen.scss'),
 	]
 }
 
