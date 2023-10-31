@@ -1,12 +1,12 @@
 # Create an angular module to house our controller
-SurveyWidget = angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngAnimate', 'ngSanitize', 'angular-sortable-view', 'ngAria']
+angular.module 'SurveyWidgetCreator', ['ngMaterial', 'ngMessages', 'ngAnimate', 'ngSanitize', 'angular-sortable-view', 'ngAria']
 
-SurveyWidget.config ['$mdThemingProvider', ($mdThemingProvider) ->
+.config ['$mdThemingProvider', ($mdThemingProvider) ->
 		$mdThemingProvider.theme('default')
 			.primaryPalette('teal')
 			.accentPalette('blue-grey')
 ]
-SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', 'sanitizeHelper', '$timeout', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, sanitizeHelper, $timeout) ->
+.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDialog','$sanitize','$compile', 'Resource', 'sanitizeHelper', '$timeout', ($scope, $mdToast, $mdDialog, $sanitize, $compile, Resource, sanitizeHelper, $timeout) ->
 
 	$scope.acceptedMediaTypes = ['image']
 	mediaRef = null
@@ -391,7 +391,7 @@ SurveyWidget.controller 'SurveyWidgetController', [ '$scope','$mdToast','$mdDial
 	Materia.CreatorCore.start $scope
 ]
 
-SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, sanitizeHelper) ->
+.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, sanitizeHelper) ->
 	buildQset: (title, questions, groups, OneQuestionAtATime) ->
 		qsetItems = []
 		qset = {}
@@ -440,7 +440,7 @@ SurveyWidget.factory 'Resource', ['$sanitize', 'sanitizeHelper', ($sanitize, san
 		return processed
 ]
 
-SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
+.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 	link: (scope, element, attrs) ->
 		model = $parse(attrs.focusMe)
 		scope.$watch model, (value) ->
@@ -450,7 +450,7 @@ SurveyWidget.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 			value
 ]
 
-SurveyWidget.service 'sanitizeHelper', [() ->
+.service 'sanitizeHelper', [() ->
 	SANITIZE_CHARACTERS =
 		'&' : '&amp;',
 		'>' : '&gt;',
@@ -474,3 +474,4 @@ SurveyWidget.service 'sanitizeHelper', [() ->
 	sanitize: sanitize
 	desanitize: desanitize
 ]
+angular.bootstrap(document, ['SurveyWidgetCreator'])
