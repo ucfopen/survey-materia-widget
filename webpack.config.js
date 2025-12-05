@@ -5,7 +5,6 @@ const outputPath = path.join(__dirname, 'build')
 const widgetWebpack = require('materia-widget-development-kit/webpack-widget')
 
 const rules = widgetWebpack.getDefaultRules()
-const entries = widgetWebpack.getDefaultEntries()
 const copy = widgetWebpack.getDefaultCopyList()
 
 const customCopy = copy.concat([
@@ -14,8 +13,8 @@ const customCopy = copy.concat([
 		to: path.join(outputPath, 'vendor'),
 	},
 	{
-		from: path.join(__dirname,'src','_exports','playdata_exporters.php'),
-		to: path.join(outputPath,'_exports/','playdata_exporters.php')
+		from: path.join(__dirname, 'src', '_exports', 'playdata_exporters.php'),
+		to: path.join(outputPath, '_exports/', 'playdata_exporters.php')
 	},
 	{
 		from: path.join(__dirname, 'src', '_guides', 'assets'),
@@ -24,65 +23,28 @@ const customCopy = copy.concat([
 	}
 ])
 
-entries['scorescreen.js'] = [
-	srcPath+'scorescreen.coffee'
-]
-
-entries['scorescreen.css'] = [
-	srcPath+'scorescreen.html',
-	srcPath+'scorescreen.scss'
-]
-
-entries['guides/creator.temp.html'] = [
-	srcPath+'_guides/creator.md'
-]
-
-entries['guides/player.temp.html'] = [
-	srcPath+'_guides/player.md'
-]
-
-// this is needed to prevent html-loader from causing issues with
-// style tags in the player using angular
-let customHTMLAndReplaceRule = {
-	test: /\.html$/i,
-	exclude: /node_modules/,
-	use: [
-		{
-			loader: 'file-loader',
-			options: { name: '[name].html' }
-		},
-		{
-			loader: 'extract-loader'
-		},
-		{
-			loader: 'string-replace-loader',
-			options: { multiple: widgetWebpack.materiaJSReplacements }
-		},
-		{
-			loader: 'html-loader',
-			options: {
-				minifyCSS: false
-			}
-		}
+const entries = {
+	'creator': [
+		path.join(srcPath, 'creator.html'),
+		path.join(srcPath, 'creator.scss'),
+		path.join(srcPath, 'creator.coffee')
+	],
+	'player': [
+		path.join(srcPath, 'player.html'),
+		path.join(srcPath, 'player.scss'),
+		path.join(srcPath, 'player.coffee')
+	],
+	'scorescreen': [
+		path.join(srcPath, 'scorescreen.html'),
+		path.join(srcPath, 'scorescreen.scss'),
+		path.join(srcPath, 'scorescreen.coffee')
 	]
 }
-
-let customRules = [
-	rules.loaderDoNothingToJs,
-	rules.loaderCompileCoffee,
-	rules.copyImages,
-	customHTMLAndReplaceRule, // <--- replaces "rules.loadHTMLAndReplaceMateriaScripts"
-	rules.loadAndPrefixCSS,
-	rules.loadAndPrefixSASS,
-	rules.loadAndCompileMarkdown
-]
-
 
 // options for the build
 let options = {
 	entries: entries,
 	copyList: customCopy,
-	moduleRules: customRules
 }
 
 module.exports = widgetWebpack.getLegacyWidgetBuildConfig(options)
