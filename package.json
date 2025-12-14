@@ -3,7 +3,7 @@
   "materia": {
     "cleanName": "simple-survey"
   },
-  "version": "1.2.0",
+  "version": "1.2.1",
   "dependencies": {
     "angular-sortable-view": "^0.0.13",
     "materia-widget-development-kit": "3.0.4"

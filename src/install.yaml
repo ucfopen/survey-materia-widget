@@ -34,3 +34,5 @@ meta_data:
     Build surveys or questionnaires with a range of question options including multiple choice, check-all-that-apply, and free response. Questions are not scored and students are given full credit upon completion.
   accessibility_keyboard: Full
   accessibility_reader: Full
+  update_method: github
+  repo: ucfopen/survey-materia-widget
