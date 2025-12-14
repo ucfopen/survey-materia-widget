@@ -6,7 +6,7 @@
   "version": "1.2.0",
   "dependencies": {
     "angular-sortable-view": "^0.0.13",
-    "materia-widget-development-kit": "2.5.2"
+    "materia-widget-development-kit": "3.0.4"
   },
   "devDependencies": {
     "angular": "1.6.9",
@@ -16,13 +16,14 @@
     "angular-messages": "1.6.9",
     "angular-mocks": "1.6.9",
     "angular-sanitize": "1.6.9",
+    "extract-loader": "^5.1.0",
     "jest": "^23.6.0",
     "jest-coffee-preprocessor": "^1.0.0"
   },
   "scripts": {
-    "start": "webpack-dev-server",
-    "build-dev": "webpack",
-    "build": "webpack -p",
+    "start": "mwdk-start",
+    "build-dev": "mwdk-build-dev",
+    "build": "mwdk-build-prod",
     "test": "TZ='America/New_York' jest --verbose",
     "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura",
     "test-dev": "TZ='America/New_York' jest --coverage --coverageReporters text-summary lcov"
